@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 1 · Introduction to AI — AI Wiki</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+
+<button id="sidebar-toggle" class="sidebar-toggle" aria-label="Toggle navigation">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+</button>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <svg class="brand-logo" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="brand-g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7c5cff"/><stop offset="1" stop-color="#22d3ee"/></linearGradient></defs>
+        <rect x="4" y="4" width="56" height="56" rx="14" fill="url(#brand-g)"/>
+        <circle cx="22" cy="26" r="3" fill="white"/><circle cx="42" cy="26" r="3" fill="white"/><circle cx="32" cy="42" r="3" fill="white"/>
+        <path d="M22 26 L32 42 L42 26 M22 26 L42 26" stroke="white" stroke-width="1.5" fill="none" opacity="0.8"/>
+      </svg>
+      <div><p class="brand-title">AI Wiki</p><p class="brand-sub">Foundations → Mastery</p></div>
+    </div>
+    <nav class="nav-section"><p class="nav-title">Getting Started</p><ul class="nav-list">
+      <li class="nav-item"><a href="../index.html"><span class="nav-num">◆</span> Vol I · Foundations</a></li>
+      <li class="nav-item"><a href="../AI-Wiki-II/index.html"><span class="nav-num">II</span> Vol II · Agentic Frontier</a></li>
+      <li class="nav-item"><a href="../AI-Wiki-III/index.html"><span class="nav-num">III</span> Vol III · Research Frontier</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part I · Foundations</p><ul class="nav-list">
+      <li class="nav-item"><a href="01-introduction.html"><span class="nav-num">01</span> Introduction to AI</a></li>
+      <li class="nav-item"><a href="02-math-foundations.html"><span class="nav-num">02</span> Math Foundations</a></li>
+      <li class="nav-item"><a href="03-machine-learning.html"><span class="nav-num">03</span> Machine Learning</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part II · Deep Learning</p><ul class="nav-list">
+      <li class="nav-item"><a href="04-neural-networks.html"><span class="nav-num">04</span> Neural Networks</a></li>
+      <li class="nav-item"><a href="05-deep-learning.html"><span class="nav-num">05</span> Deep Learning</a></li>
+      <li class="nav-item"><a href="06-nlp-transformers.html"><span class="nav-num">06</span> NLP &amp; Transformers</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part III · Modern AI</p><ul class="nav-list">
+      <li class="nav-item"><a href="07-llms.html"><span class="nav-num">07</span> Large Language Models</a></li>
+      <li class="nav-item"><a href="08-training-finetuning.html"><span class="nav-num">08</span> Training &amp; Fine-tuning</a></li>
+      <li class="nav-item"><a href="09-alignment-rlhf.html"><span class="nav-num">09</span> Alignment &amp; RLHF</a></li>
+      <li class="nav-item"><a href="10-agents-modern.html"><span class="nav-num">10</span> Agents &amp; Frontier</a></li>
+    </ul></nav>
+  <nav class="nav-section"><p class="nav-title">Appendix</p><ul class="nav-list">
+      <li class="nav-item"><a href="../resources.html"><span class="nav-num">§</span> Resources</a></li>
+      <li class="nav-item"><a href="../vocabulary.html"><span class="nav-num">A</span> Vocabulary</a></li>
+    </ul></nav>
+  </aside>
+
+  <main class="main"><div class="content">
+
+    <header class="chapter-header">
+      <div class="chapter-meta">
+        <span class="chapter-num">CHAPTER 01</span>
+        <span class="pill pill-cyan">Foundations</span>
+      </div>
+      <h1>Introduction to AI</h1>
+      <p class="chapter-lede">What artificial intelligence really is, where it came from, and the paradigms that brought us from symbolic logic to today's frontier models.</p>
+    </header>
+
+    <div class="toc">
+      <h4>In this chapter</h4>
+      <ul>
+        <li><a href="#what-is-ai">1.1 What is Artificial Intelligence?</a></li>
+        <li><a href="#history">1.2 A Brief History</a></li>
+        <li><a href="#paradigms">1.3 The Three Paradigms</a></li>
+        <li><a href="#types">1.4 Narrow, General, Superintelligence</a></li>
+        <li><a href="#workflow">1.5 The Modern AI Workflow</a></li>
+        <li><a href="#setup">1.6 Setting Up Your Environment</a></li>
+      </ul>
+    </div>
+
+    <h2 id="what-is-ai">1.1 What is Artificial Intelligence?</h2>
+    <p>
+      Artificial Intelligence is the field of building computer systems that can perform tasks which
+      normally require human intelligence — perceiving the world, reasoning about it, planning, and
+      learning from experience. It's a broad umbrella that includes everything from the rules a chess
+      engine follows to the billions of parameters in a modern language model.
+    </p>
+    <p>
+      The concise modern definition: <strong>AI is the study and engineering of systems that act
+      rationally given their goals and knowledge</strong>. A system is more "intelligent" when it can
+      handle a wider variety of environments with less hand-coding.
+    </p>
+
+    <div class="callout note">
+      <svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+      <div class="callout-body">
+        <div class="callout-title">AI vs. ML vs. DL vs. LLMs</div>
+        <p>These terms are often confused. AI is the broad goal. Machine Learning is one approach to AI (learning from data). Deep Learning is one approach to ML (using multi-layer neural networks). LLMs are one application of Deep Learning (language).</p>
+      </div>
+    </div>
+
+    <h2 id="history">1.2 A Brief History</h2>
+    <p>AI has gone through three major eras, each powered by new ideas and hardware.</p>
+
+    <div class="diagram">
+      <svg viewBox="0 0 900 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="AI historical timeline">
+        <defs>
+          <linearGradient id="era1" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#7c5cff" stop-opacity="0.3"/><stop offset="1" stop-color="#7c5cff" stop-opacity="0.05"/></linearGradient>
+          <linearGradient id="era2" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#22d3ee" stop-opacity="0.3"/><stop offset="1" stop-color="#22d3ee" stop-opacity="0.05"/></linearGradient>
+          <linearGradient id="era3" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#ff5ca8" stop-opacity="0.3"/><stop offset="1" stop-color="#ff5ca8" stop-opacity="0.05"/></linearGradient>
+        </defs>
+
+        <!-- timeline axis -->
+        <line x1="60" y1="220" x2="860" y2="220" stroke="#2e3746" stroke-width="2"/>
+
+        <!-- Era 1: Symbolic -->
+        <rect x="60" y="60" width="240" height="140" rx="10" fill="url(#era1)" stroke="#7c5cff" stroke-width="1.5"/>
+        <text x="180" y="85" text-anchor="middle" fill="#7c5cff" font-size="14" font-weight="700" font-family="sans-serif">Symbolic AI</text>
+        <text x="180" y="103" text-anchor="middle" fill="#9aa6b2" font-size="11" font-family="sans-serif">1950s – 1980s</text>
+        <text x="180" y="128" text-anchor="middle" fill="#e6edf3" font-size="11" font-family="sans-serif">Logic, search, rules</text>
+        <text x="180" y="146" text-anchor="middle" fill="#e6edf3" font-size="11" font-family="sans-serif">Expert systems</text>
+        <text x="180" y="164" text-anchor="middle" fill="#e6edf3" font-size="11" font-family="sans-serif">Prolog, LISP</text>
+        <text x="180" y="184" text-anchor="middle" fill="#e6edf3" font-size="11" font-family="sans-serif">"AI winter" 1987</text>
+        <circle cx="180" cy="220" r="5" fill="#7c5cff"/>
+
+        <!-- Era 2: Statistical -->
+        <rect x="320" y="60" width="240" height="140" rx="10" fill="url(#era2)" stroke="#22d3ee" stroke-width="1.5"/>
+        <text x="440" y="85" text-anchor="middle" fill="#22d3ee" font-size="14" font-weight="700" font-family="sans-serif">Statistical ML</text>
+        <text x="440" y="103" text-anchor="middle" fill="#9aa6b2" font-size="11" font-family="sans-serif">1990s – 2010</text>
+        <text x="440" y="128" text-anchor="middle" fill="#e6edf3" font-size="11" font-family="sans-serif">SVMs, random forests</text>
+        <text x="440" y="146" text-anchor="middle" fill="#e6edf3" font-size="11" font-family="sans-serif">Bayesian methods</text>
+        <text x="440" y="164" text-anchor="middle" fill="#e6edf3" font-size="11" font-family="sans-serif">Kernel tricks</text>
+        <text x="440" y="184" text-anchor="middle" fill="#e6edf3" font-size="11" font-family="sans-serif">Feature engineering</text>
+        <circle cx="440" cy="220" r="5" fill="#22d3ee"/>
+
+        <!-- Era 3: Deep Learning -->
+        <rect x="580" y="60" width="280" height="140" rx="10" fill="url(#era3)" stroke="#ff5ca8" stroke-width="1.5"/>
+        <text x="720" y="85" text-anchor="middle" fill="#ff5ca8" font-size="14" font-weight="700" font-family="sans-serif">Deep Learning &amp; LLMs</text>
+        <text x="720" y="103" text-anchor="middle" fill="#9aa6b2" font-size="11" font-family="sans-serif">2012 – today</text>
+        <text x="720" y="128" text-anchor="middle" fill="#e6edf3" font-size="11" font-family="sans-serif">AlexNet (2012) · GPUs</text>
+        <text x="720" y="146" text-anchor="middle" fill="#e6edf3" font-size="11" font-family="sans-serif">Transformers (2017)</text>
+        <text x="720" y="164" text-anchor="middle" fill="#e6edf3" font-size="11" font-family="sans-serif">GPT-3 (2020) · ChatGPT (2022)</text>
+        <text x="720" y="184" text-anchor="middle" fill="#e6edf3" font-size="11" font-family="sans-serif">Multimodal · agentic</text>
+        <circle cx="720" cy="220" r="5" fill="#ff5ca8"/>
+
+        <!-- year labels -->
+        <g font-family="sans-serif" font-size="11" fill="#9aa6b2">
+          <text x="60" y="248" text-anchor="middle">1956</text>
+          <text x="300" y="248" text-anchor="middle">1990</text>
+          <text x="560" y="248" text-anchor="middle">2012</text>
+          <text x="860" y="248" text-anchor="middle">2026</text>
+        </g>
+      </svg>
+      <span class="diagram-caption">Three eras of AI research and the shifts that ended each one.</span>
+    </div>
+
+    <p>
+      <strong>The pivotal moments:</strong> The 1956 Dartmouth Workshop coined the term "artificial
+      intelligence." AlexNet in 2012 proved deep networks + GPUs could crush classical computer
+      vision. The 2017 "Attention Is All You Need" paper introduced transformers, which became the
+      backbone of every major model that followed — including GPT, Claude, and Gemini.
+    </p>
+
+    <h2 id="paradigms">1.3 The Three Paradigms</h2>
+    <p>All AI research ultimately falls into three paradigms that answer the question "how does the system know what to do?"</p>
+
+    <div class="grid grid-3">
+      <div class="card">
+        <span class="pill pill-accent">Symbolic</span>
+        <h3>Rules &amp; Logic</h3>
+        <p>Humans hand-write rules. Good for tasks with clear logical structure (theorem proving). Brittle when the world is messy.</p>
+      </div>
+      <div class="card">
+        <span class="pill pill-cyan">Statistical</span>
+        <h3>Learn from Data</h3>
+        <p>The system finds patterns in labeled examples. Works well when you have lots of representative data and good features.</p>
+      </div>
+      <div class="card">
+        <span class="pill pill-warm">Neural / Connectionist</span>
+        <h3>Learn Representations</h3>
+        <p>Deep networks learn their own features directly from raw data. Dominant paradigm since ~2012.</p>
+      </div>
+    </div>
+
+    <h2 id="types">1.4 Narrow, General, and Super Intelligence</h2>
+    <table>
+      <thead>
+        <tr><th>Type</th><th>Definition</th><th>Today?</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>ANI</strong> (Narrow)</td><td>Great at one specific task. Chess engines, image classifiers, voice assistants.</td><td>✅ Everywhere</td></tr>
+        <tr><td><strong>AGI</strong> (General)</td><td>Matches human performance across essentially all cognitive tasks.</td><td>🟡 Active research</td></tr>
+        <tr><td><strong>ASI</strong> (Super)</td><td>Exceeds the best human experts in every domain.</td><td>🔴 Hypothetical</td></tr>
+      </tbody>
+    </table>
+
+    <p>Frontier LLMs like Claude and GPT-4 are often called <strong>general-purpose</strong> because they handle wildly different tasks — but they're still ANI by strict definitions.</p>
+
+    <h2 id="workflow">1.5 The Modern AI Workflow</h2>
+    <p>Regardless of whether you're training an image classifier or fine-tuning a language model, the workflow follows the same shape.</p>
+
+    <div class="diagram">
+      <svg viewBox="0 0 900 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Modern AI workflow">
+        <defs>
+          <marker id="arrow1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#7c5cff"/>
+          </marker>
+        </defs>
+
+        <g font-family="sans-serif">
+          <!-- 5 stages -->
+          <g>
+            <rect x="30" y="70" width="140" height="80" rx="10" fill="#161b24" stroke="#7c5cff" stroke-width="1.5"/>
+            <text x="100" y="100" text-anchor="middle" fill="#e6edf3" font-size="13" font-weight="600">Data</text>
+            <text x="100" y="120" text-anchor="middle" fill="#9aa6b2" font-size="11">Collect · clean</text>
+            <text x="100" y="136" text-anchor="middle" fill="#9aa6b2" font-size="11">label · split</text>
+          </g>
+          <line x1="175" y1="110" x2="205" y2="110" stroke="#7c5cff" stroke-width="2" marker-end="url(#arrow1)"/>
+
+          <g>
+            <rect x="210" y="70" width="140" height="80" rx="10" fill="#161b24" stroke="#22d3ee" stroke-width="1.5"/>
+            <text x="280" y="100" text-anchor="middle" fill="#e6edf3" font-size="13" font-weight="600">Model</text>
+            <text x="280" y="120" text-anchor="middle" fill="#9aa6b2" font-size="11">Architecture</text>
+            <text x="280" y="136" text-anchor="middle" fill="#9aa6b2" font-size="11">choice</text>
+          </g>
+          <line x1="355" y1="110" x2="385" y2="110" stroke="#7c5cff" stroke-width="2" marker-end="url(#arrow1)"/>
+
+          <g>
+            <rect x="390" y="70" width="140" height="80" rx="10" fill="#161b24" stroke="#ff5ca8" stroke-width="1.5"/>
+            <text x="460" y="100" text-anchor="middle" fill="#e6edf3" font-size="13" font-weight="600">Train</text>
+            <text x="460" y="120" text-anchor="middle" fill="#9aa6b2" font-size="11">Loss · SGD</text>
+            <text x="460" y="136" text-anchor="middle" fill="#9aa6b2" font-size="11">backprop</text>
+          </g>
+          <line x1="535" y1="110" x2="565" y2="110" stroke="#7c5cff" stroke-width="2" marker-end="url(#arrow1)"/>
+
+          <g>
+            <rect x="570" y="70" width="140" height="80" rx="10" fill="#161b24" stroke="#fbbf24" stroke-width="1.5"/>
+            <text x="640" y="100" text-anchor="middle" fill="#e6edf3" font-size="13" font-weight="600">Evaluate</text>
+            <text x="640" y="120" text-anchor="middle" fill="#9aa6b2" font-size="11">Metrics</text>
+            <text x="640" y="136" text-anchor="middle" fill="#9aa6b2" font-size="11">held-out set</text>
+          </g>
+          <line x1="715" y1="110" x2="745" y2="110" stroke="#7c5cff" stroke-width="2" marker-end="url(#arrow1)"/>
+
+          <g>
+            <rect x="750" y="70" width="140" height="80" rx="10" fill="#161b24" stroke="#34d399" stroke-width="1.5"/>
+            <text x="820" y="100" text-anchor="middle" fill="#e6edf3" font-size="13" font-weight="600">Deploy</text>
+            <text x="820" y="120" text-anchor="middle" fill="#9aa6b2" font-size="11">Serve · monitor</text>
+            <text x="820" y="136" text-anchor="middle" fill="#9aa6b2" font-size="11">iterate</text>
+          </g>
+
+          <!-- feedback loop -->
+          <path d="M820 150 Q 820 200 460 200 Q 100 200 100 150" fill="none" stroke="#6b7687" stroke-width="1.5" stroke-dasharray="4 4" marker-end="url(#arrow1)"/>
+          <text x="460" y="192" text-anchor="middle" fill="#6b7687" font-size="11" font-style="italic">feedback &amp; new data</text>
+        </g>
+      </svg>
+      <span class="diagram-caption">The iterative loop — deployed models produce feedback that becomes training data for the next version.</span>
+    </div>
+
+    <h2 id="setup">1.6 Setting Up Your Environment</h2>
+    <p>You'll want Python 3.10+, a virtual environment, and a few libraries. This wiki uses NumPy, PyTorch, and Hugging Face transformers.</p>
+
+    <pre><code class="language-bash"># Create and activate a virtual environment
+python -m venv .venv
+source .venv/bin/activate    # Linux/Mac
+# .venv\Scripts\activate       # Windows
+
+# Install the core stack
+pip install numpy matplotlib scikit-learn
+pip install torch --index-url https://download.pytorch.org/whl/cu121
+pip install transformers datasets tokenizers accelerate</code></pre>
+
+    <p>A tiny "hello AI" to verify your setup:</p>
+
+    <pre><code class="language-python">import torch
+
+# Check PyTorch and GPU availability
+print(f"PyTorch: {torch.__version__}")
+print(f"CUDA available: {torch.cuda.is_available()}")
+if torch.cuda.is_available():
+    print(f"GPU: {torch.cuda.get_device_name(0)}")
+
+# Your first tensor
+x = torch.tensor([[1.0, 2.0], [3.0, 4.0]])
+print(f"Tensor:\n{x}")
+print(f"Mean: {x.mean():.2f}")</code></pre>
+
+    <div class="callout tip">
+      <svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+      <div class="callout-body">
+        <div class="callout-title">You're ready</div>
+        <p>That's the whole stack. Everything in this wiki will run on your machine. Let's move on to the math foundations that make it all work.</p>
+      </div>
+    </div>
+
+    <nav class="pager">
+      <a class="pager-link" href="../index.html"><span class="pager-label">← Home</span><span class="pager-title">AI Wiki</span></a>
+      <a class="pager-link pager-next" href="02-math-foundations.html"><span class="pager-label">Next →</span><span class="pager-title">Math Foundations</span></a>
+    </nav>
+
+  </div></main>
+</div>
+
+<button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="../assets/js/main.js"></script>
+<footer class="site-footer">
+  <p>Created by <strong>Duy Dao</strong><span class="sep">·</span><a href="https://github.com/xD4O" target="_blank" rel="noopener">GitHub @xD4O</a><span class="sep">·</span><a href="https://x.com/_cyr4x" target="_blank" rel="noopener">X @_cyr4x</a><span class="sep">·</span>AI Wiki · 2026</p>
+  <p class="star-cta">Found this useful? <a href="https://github.com/xD4O/AI-Wiki" target="_blank" rel="noopener">⭐ Star it on GitHub</a></p>
+</footer>
+</body>
+</html>

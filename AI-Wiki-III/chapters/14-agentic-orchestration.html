@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 14 · Agentic Orchestration — AI Wiki Vol III</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="stylesheet" href="../assets/css/styles.css"></head>
+<body>
+
+<button id="sidebar-toggle" class="sidebar-toggle"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg></button>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <svg class="brand-logo" viewBox="0 0 64 64"><defs><linearGradient id="bg3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff5ca8"/><stop offset="1" stop-color="#7c5cff"/></linearGradient></defs><rect x="2" y="2" width="60" height="60" rx="14" fill="url(#bg3)"/><text x="32" y="42" text-anchor="middle" fill="white" font-size="26" font-weight="800">III</text></svg>
+      <div><p class="brand-title">AI Wiki · Vol III</p><p class="brand-sub">The Research Frontier</p></div>
+    </div>
+    <nav class="nav-section"><p class="nav-title">Getting Started</p><ul class="nav-list">
+      <li class="nav-item"><a href="../../index.html"><span class="nav-num">I</span> Vol I · Foundations</a></li>
+      <li class="nav-item"><a href="../../AI-Wiki-II/index.html"><span class="nav-num">II</span> Vol II · Agentic Frontier</a></li>
+      <li class="nav-item"><a href="../index.html"><span class="nav-num">◆</span> Vol III · Research Frontier</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part I · Architecture</p><ul class="nav-list"><li class="nav-item"><a href="01-post-transformer.html"><span class="nav-num">01</span> Past Attention</a></li><li class="nav-item"><a href="02-mamba-ssm.html"><span class="nav-num">02</span> Mamba &amp; SSMs</a></li><li class="nav-item"><a href="03-blt-tokenization.html"><span class="nav-num">03</span> BLT</a></li><li class="nav-item"><a href="04-sparse-revolution.html"><span class="nav-num">04</span> Sparse Revolution</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part II · World Models</p><ul class="nav-list"><li class="nav-item"><a href="05-jepa.html"><span class="nav-num">05</span> JEPA</a></li><li class="nav-item"><a href="06-generative-world-models.html"><span class="nav-num">06</span> Sora · Veo · Genie</a></li><li class="nav-item"><a href="07-embodied-foundation.html"><span class="nav-num">07</span> Embodied</a></li><li class="nav-item"><a href="08-model-based-rl.html"><span class="nav-num">08</span> MB-RL</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part III · Reasoning</p><ul class="nav-list"><li class="nav-item"><a href="09-rlvr.html"><span class="nav-num">09</span> RL Verifiable</a></li><li class="nav-item"><a href="10-inference-compute.html"><span class="nav-num">10</span> Inference Compute</a></li><li class="nav-item"><a href="11-memory-titans.html"><span class="nav-num">11</span> Memory · Titans</a></li><li class="nav-item"><a href="12-faithfulness.html"><span class="nav-num">12</span> Faithfulness</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part IV · Systems &amp; Control</p><ul class="nav-list"><li class="nav-item"><a href="13-meta-prompting.html"><span class="nav-num">13</span> Meta-Prompting</a></li><li class="nav-item"><a href="14-agentic-orchestration.html"><span class="nav-num">14</span> Orchestration</a></li><li class="nav-item"><a href="15-deterministic-gates.html"><span class="nav-num">15</span> Deterministic Gates</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part V · Open Problems</p><ul class="nav-list"><li class="nav-item"><a href="16-interp-frontier.html"><span class="nav-num">16</span> Interp Frontier</a></li><li class="nav-item"><a href="17-alignment-beyond-rlhf.html"><span class="nav-num">17</span> Alignment</a></li><li class="nav-item"><a href="18-benchmark-crisis.html"><span class="nav-num">18</span> Benchmarks</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part VI · Big Picture</p><ul class="nav-list"><li class="nav-item"><a href="19-ai-for-science.html"><span class="nav-num">19</span> AI for Science</a></li><li class="nav-item"><a href="20-scaling-debates.html"><span class="nav-num">20</span> Scaling</a></li><li class="nav-item"><a href="21-compute-geopolitics-agi.html"><span class="nav-num">21</span> Compute · AGI</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Appendix</p><ul class="nav-list">
+      <li class="nav-item"><a href="../resources.html"><span class="nav-num">§</span> Resources</a></li>
+      <li class="nav-item"><a href="../vocabulary.html"><span class="nav-num">A</span> Vocabulary</a></li>
+    </ul></nav>
+  </aside>
+
+  <main class="main"><div class="content">
+
+    <header class="chapter-header">
+      <div class="chapter-meta"><span class="chapter-num">CHAPTER 14</span><span class="pill pill-yellow">Part IV · Systems &amp; Control</span></div>
+      <h1>Agentic Orchestration</h1>
+      <p class="chapter-lede">The systems-engineering chapter. How do you actually run an LLM-powered workflow that retries correctly, survives partial failure, is observable, and doesn't cost $10K/day by accident? State machines, durable execution, compound AI.</p>
+    </header>
+
+    <div class="timeline-ribbon">
+      <span class="timeline-event"><strong>2023-06</strong> ReAct pattern</span>
+      <span class="timeline-event"><strong>2024-01</strong> LangGraph v0.1</span>
+      <span class="timeline-event"><strong>2024-02</strong> Compound AI Systems (BAIR)</span>
+      <span class="timeline-event"><strong>2024-Q3</strong> Restate, DBOS launch</span>
+      <span class="timeline-event"><strong>2024-Q4</strong> Temporal AI workflows</span>
+      <span class="timeline-event"><strong>2025-2026</strong> LangGraph production default</span>
+    </div>
+
+    <details class="eli5">
+      <summary><span class="eli5-icon">🧒</span> ELI5 — explain like I'm five</summary>
+      <div class="eli5-body">
+        <p>A simple agent is like a single person doing a chore with no supervisor: "think, do something, check, try again." That works for short chores.</p>
+        <p>For a two-hour chore with many steps — book a flight, send emails, update a spreadsheet, run a migration — you want more structure. <strong>State machines</strong> say "at each step you can only move to a few allowed next steps." <strong>Durable execution</strong> says "if something crashes halfway, we remember exactly where we were and resume." <strong>Compound AI systems</strong> say "the whole thing is really many tiny LLM calls, a retriever, a verifier, a router — and we should design it like that explicitly."</p>
+        <p>These ideas together are what make 2026 agents actually ship in production.</p>
+      </div>
+    </details>
+
+    <div class="toc">
+      <h4>In this chapter</h4>
+      <ul>
+        <li><a href="#why">14.1 Why the Single ReAct Loop Breaks</a></li>
+        <li><a href="#langgraph">14.2 LangGraph — State Machines Over LLMs</a></li>
+        <li><a href="#durable">14.3 Durable Execution (Temporal, Restate, DBOS)</a></li>
+        <li><a href="#compound">14.4 Compound AI Systems (BAIR)</a></li>
+        <li><a href="#typed">14.5 Typed Workflows &amp; Agent SDKs</a></li>
+        <li><a href="#obs">14.6 Observability, Replay, Determinism</a></li>
+        <li><a href="#code">14.7 Reference — Mini State-Machine</a></li>
+        <li><a href="#resources">14.8 Further Reading</a></li>
+      </ul>
+    </div>
+
+    <h2 id="why">14.1 Why the Single ReAct Loop Breaks</h2>
+    <p>Volume II Ch 08 introduced ReAct as the default agent pattern. For a 60-second task with a handful of tools, it works. For a 2-hour, 200-step workflow that spans APIs, databases, humans, and half a dozen LLM calls, it falls apart:</p>
+    <ul>
+      <li><strong>No checkpoints.</strong> A failure at step 120 means replaying from step 0, and most tool calls have side effects.</li>
+      <li><strong>No types.</strong> Every step's output feeds the next step's prompt; schema drift breaks everything downstream silently.</li>
+      <li><strong>No human-in-the-loop.</strong> Some decisions need approval; ReAct has no clean "pause for approval" primitive.</li>
+      <li><strong>No observability.</strong> You can't debug a 200-step run from raw LLM logs.</li>
+    </ul>
+
+    <h2 id="langgraph">14.2 LangGraph — State Machines Over LLMs</h2>
+    <p>LangChain's <strong>LangGraph</strong> (2024) flipped the model: an agent is a <em>graph</em>. Nodes are pure functions (often LLM calls) with typed inputs/outputs. Edges are conditional — "after the planner node, if the output is a tool call, go to the tool node; if it's an answer, go to END."</p>
+    <p>The whole graph has <strong>persisted state</strong>. Every node execution is a checkpoint. Failures resume from the last checkpoint. Human-in-the-loop is a first-class primitive: you can literally <code>interrupt</code> the graph at any node, wait for approval, and resume.</p>
+
+    <div class="diagram">
+      <svg viewBox="0 0 900 380" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="LangGraph state machine">
+        <defs>
+          <filter id="lg-sh"><feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#000" flood-opacity="0.3"/></filter>
+          <marker id="lg-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7c5cff"/></marker>
+          <marker id="lg-arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#34d399"/></marker>
+          <marker id="lg-arr-pink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#ff5ca8"/></marker>
+        </defs>
+        <g font-family="-apple-system, Inter, sans-serif">
+          <!-- State -->
+          <g filter="url(#lg-sh)"><rect x="350" y="20" width="200" height="54" rx="10" fill="rgba(251,191,36,0.14)" stroke="#fbbf24" stroke-dasharray="4 3"/></g>
+          <text x="450" y="45" text-anchor="middle" fill="#fbbf24" font-size="13" font-weight="700">Shared state (TypedDict)</text>
+          <text x="450" y="62" text-anchor="middle" fill="#9aa6b2" font-size="11" font-style="italic">checkpointed to SQLite/Postgres</text>
+
+          <!-- Start -->
+          <g filter="url(#lg-sh)"><circle cx="100" cy="180" r="30" fill="#161b24" stroke="#22d3ee" stroke-width="2"/></g>
+          <text x="100" y="184" text-anchor="middle" fill="#22d3ee" font-size="12" font-weight="700">START</text>
+
+          <!-- Plan -->
+          <g filter="url(#lg-sh)"><rect x="200" y="150" width="130" height="60" rx="10" fill="rgba(124,92,255,0.18)" stroke="#7c5cff" stroke-width="2"/></g>
+          <text x="265" y="175" text-anchor="middle" fill="#e6edf3" font-size="13" font-weight="700">Planner</text>
+          <text x="265" y="193" text-anchor="middle" fill="#9aa6b2" font-size="11">LLM call</text>
+
+          <!-- Router (diamond) -->
+          <g filter="url(#lg-sh)"><polygon points="420,180 480,140 540,180 480,220" fill="rgba(251,191,36,0.18)" stroke="#fbbf24" stroke-width="2"/></g>
+          <text x="480" y="184" text-anchor="middle" fill="#e6edf3" font-size="12" font-weight="700">route?</text>
+
+          <!-- Tool -->
+          <g filter="url(#lg-sh)"><rect x="615" y="85" width="130" height="60" rx="10" fill="rgba(52,211,153,0.18)" stroke="#34d399" stroke-width="2"/></g>
+          <text x="680" y="110" text-anchor="middle" fill="#34d399" font-size="13" font-weight="700">Tool exec</text>
+          <text x="680" y="128" text-anchor="middle" fill="#9aa6b2" font-size="11">idempotent</text>
+
+          <!-- Human review -->
+          <g filter="url(#lg-sh)"><rect x="615" y="175" width="130" height="60" rx="10" fill="rgba(255,138,92,0.18)" stroke="#ff8a5c" stroke-width="2"/></g>
+          <text x="680" y="200" text-anchor="middle" fill="#ff8a5c" font-size="13" font-weight="700">Human ✓</text>
+          <text x="680" y="218" text-anchor="middle" fill="#9aa6b2" font-size="11">interrupt</text>
+
+          <!-- Finalizer -->
+          <g filter="url(#lg-sh)"><rect x="615" y="265" width="130" height="60" rx="10" fill="rgba(255,92,168,0.18)" stroke="#ff5ca8" stroke-width="2"/></g>
+          <text x="680" y="290" text-anchor="middle" fill="#ff5ca8" font-size="13" font-weight="700">Finalize</text>
+          <text x="680" y="308" text-anchor="middle" fill="#9aa6b2" font-size="11">LLM answer</text>
+
+          <!-- End -->
+          <g filter="url(#lg-sh)"><circle cx="830" cy="200" r="30" fill="#161b24" stroke="#22d3ee" stroke-width="2"/></g>
+          <text x="830" y="204" text-anchor="middle" fill="#22d3ee" font-size="12" font-weight="700">END</text>
+
+          <!-- edges -->
+          <g fill="none" stroke-width="1.6">
+            <path d="M 130 180 L 198 180" stroke="#7c5cff" marker-end="url(#lg-arr)"/>
+            <path d="M 330 180 L 418 180" stroke="#7c5cff" marker-end="url(#lg-arr)"/>
+            <path d="M 540 155 L 618 118" stroke="#34d399" marker-end="url(#lg-arr-green)"/>
+            <path d="M 540 180 L 618 200" stroke="#ff8a5c" marker-end="url(#lg-arr-green)"/>
+            <path d="M 540 215 L 618 285" stroke="#ff5ca8" marker-end="url(#lg-arr-pink)"/>
+            <!-- tool back to planner -->
+            <path d="M 615 115 Q 450 80 265 148" stroke="#34d399" stroke-dasharray="4 3" marker-end="url(#lg-arr-green)"/>
+            <!-- human back to planner -->
+            <path d="M 615 205 Q 440 240 330 200" stroke="#ff8a5c" stroke-dasharray="4 3" marker-end="url(#lg-arr-green)"/>
+            <!-- finalize to end -->
+            <path d="M 745 295 Q 800 260 820 220" stroke="#ff5ca8" marker-end="url(#lg-arr-pink)"/>
+          </g>
+
+          <!-- edge labels -->
+          <g font-size="10" fill="#9aa6b2">
+            <text x="570" y="130">tool_call</text>
+            <text x="572" y="175">approval_needed</text>
+            <text x="555" y="240">done</text>
+          </g>
+
+          <text x="450" y="360" text-anchor="middle" fill="#9aa6b2" font-size="11" font-style="italic">Each node reads/writes shared state. Checkpoint after every node. Resumable, observable, typed.</text>
+        </g>
+      </svg>
+      <span class="diagram-caption">LangGraph: explicit nodes, typed edges, checkpointed state. The orchestrator pattern that won production in early 2026.</span>
+    </div>
+
+<pre><code class="language-python">from langgraph.graph import StateGraph, END
+from typing import TypedDict
+
+class State(TypedDict):
+    messages: list
+    plan: str | None
+    tool_result: str | None
+    approved: bool
+
+def planner(s: State) -&gt; State:
+    s["plan"] = llm.invoke(f"Plan: {s['messages']}")
+    return s
+
+def router(s: State) -&gt; str:
+    if "tool:" in s["plan"]:      return "tool"
+    if "needs_approval" in s["plan"]: return "human"
+    return "final"
+
+g = StateGraph(State)
+g.add_node("plan", planner).add_node("tool", run_tool).add_node("human", ask_human).add_node("final", finalize)
+g.add_edge("__start__", "plan")
+g.add_conditional_edges("plan", router, {"tool": "tool", "human": "human", "final": "final"})
+g.add_edge("tool", "plan"); g.add_edge("human", "plan"); g.add_edge("final", END)
+app = g.compile(checkpointer=SqliteSaver())</code></pre>
+
+    <h2 id="durable">14.3 Durable Execution — Temporal, Restate, DBOS</h2>
+    <p>LangGraph gives you checkpoints for LLM workflows. <strong>Durable execution</strong> frameworks give you a stronger guarantee for <em>any</em> long-running workflow, LLM or not:</p>
+    <ul>
+      <li>Every step's inputs and outputs are journalled.</li>
+      <li>If the process crashes mid-step, on restart the framework <em>replays the journal</em> until the crash point and resumes.</li>
+      <li>Non-deterministic operations (LLM calls, network requests) are only ever executed <em>once</em>; their recorded outputs are replayed on resumption.</li>
+    </ul>
+    <p>This is the abstraction that makes "the agent ran for two hours, something crashed, just keep going" actually safe.</p>
+    <ul>
+      <li><strong>Temporal.io</strong> — the mature option, cross-language, used at Uber/Stripe/Netflix scale.</li>
+      <li><strong>Restate</strong> — lighter-weight, Rust-based, focused on stateful services and AI agents.</li>
+      <li><strong>DBOS</strong> — Mike Stonebraker's take: durable execution as a database extension. Every step becomes a DB transaction.</li>
+      <li><strong>Inngest, Dagger, Hatchet</strong> — commercial alternatives, AI-agent-flavoured.</li>
+    </ul>
+
+<pre><code class="language-python"># Temporal-style workflow around an LLM agent
+@workflow.defn
+class ResearchAgent:
+    @workflow.run
+    async def run(self, topic: str) -&gt; str:
+        query = await workflow.execute_activity(plan_queries, topic, retry_policy=...)
+        # activities are non-deterministic; the LLM call is recorded
+        docs  = await workflow.execute_activity(search, query, retry_policy=...)
+        draft = await workflow.execute_activity(write_draft, docs, retry_policy=...)
+        # wait for human approval — durable timer, no resource held
+        approved = await workflow.wait_condition(lambda: self.approved, timeout=86400)
+        return await workflow.execute_activity(finalize, draft)</code></pre>
+
+    <h2 id="compound">14.4 Compound AI Systems (BAIR)</h2>
+    <p>Zaharia, Khattab et al. (Berkeley 2024) published a short manifesto making a clean argument: <em>most frontier capability in 2024–2026 comes from compound AI systems</em> — retrievers + rankers + models + verifiers wired together — <em>not</em> from monolithic "one big model" deployments.</p>
+    <p>Implication: performance improvements come from system-level redesign more than from model swaps. Practical consequence: engineering teams now own a topology, not a prompt.</p>
+
+    <h2 id="typed">14.5 Typed Workflows &amp; Agent SDKs</h2>
+    <ul>
+      <li><strong>Pydantic-AI</strong> — Python-first, typed agent framework; validates all I/O against Pydantic models.</li>
+      <li><strong>OpenAI Agents SDK</strong> — minimal, handoff-based, official OpenAI.</li>
+      <li><strong>Anthropic's skills</strong> (Vol II Ch 06) — a lighter "capability as markdown + optional scripts" convention.</li>
+      <li><strong>Microsoft AutoGen</strong> — conversational-agent-first; has pivoted toward typed workflows in 2025.</li>
+    </ul>
+
+    <h2 id="obs">14.6 Observability, Replay, Determinism</h2>
+    <p>A production agent's spans look nothing like a request trace. A single "chat" might fan out to tens of LLM calls, hundreds of tool calls, dozens of cache hits. Observability requirements:</p>
+    <ul>
+      <li>Correlation ID per top-level request; all sub-spans carry it.</li>
+      <li>Input + output tokens per span, for cost and latency attribution.</li>
+      <li>Replay — given the journal, re-run the workflow deterministically, substituting recorded LLM outputs.</li>
+      <li>Diff two runs (same input, two prompt versions) at the span level — this is the eval surface.</li>
+    </ul>
+    <p>Tools: Langfuse, Helicone, LangSmith, W&amp;B Weave, Arize Phoenix, OpenTelemetry. See Vol II Ch 11 for practitioner-level coverage.</p>
+
+    <h2 id="code">14.7 Reference — Mini State-Machine</h2>
+<pre><code class="language-python">"""~80-line LangGraph-lite: typed state, nodes, edges, checkpoints."""
+import json, sqlite3
+from typing import Callable, Any
+
+class Graph:
+    def __init__(self, state_schema: type):
+        self.nodes: dict[str, Callable] = {}
+        self.edges: dict[str, Callable] = {}   # node -&gt; (state) -&gt; next_node
+        self.schema = state_schema
+
+    def node(self, name: str, fn: Callable):  self.nodes[name] = fn;  return self
+    def edge(self, name: str, router: Callable):  self.edges[name] = router;  return self
+
+    def run(self, start: str, initial: dict, checkpoint: sqlite3.Connection, run_id: str) -&gt; dict:
+        s, cur = dict(initial), start
+        while cur != "END":
+            s = self.nodes[cur](s)                       # run node
+            checkpoint.execute("INSERT INTO runs VALUES (?, ?, ?)",
+                               (run_id, cur, json.dumps(s)))
+            checkpoint.commit()
+            cur = self.edges[cur](s)                     # route
+        return s
+
+    def resume(self, checkpoint, run_id, start_if_missing, initial):
+        row = checkpoint.execute("SELECT node, state FROM runs WHERE id=? "
+                                 "ORDER BY rowid DESC LIMIT 1", (run_id,)).fetchone()
+        if not row: return self.run(start_if_missing, initial, checkpoint, run_id)
+        node, s = row[0], json.loads(row[1])
+        return self.run(self.edges[node](s), s, checkpoint, run_id)</code></pre>
+
+    <div class="debate-grid">
+      <div class="debate-side pro">
+        <h5>Typed state machines are the answer</h5>
+        <p>Single-loop ReAct doesn't survive production. LangGraph + Temporal gives you retry, checkpoint, human-in-the-loop, and observability for free. Compound AI systems outperform single-model stacks. This is the enterprise default.</p>
+      </div>
+      <div class="debate-side con">
+        <h5>The abstraction tax is real</h5>
+        <p>State machines force you to name every edge up front; agents are most useful exactly when the next step is unknown. Compound systems add latency and debugging complexity. For many tasks, a smarter model + a plain ReAct loop is easier to reason about than 20 LangGraph nodes.</p>
+      </div>
+    </div>
+
+    <div class="open-questions">
+      <h4>❓ Open questions</h4>
+      <ul>
+        <li>Does a typed state machine + weaker model beat ReAct + stronger model at the same cost? (Often yes, but noisy.)</li>
+        <li>Is there a "standard library" of composable nodes emerging (retrieve, verify, route, finalise)?</li>
+        <li>How do we test a workflow that spans hours without running hours of real time?</li>
+      </ul>
+    </div>
+
+    <h2 id="resources">14.8 Further Reading</h2>
+    <details class="further">
+      <summary><span class="eli5-icon" style="background:rgba(251,191,36,0.14)">📚</span> Further learning — docs, videos, papers</summary>
+      <div class="further-body">
+        <ul>
+          <li><span class="kind docs">docs</span><a href="https://langchain-ai.github.io/langgraph/">LangGraph documentation</a></li>
+          <li><span class="kind blog">blog</span><a href="https://bair.berkeley.edu/blog/2024/02/18/compound-ai-systems/">Compound AI Systems (BAIR, 2024)</a></li>
+          <li><span class="kind docs">docs</span><a href="https://docs.temporal.io/">Temporal docs</a></li>
+          <li><span class="kind blog">blog</span><a href="https://restate.dev/blog/">Restate blog</a></li>
+          <li><span class="kind paper">paper</span><a href="https://arxiv.org/abs/2310.03314">DBOS — DB-oriented OS (Stonebraker et al. 2023)</a></li>
+          <li><span class="kind code">code</span><a href="https://github.com/openai/openai-agents-python">openai/openai-agents-python</a></li>
+          <li><span class="kind code">code</span><a href="https://github.com/pydantic/pydantic-ai">pydantic/pydantic-ai</a></li>
+          <li><span class="kind video">video</span><a href="https://www.youtube.com/@LangChain">LangChain — LangGraph deep dives</a></li>
+          <li><span class="kind talk">talk</span><a href="https://www.youtube.com/@MachineLearningStreetTalk">MLST — Matei Zaharia on compound AI systems</a></li>
+          <li><span class="kind blog">blog</span><a href="https://www.anthropic.com/research/building-effective-agents">Anthropic — Building Effective Agents</a> (workflow vs. agent distinction)</li>
+        </ul>
+      </div>
+    </details>
+
+    <nav class="pager">
+      <a class="pager-link" href="13-meta-prompting.html"><span class="pager-label">← Previous</span><span class="pager-title">Meta-Prompting</span></a>
+      <a class="pager-link pager-next" href="15-deterministic-gates.html"><span class="pager-label">Next →</span><span class="pager-title">Deterministic Gates</span></a>
+    </nav>
+
+  </div></main>
+</div>
+
+<button id="theme-toggle" class="theme-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="../assets/js/main.js"></script>
+<footer class="site-footer">
+  <p>Created by <strong>Duy Dao</strong><span class="sep">·</span><a href="https://github.com/xD4O" target="_blank" rel="noopener">GitHub @xD4O</a><span class="sep">·</span><a href="https://x.com/_cyr4x" target="_blank" rel="noopener">X @_cyr4x</a><span class="sep">·</span>AI Wiki · 2026</p>
+  <p class="star-cta">Found this useful? <a href="https://github.com/xD4O/AI-Wiki" target="_blank" rel="noopener">⭐ Star it on GitHub</a></p>
+</footer>
+</body></html>

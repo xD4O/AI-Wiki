@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 04 · Context Engineering — AI Wiki Vol II</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+
+<button id="sidebar-toggle" class="sidebar-toggle" aria-label="Toggle navigation">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+</button>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <svg class="brand-logo" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="brand-g2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#22d3ee"/><stop offset="1" stop-color="#7c5cff"/></linearGradient></defs>
+        <rect x="4" y="4" width="56" height="56" rx="14" fill="url(#brand-g2)"/>
+        <text x="32" y="42" text-anchor="middle" fill="white" font-size="28" font-family="sans-serif" font-weight="700">II</text>
+      </svg>
+      <div><p class="brand-title">AI Wiki · Vol II</p><p class="brand-sub">The Agentic Frontier</p></div>
+    </div>
+    <nav class="nav-section"><p class="nav-title">Getting Started</p><ul class="nav-list">
+      <li class="nav-item"><a href="../../index.html"><span class="nav-num">I</span> Vol I · Foundations</a></li>
+      <li class="nav-item"><a href="../index.html"><span class="nav-num">◆</span> Vol II · Agentic Frontier</a></li>
+      <li class="nav-item"><a href="../../AI-Wiki-III/index.html"><span class="nav-num">III</span> Vol III · Research Frontier</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part I · Using Models</p><ul class="nav-list">
+      <li class="nav-item"><a href="01-chatbot-to-agent.html"><span class="nav-num">01</span> Chatbot → Agent</a></li>
+      <li class="nav-item"><a href="02-ollama-lmstudio.html"><span class="nav-num">02</span> Local Models</a></li>
+      <li class="nav-item"><a href="03-prompting.html"><span class="nav-num">03</span> The Art of Prompting</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part II · Context &amp; Memory</p><ul class="nav-list">
+      <li class="nav-item"><a href="04-context-engineering.html"><span class="nav-num">04</span> Context Engineering</a></li>
+      <li class="nav-item"><a href="05-rag.html"><span class="nav-num">05</span> RAG</a></li>
+      <li class="nav-item"><a href="06-skills.html"><span class="nav-num">06</span> Skills</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part III · Agents</p><ul class="nav-list">
+      <li class="nav-item"><a href="07-mcp.html"><span class="nav-num">07</span> MCP Protocol</a></li>
+      <li class="nav-item"><a href="08-agent-architectures.html"><span class="nav-num">08</span> Agent Architectures</a></li>
+      <li class="nav-item"><a href="09-multi-agent.html"><span class="nav-num">09</span> Multi-Agent</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part IV · Production</p><ul class="nav-list">
+      <li class="nav-item"><a href="10-interpretability.html"><span class="nav-num">10</span> Interpretability</a></li>
+      <li class="nav-item"><a href="11-evals-safety-ops.html"><span class="nav-num">11</span> Evals &amp; Ops</a></li>
+      <li class="nav-item"><a href="12-frontier-capstone.html"><span class="nav-num">12</span> Frontier &amp; Capstone</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Appendix</p><ul class="nav-list">
+      <li class="nav-item"><a href="../resources.html"><span class="nav-num">§</span> Resources</a></li>
+      <li class="nav-item"><a href="../vocabulary.html"><span class="nav-num">A</span> Vocabulary</a></li>
+      <li class="nav-item"><a href="../use-cases.html"><span class="nav-num">★</span> Use Cases 2026</a></li>
+    </ul></nav>
+  </aside>
+
+  <main class="main"><div class="content">
+
+    <header class="chapter-header">
+      <div class="chapter-meta">
+        <span class="chapter-num">CHAPTER 04</span>
+        <span class="pill pill-cyan">Part II · Context &amp; Memory</span>
+      </div>
+      <h1>Context Engineering</h1>
+      <p class="chapter-lede">Treat the context window as a resource to be engineered, not dumped into. Token economy, caching, lost-in-the-middle, and compaction.</p>
+    </header>
+
+    <div class="toc">
+      <h4>In this chapter</h4>
+      <ul>
+        <li><a href="#vs">4.1 Context ≠ Memory</a></li>
+        <li><a href="#econ">4.2 The Token Economy</a></li>
+        <li><a href="#place">4.3 Placement Matters — Lost in the Middle</a></li>
+        <li><a href="#compact">4.4 Compaction &amp; Rolling Summaries</a></li>
+        <li><a href="#cache">4.5 Prompt Caching</a></li>
+        <li><a href="#sys">4.6 System Prompt as Contract</a></li>
+        <li><a href="#pollution">4.7 Context Pollution &amp; the First-Class Citizen Principle</a></li>
+        <li><a href="#code">4.8 Code — Cache-Aware Conversation Manager</a></li>
+        <li><a href="#resources">4.9 Further Reading</a></li>
+      </ul>
+    </div>
+
+    <h2 id="vs">4.1 Context ≠ Memory</h2>
+    <p>Transformers don't have "memory" in the human sense. Every forward pass re-reads the entire context window from scratch. What the model "remembers" at turn 30 is simply whatever is still in the context at turn 30. Drop something from the context and it's gone.</p>
+    <p>This has two implications:</p>
+    <ul>
+      <li>Whatever you want the model to know at decision time, it must be in the window at decision time.</li>
+      <li>The context window is the <em>only</em> working memory. External stores (vector DBs, scratchpads) become useful only when you retrieve from them <em>into</em> the window.</li>
+    </ul>
+
+    <h2 id="econ">4.2 The Token Economy</h2>
+    <p>Context has three costs:</p>
+    <ul>
+      <li><strong>Dollars.</strong> Input tokens are cheaper than output, but a 100K-token prompt × 10K agent steps is no longer cheap.</li>
+      <li><strong>Latency.</strong> Prefill scales roughly linearly with prompt length on most accelerators. A 200K prompt adds real wall-clock time.</li>
+      <li><strong>Quality.</strong> Even when the context <em>fits</em>, attention gets diluted at large lengths. More is not always better.</li>
+    </ul>
+
+    <div class="diagram">
+      <svg viewBox="0 0 900 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Token budget bands">
+        <g font-family="sans-serif">
+          <text x="450" y="30" text-anchor="middle" fill="#e6edf3" font-size="14" font-weight="700">Typical context layout for an agent run</text>
+          <!-- bar -->
+          <g transform="translate(60 70)">
+            <rect x="0" y="0" width="80" height="40" fill="rgba(124,92,255,0.35)" stroke="#7c5cff"/>
+            <rect x="80" y="0" width="120" height="40" fill="rgba(34,211,238,0.35)" stroke="#22d3ee"/>
+            <rect x="200" y="0" width="200" height="40" fill="rgba(52,211,153,0.35)" stroke="#34d399"/>
+            <rect x="400" y="0" width="240" height="40" fill="rgba(251,191,36,0.35)" stroke="#fbbf24"/>
+            <rect x="640" y="0" width="140" height="40" fill="rgba(255,92,168,0.35)" stroke="#ff5ca8"/>
+            <!-- labels -->
+            <g font-size="11" fill="#e6edf3" text-anchor="middle">
+              <text x="40" y="-8">system</text>
+              <text x="140" y="-8">tools</text>
+              <text x="300" y="-8">memory / RAG</text>
+              <text x="520" y="-8">conversation</text>
+              <text x="710" y="-8">current turn</text>
+            </g>
+            <g font-size="10" fill="#9aa6b2" text-anchor="middle">
+              <text x="40" y="58">~2k</text>
+              <text x="140" y="58">~3k</text>
+              <text x="300" y="58">~8k</text>
+              <text x="520" y="58">~20k</text>
+              <text x="710" y="58">~4k</text>
+            </g>
+          </g>
+          <text x="450" y="180" text-anchor="middle" fill="#9aa6b2" font-size="12">The first ~10k tokens (purple+cyan+most green) are stable — perfect for prompt caching.</text>
+          <text x="450" y="200" text-anchor="middle" fill="#9aa6b2" font-size="12">The right edge changes every turn — keep it lean, drop stale scratchpad items.</text>
+          <text x="450" y="235" text-anchor="middle" fill="#7c5cff" font-size="12" font-weight="600">Rule: stable prefix, dynamic suffix.</text>
+        </g>
+      </svg>
+      <span class="diagram-caption">A typical agent-run context. Cache the left side, evolve the right side.</span>
+    </div>
+
+    <h2 id="place">4.3 Placement Matters — Lost in the Middle</h2>
+    <p>Liu et al. (2023) showed that LLMs attend more to the <em>beginning</em> and <em>end</em> of long contexts than the middle. Frontier 2026 models are better at this than 2023 models, but the effect still shows up at 128K+.</p>
+
+    <div class="diagram">
+      <svg viewBox="0 0 900 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Lost in the middle">
+        <g font-family="sans-serif">
+          <!-- axes -->
+          <line x1="80" y1="190" x2="830" y2="190" stroke="#6b7687"/>
+          <line x1="80" y1="40" x2="80" y2="190" stroke="#6b7687"/>
+          <text x="455" y="220" text-anchor="middle" fill="#9aa6b2" font-size="12">position of relevant info in context (start → end)</text>
+          <text x="30" y="115" text-anchor="middle" fill="#9aa6b2" font-size="12" transform="rotate(-90 30 115)">retrieval accuracy</text>
+          <!-- curve: U-shape -->
+          <path d="M 80 60 C 200 60 300 180 455 180 C 610 180 710 60 830 60" fill="none" stroke="#7c5cff" stroke-width="3"/>
+          <!-- markers -->
+          <g fill="#e6edf3" font-size="11">
+            <circle cx="80" cy="60" r="4" fill="#34d399"/><text x="90" y="55">start (high)</text>
+            <circle cx="455" cy="180" r="4" fill="#ff5ca8"/><text x="420" y="200" fill="#ff5ca8">middle (low)</text>
+            <circle cx="830" cy="60" r="4" fill="#34d399"/><text x="740" y="55">end (high)</text>
+          </g>
+        </g>
+      </svg>
+      <span class="diagram-caption">The U-shape: put critical info at the start or end; never only in the middle.</span>
+    </div>
+
+    <h2 id="compact">4.4 Compaction &amp; Rolling Summaries</h2>
+    <p>When a conversation outgrows the window, you have three options:</p>
+    <ol>
+      <li><strong>Truncate.</strong> Drop the oldest turns. Fastest, loses information.</li>
+      <li><strong>Summarize.</strong> Replace the oldest N turns with a model-generated recap. Preserves gist, loses verbatim.</li>
+      <li><strong>Retrieve.</strong> Store everything externally; at each turn, pull only the relevant slices back in (Ch 05).</li>
+    </ol>
+
+<pre><code class="language-python"># Rolling-summary conversation manager (minimal)
+class RollingConvo:
+    def __init__(self, client, model, budget_tokens=30_000):
+        self.client, self.model, self.budget = client, model, budget_tokens
+        self.summary = ""          # living recap of old turns
+        self.recent = []           # last N turns verbatim
+
+    def turn(self, user_msg):
+        self.recent.append({"role": "user", "content": user_msg})
+        messages = ([{"role": "system", "content": f"Conversation so far:\n{self.summary}"}]
+                    if self.summary else []) + self.recent
+        r = self.client.chat(model=self.model, messages=messages)
+        self.recent.append({"role": "assistant", "content": r})
+        if self._tokens(messages) > self.budget:
+            self._compact()
+        return r
+
+    def _compact(self):
+        # summarise everything except the last 4 turns
+        old = self.recent[:-4]
+        self.summary = self.client.chat(model=self.model, messages=[
+            {"role": "system", "content": "Summarise the conversation. Keep decisions, facts, and open questions."},
+            *old,
+        ])
+        self.recent = self.recent[-4:]</code></pre>
+
+    <h2 id="cache">4.5 Prompt Caching</h2>
+    <p>Anthropic and OpenAI both support <strong>prompt caching</strong>: a stable prefix (system prompt, tool specs, static docs) is hashed; subsequent calls with the same prefix read it from cache at ~10% of the token price and with far lower latency.</p>
+
+    <table>
+      <thead><tr><th>Provider</th><th>API</th><th>Minimum cached size</th><th>TTL</th></tr></thead>
+      <tbody>
+        <tr><td>Anthropic</td><td><code>cache_control</code> in system / message blocks</td><td>1024 tokens (Opus/Sonnet), 2048 (Haiku)</td><td>5 min default, 1 hour option</td></tr>
+        <tr><td>OpenAI</td><td>Automatic on repeated prefixes</td><td>1024 tokens</td><td>5–10 min</td></tr>
+        <tr><td>Gemini</td><td>Explicit <code>CachedContent</code></td><td>32 768 tokens</td><td>1 hour (configurable)</td></tr>
+      </tbody>
+    </table>
+
+<pre><code class="language-python"># Anthropic-style cache breakpoints
+msg = client.messages.create(
+    model="claude-opus-4-7",
+    system=[
+        {"type": "text", "text": LARGE_STATIC_RUBRIC, "cache_control": {"type": "ephemeral"}},
+    ],
+    messages=[{"role": "user", "content": user_query}],  # the dynamic part
+)</code></pre>
+
+    <div class="callout tip">
+      <svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/></svg>
+      <div class="callout-body">
+        <div class="callout-title">Structure prompts for cache hits</div>
+        <p>Order your context: <em>most-stable → least-stable</em>. Static system prompt first, then static docs, then memory, then the fresh user message last. Anything that changes invalidates everything after it.</p>
+      </div>
+    </div>
+
+    <h2 id="sys">4.6 System Prompt as Contract</h2>
+    <p>The system prompt is where you encode <em>behavior that must hold for every turn</em>: role, format, safety rails, tool usage policy. It is not where you put the user's current task.</p>
+
+    <h2 id="pollution">4.7 Context Pollution &amp; the First-Class Citizen Principle</h2>
+    <p>Anthropic engineers have written about the "first-class citizen" principle for agents: at each step, the model should see only what's relevant <em>to that step</em>. Everything else is <strong>pollution</strong> — it dilutes attention and costs tokens.</p>
+
+    <ul>
+      <li>Drop old tool outputs that are no longer referenced.</li>
+      <li>Summarize subtask transcripts when returning to the main loop.</li>
+      <li>Don't carry the entire README into every coding edit — retrieve just the relevant file.</li>
+    </ul>
+
+    <h2 id="code">4.8 Code — Cache-Aware Layout</h2>
+<pre><code class="language-python">def build_prompt(user_query, retrieved_docs):
+    # 1. stable system (cached)
+    system = [{
+        "type": "text",
+        "text": STATIC_SYSTEM_PROMPT + TOOL_DEFINITIONS,
+        "cache_control": {"type": "ephemeral"},
+    }]
+    # 2. semi-stable retrieved docs (cached if same doc set repeats)
+    system.append({
+        "type": "text",
+        "text": format_docs(retrieved_docs),
+        "cache_control": {"type": "ephemeral"},
+    })
+    # 3. fully dynamic user turn (never cached)
+    return dict(system=system, messages=[{"role": "user", "content": user_query}])</code></pre>
+
+    <h2 id="resources">4.9 Further Reading</h2>
+    <ul>
+      <li><strong>Anthropic — Effective context engineering for AI agents</strong>: <a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents">anthropic.com/engineering/effective-context-engineering-for-ai-agents</a></li>
+      <li><strong>Anthropic prompt caching docs</strong>: <a href="https://platform.claude.com/docs/en/build-with-claude/prompt-caching">platform.claude.com/docs</a></li>
+      <li><strong>Lost in the Middle (Liu et al.)</strong>: <a href="https://arxiv.org/abs/2307.03172">arXiv:2307.03172</a></li>
+      <li><strong>Anthropic — Contextual Retrieval</strong>: <a href="https://www.anthropic.com/news/contextual-retrieval">anthropic.com/news/contextual-retrieval</a></li>
+      <li><strong>OpenAI prompt caching</strong>: <a href="https://platform.openai.com/docs/guides/prompt-caching">platform.openai.com</a></li>
+      <li><strong>NVIDIA RULER</strong> long-context benchmark: <a href="https://github.com/NVIDIA/RULER">github.com/NVIDIA/RULER</a></li>
+      <li><strong>LongBench</strong>: <a href="https://github.com/THUDM/LongBench">github.com/THUDM/LongBench</a></li>
+      <li><strong>Greg Kamradt's NIAH test</strong>: <a href="https://github.com/gkamradt/LLMTest_NeedleInAHaystack">github.com/gkamradt</a></li>
+    </ul>
+
+    <nav class="pager">
+      <a class="pager-link" href="03-prompting.html"><span class="pager-label">← Previous</span><span class="pager-title">The Art of Prompting</span></a>
+      <a class="pager-link pager-next" href="05-rag.html"><span class="pager-label">Next →</span><span class="pager-title">Retrieval-Augmented Generation</span></a>
+    </nav>
+
+  </div></main>
+</div>
+
+<button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="../assets/js/main.js"></script>
+<footer class="site-footer">
+  <p>Created by <strong>Duy Dao</strong><span class="sep">·</span><a href="https://github.com/xD4O" target="_blank" rel="noopener">GitHub @xD4O</a><span class="sep">·</span><a href="https://x.com/_cyr4x" target="_blank" rel="noopener">X @_cyr4x</a><span class="sep">·</span>AI Wiki · 2026</p>
+  <p class="star-cta">Found this useful? <a href="https://github.com/xD4O/AI-Wiki" target="_blank" rel="noopener">⭐ Star it on GitHub</a></p>
+</footer>
+</body>
+</html>

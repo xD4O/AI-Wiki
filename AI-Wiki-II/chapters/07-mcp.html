@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 07 · MCP — the Model Context Protocol — AI Wiki Vol II</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+
+<button id="sidebar-toggle" class="sidebar-toggle" aria-label="Toggle navigation">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+</button>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <svg class="brand-logo" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="brand-g2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#22d3ee"/><stop offset="1" stop-color="#7c5cff"/></linearGradient></defs>
+        <rect x="4" y="4" width="56" height="56" rx="14" fill="url(#brand-g2)"/>
+        <text x="32" y="42" text-anchor="middle" fill="white" font-size="28" font-family="sans-serif" font-weight="700">II</text>
+      </svg>
+      <div><p class="brand-title">AI Wiki · Vol II</p><p class="brand-sub">The Agentic Frontier</p></div>
+    </div>
+    <nav class="nav-section"><p class="nav-title">Getting Started</p><ul class="nav-list">
+      <li class="nav-item"><a href="../../index.html"><span class="nav-num">I</span> Vol I · Foundations</a></li>
+      <li class="nav-item"><a href="../index.html"><span class="nav-num">◆</span> Vol II · Agentic Frontier</a></li>
+      <li class="nav-item"><a href="../../AI-Wiki-III/index.html"><span class="nav-num">III</span> Vol III · Research Frontier</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part I · Using Models</p><ul class="nav-list">
+      <li class="nav-item"><a href="01-chatbot-to-agent.html"><span class="nav-num">01</span> Chatbot → Agent</a></li>
+      <li class="nav-item"><a href="02-ollama-lmstudio.html"><span class="nav-num">02</span> Local Models</a></li>
+      <li class="nav-item"><a href="03-prompting.html"><span class="nav-num">03</span> The Art of Prompting</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part II · Context &amp; Memory</p><ul class="nav-list">
+      <li class="nav-item"><a href="04-context-engineering.html"><span class="nav-num">04</span> Context Engineering</a></li>
+      <li class="nav-item"><a href="05-rag.html"><span class="nav-num">05</span> RAG</a></li>
+      <li class="nav-item"><a href="06-skills.html"><span class="nav-num">06</span> Skills</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part III · Agents</p><ul class="nav-list">
+      <li class="nav-item"><a href="07-mcp.html"><span class="nav-num">07</span> MCP Protocol</a></li>
+      <li class="nav-item"><a href="08-agent-architectures.html"><span class="nav-num">08</span> Agent Architectures</a></li>
+      <li class="nav-item"><a href="09-multi-agent.html"><span class="nav-num">09</span> Multi-Agent</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part IV · Production</p><ul class="nav-list">
+      <li class="nav-item"><a href="10-interpretability.html"><span class="nav-num">10</span> Interpretability</a></li>
+      <li class="nav-item"><a href="11-evals-safety-ops.html"><span class="nav-num">11</span> Evals &amp; Ops</a></li>
+      <li class="nav-item"><a href="12-frontier-capstone.html"><span class="nav-num">12</span> Frontier &amp; Capstone</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Appendix</p><ul class="nav-list">
+      <li class="nav-item"><a href="../resources.html"><span class="nav-num">§</span> Resources</a></li>
+      <li class="nav-item"><a href="../vocabulary.html"><span class="nav-num">A</span> Vocabulary</a></li>
+      <li class="nav-item"><a href="../use-cases.html"><span class="nav-num">★</span> Use Cases 2026</a></li>
+    </ul></nav>
+  </aside>
+
+  <main class="main"><div class="content">
+
+    <header class="chapter-header">
+      <div class="chapter-meta">
+        <span class="chapter-num">CHAPTER 07</span>
+        <span class="pill pill-warm">Part III · Agents</span>
+      </div>
+      <h1>MCP — the Model Context Protocol</h1>
+      <p class="chapter-lede">The open standard for plugging tools and data into any model, portably. JSON-RPC over stdio / SSE / HTTP. Three primitives: tools, resources, prompts.</p>
+    </header>
+
+    <div class="toc">
+      <h4>In this chapter</h4>
+      <ul>
+        <li><a href="#why">7.1 Why MCP Exists</a></li>
+        <li><a href="#protocol">7.2 The Protocol — JSON-RPC &amp; Three Primitives</a></li>
+        <li><a href="#roles">7.3 Servers, Clients, Hosts</a></li>
+        <li><a href="#security">7.4 Security Model &amp; the Confused Deputy</a></li>
+        <li><a href="#servers">7.5 Popular Servers</a></li>
+        <li><a href="#own">7.6 Build Your Own Server</a></li>
+        <li><a href="#client">7.7 Build Your Own Client</a></li>
+        <li><a href="#debug">7.8 Debugging with MCP Inspector</a></li>
+        <li><a href="#roadmap">7.9 Where MCP Is Going (2026)</a></li>
+        <li><a href="#resources">7.10 Further Reading</a></li>
+      </ul>
+    </div>
+
+    <h2 id="why">7.1 Why MCP Exists</h2>
+    <p>Before MCP, every model host (Claude Desktop, Cursor, Zed, Open WebUI) invented its own plugin system, and every integration vendor (GitHub, Notion, Postgres) had to ship N different wrappers. M hosts × N integrations = N·M work. MCP collapses that to M + N: each host implements the MCP client once, each integration publishes an MCP server once.</p>
+
+    <div class="diagram">
+      <svg viewBox="0 0 900 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="M×N vs. MCP">
+        <g font-family="sans-serif">
+          <!-- Without MCP -->
+          <text x="225" y="30" text-anchor="middle" fill="#ff5ca8" font-size="14" font-weight="700">Before MCP: M × N</text>
+          <g>
+            <circle cx="80" cy="80" r="18" fill="rgba(255,92,168,0.15)" stroke="#ff5ca8"/><text x="80" y="85" text-anchor="middle" fill="#e6edf3" font-size="10">Claude</text>
+            <circle cx="80" cy="150" r="18" fill="rgba(255,92,168,0.15)" stroke="#ff5ca8"/><text x="80" y="155" text-anchor="middle" fill="#e6edf3" font-size="10">Cursor</text>
+            <circle cx="80" cy="220" r="18" fill="rgba(255,92,168,0.15)" stroke="#ff5ca8"/><text x="80" y="225" text-anchor="middle" fill="#e6edf3" font-size="10">Zed</text>
+
+            <circle cx="370" cy="80" r="18" fill="rgba(34,211,238,0.15)" stroke="#22d3ee"/><text x="370" y="85" text-anchor="middle" fill="#e6edf3" font-size="10">GitHub</text>
+            <circle cx="370" cy="150" r="18" fill="rgba(34,211,238,0.15)" stroke="#22d3ee"/><text x="370" y="155" text-anchor="middle" fill="#e6edf3" font-size="10">Slack</text>
+            <circle cx="370" cy="220" r="18" fill="rgba(34,211,238,0.15)" stroke="#22d3ee"/><text x="370" y="225" text-anchor="middle" fill="#e6edf3" font-size="10">Postgres</text>
+
+            <g stroke="#9aa6b2" stroke-width="0.6" opacity="0.6">
+              <line x1="98" y1="80" x2="352" y2="80"/><line x1="98" y1="80" x2="352" y2="150"/><line x1="98" y1="80" x2="352" y2="220"/>
+              <line x1="98" y1="150" x2="352" y2="80"/><line x1="98" y1="150" x2="352" y2="150"/><line x1="98" y1="150" x2="352" y2="220"/>
+              <line x1="98" y1="220" x2="352" y2="80"/><line x1="98" y1="220" x2="352" y2="150"/><line x1="98" y1="220" x2="352" y2="220"/>
+            </g>
+          </g>
+
+          <!-- With MCP -->
+          <text x="705" y="30" text-anchor="middle" fill="#34d399" font-size="14" font-weight="700">With MCP: M + N</text>
+          <g>
+            <circle cx="560" cy="80" r="18" fill="rgba(255,92,168,0.15)" stroke="#ff5ca8"/><text x="560" y="85" text-anchor="middle" fill="#e6edf3" font-size="10">Claude</text>
+            <circle cx="560" cy="150" r="18" fill="rgba(255,92,168,0.15)" stroke="#ff5ca8"/><text x="560" y="155" text-anchor="middle" fill="#e6edf3" font-size="10">Cursor</text>
+            <circle cx="560" cy="220" r="18" fill="rgba(255,92,168,0.15)" stroke="#ff5ca8"/><text x="560" y="225" text-anchor="middle" fill="#e6edf3" font-size="10">Zed</text>
+
+            <rect x="680" y="130" width="80" height="40" rx="8" fill="rgba(124,92,255,0.2)" stroke="#7c5cff" stroke-width="2"/>
+            <text x="720" y="155" text-anchor="middle" fill="#7c5cff" font-size="11" font-weight="700">MCP</text>
+
+            <circle cx="850" cy="80" r="18" fill="rgba(34,211,238,0.15)" stroke="#22d3ee"/><text x="850" y="85" text-anchor="middle" fill="#e6edf3" font-size="10">GitHub</text>
+            <circle cx="850" cy="150" r="18" fill="rgba(34,211,238,0.15)" stroke="#22d3ee"/><text x="850" y="155" text-anchor="middle" fill="#e6edf3" font-size="10">Slack</text>
+            <circle cx="850" cy="220" r="18" fill="rgba(34,211,238,0.15)" stroke="#22d3ee"/><text x="850" y="225" text-anchor="middle" fill="#e6edf3" font-size="10">Postgres</text>
+
+            <g stroke="#34d399" stroke-width="1.2">
+              <line x1="578" y1="80" x2="680" y2="150"/><line x1="578" y1="150" x2="680" y2="150"/><line x1="578" y1="220" x2="680" y2="150"/>
+              <line x1="760" y1="150" x2="832" y2="80"/><line x1="760" y1="150" x2="832" y2="150"/><line x1="760" y1="150" x2="832" y2="220"/>
+            </g>
+          </g>
+          <text x="450" y="280" text-anchor="middle" fill="#9aa6b2" font-size="12">Adding one host or one integration costs O(1) after MCP, not O(M) or O(N).</text>
+        </g>
+      </svg>
+      <span class="diagram-caption">MCP is the "USB-C for AI integrations."</span>
+    </div>
+
+    <h2 id="protocol">7.2 The Protocol — JSON-RPC &amp; Three Primitives</h2>
+    <p>MCP is JSON-RPC 2.0 over one of three transports:</p>
+    <ul>
+      <li><strong>stdio</strong> — the client spawns the server as a subprocess. Simplest. Default for local tools.</li>
+      <li><strong>Streamable HTTP</strong> — remote servers. Supports streaming and sessions.</li>
+      <li><strong>SSE</strong> — legacy, gradually being retired in favour of Streamable HTTP.</li>
+    </ul>
+
+    <p>A server exposes three primitives:</p>
+    <table>
+      <thead><tr><th>Primitive</th><th>Purpose</th><th>Analogous to…</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Tools</strong></td><td>Side-effecting actions the model can call</td><td>Function calls</td></tr>
+        <tr><td><strong>Resources</strong></td><td>Read-only data the host can surface or the model can request</td><td>URIs / files</td></tr>
+        <tr><td><strong>Prompts</strong></td><td>Reusable parameterized prompt templates</td><td>Slash commands</td></tr>
+      </tbody>
+    </table>
+
+    <h3>A wire-level example</h3>
+<pre><code class="language-json">// client → server (over stdio)
+{"jsonrpc": "2.0", "id": 1, "method": "initialize",
+ "params": {"protocolVersion": "2025-11-25", "capabilities": {}}}
+
+// server → client
+{"jsonrpc": "2.0", "id": 1, "result": {
+   "protocolVersion": "2025-11-25",
+   "serverInfo": {"name": "fs-server", "version": "1.0"},
+   "capabilities": {"tools": {}, "resources": {}}}}
+
+// client asks what tools exist
+{"jsonrpc": "2.0", "id": 2, "method": "tools/list"}
+
+// server returns
+{"jsonrpc": "2.0", "id": 2, "result": {"tools": [
+  {"name": "read_file", "description": "Read a file",
+   "inputSchema": {"type": "object", "properties": {"path": {"type": "string"}}}}
+]}}
+
+// model emits a tool_use; client forwards
+{"jsonrpc": "2.0", "id": 3, "method": "tools/call",
+ "params": {"name": "read_file", "arguments": {"path": "README.md"}}}
+
+// server returns the content
+{"jsonrpc": "2.0", "id": 3, "result": {"content": [{"type": "text", "text": "# My project..."}]}}</code></pre>
+
+    <h2 id="roles">7.3 Servers, Clients, Hosts</h2>
+    <ul>
+      <li><strong>Host</strong> — the user-facing app (Claude Desktop, Claude Code, Cursor). Manages user consent and the LLM call.</li>
+      <li><strong>Client</strong> — a thin connector inside the host that speaks MCP. One per server.</li>
+      <li><strong>Server</strong> — the thing providing tools/resources/prompts. Usually a small Python or Node process.</li>
+    </ul>
+
+    <h2 id="security">7.4 Security Model &amp; the Confused Deputy</h2>
+    <div class="callout danger">
+      <svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.7L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.7a2 2 0 00-3.4 0z"/></svg>
+      <div class="callout-body">
+        <div class="callout-title">The confused deputy</div>
+        <p>If your MCP server has broad access (e.g., your whole filesystem, your DB) and the host forwards every model-requested tool call without checks, <em>prompt injection</em> in any retrieved document becomes a privilege-escalation vector. The host MUST mediate — that's the 2025-11-25 spec's core safety claim.</p>
+      </div>
+    </div>
+
+    <p>Recommendations:</p>
+    <ul>
+      <li>Run sensitive servers (DB, shell) with the <em>least-privilege</em> credentials they need.</li>
+      <li>Prompt the user for consent on the first invocation of a dangerous tool.</li>
+      <li>For remote servers: use the OAuth 2.1 + PKCE flow defined in the spec.</li>
+      <li>Keep allow-lists of domains the model can actually hit with <code>fetch</code>-style tools.</li>
+    </ul>
+
+    <h2 id="servers">7.5 Popular Servers</h2>
+    <ul>
+      <li><strong>filesystem</strong> — scoped read/write/glob.</li>
+      <li><strong>github</strong> — issues, PRs, code search.</li>
+      <li><strong>postgres</strong> — schema introspection + parameterized SQL.</li>
+      <li><strong>slack</strong>, <strong>linear</strong>, <strong>notion</strong>, <strong>google-drive</strong>.</li>
+      <li><strong>playwright</strong> — browser automation, screenshots, DOM inspection.</li>
+      <li><strong>sqlite</strong>, <strong>memory</strong> (key-value), <strong>sequentialthinking</strong> (scratchpad).</li>
+    </ul>
+    <p>The community has curated lists at <a href="https://github.com/punkpeye/awesome-mcp-servers">punkpeye/awesome-mcp-servers</a> and <a href="https://github.com/wong2/awesome-mcp-servers">wong2/awesome-mcp-servers</a>.</p>
+
+    <h2 id="own">7.6 Build Your Own Server (Python)</h2>
+<pre><code class="language-python">from mcp.server.fastmcp import FastMCP
+
+mcp = FastMCP("weather")
+
+@mcp.tool()
+def get_forecast(city: str) -&gt; str:
+    """Return a short weather forecast for the given city."""
+    return f"Forecast for {city}: sunny, 22°C."
+
+@mcp.resource("weather://{city}/history")
+def history(city: str) -&gt; str:
+    """Last 7 days of weather."""
+    return f"History for {city}: ..."
+
+if __name__ == "__main__":
+    mcp.run()  # speaks stdio by default</code></pre>
+
+    <p>Register it with Claude Code by dropping this into <code>~/.claude.json</code>:</p>
+<pre><code class="language-json">{
+  "mcpServers": {
+    "weather": {"command": "python", "args": ["./weather_server.py"]}
+  }
+}</code></pre>
+
+    <h2 id="client">7.7 Build Your Own Client</h2>
+<pre><code class="language-python">from mcp import ClientSession, stdio_client
+import asyncio
+
+async def main():
+    async with stdio_client(command="python", args=["./weather_server.py"]) as (r, w):
+        async with ClientSession(r, w) as session:
+            await session.initialize()
+            tools = await session.list_tools()
+            print([t.name for t in tools.tools])
+            result = await session.call_tool("get_forecast", {"city": "Paris"})
+            print(result.content[0].text)
+
+asyncio.run(main())</code></pre>
+
+    <h2 id="debug">7.8 Debugging with MCP Inspector</h2>
+<pre><code class="language-bash"># Inspector spawns your server and gives you a UI to exercise each primitive
+npx @modelcontextprotocol/inspector python ./weather_server.py</code></pre>
+    <p>The inspector shows capability negotiation, lists tools/resources, lets you call them with arbitrary JSON, and surfaces schema validation errors — use it before you ever hook a server into a real model.</p>
+
+    <h2 id="roadmap">7.9 Where MCP Is Going (2026)</h2>
+    <p>Governance moved to the <strong>Agentic AI Foundation</strong> in 2025 and is now managed via open Working Groups. The 2026 roadmap emphasizes:</p>
+    <ul>
+      <li><strong>Transport scalability.</strong> Streamable HTTP is the new default; long-running SSE is being retired.</li>
+      <li><strong>Enterprise auth.</strong> SSO, audit logs, signed manifests, gateway patterns.</li>
+      <li><strong>Agent-to-agent communication.</strong> A formalized way for one MCP-aware agent to expose capabilities to another.</li>
+      <li><strong>Registry.</strong> A canonical way to discover, version, and trust servers.</li>
+    </ul>
+
+    <h2 id="resources">7.10 Further Reading</h2>
+    <ul>
+      <li><strong>modelcontextprotocol.io</strong> — <a href="https://modelcontextprotocol.io/">the home page</a></li>
+      <li><strong>MCP specification 2025-11-25</strong> — <a href="https://modelcontextprotocol.io/specification/2025-11-25">specification</a></li>
+      <li><strong>MCP 2026 roadmap</strong> — <a href="https://blog.modelcontextprotocol.io/posts/2026-mcp-roadmap/">blog.modelcontextprotocol.io</a></li>
+      <li><strong>Spec repo</strong>: <a href="https://github.com/modelcontextprotocol/modelcontextprotocol">github.com/modelcontextprotocol/modelcontextprotocol</a></li>
+      <li><strong>Reference servers</strong>: <a href="https://github.com/modelcontextprotocol/servers">github.com/modelcontextprotocol/servers</a></li>
+      <li><strong>MCP Inspector</strong> — <a href="https://modelcontextprotocol.io/legacy/tools/inspector">docs</a></li>
+      <li><strong>Anthropic — Code execution with MCP</strong>: <a href="https://www.anthropic.com/engineering/code-execution-with-mcp">anthropic.com/engineering</a></li>
+      <li><strong>Hugging Face MCP course</strong>: <a href="https://huggingface.co/learn/mcp-course">huggingface.co/learn/mcp-course</a></li>
+    </ul>
+
+    <h3>Awesome lists &amp; people</h3>
+    <ul>
+      <li><a href="https://github.com/punkpeye/awesome-mcp-servers">punkpeye/awesome-mcp-servers</a></li>
+      <li><a href="https://github.com/wong2/awesome-mcp-servers">wong2/awesome-mcp-servers</a></li>
+      <li><strong>Den Delimarsky</strong> (MCP Lead Maintainer) — <a href="https://twitter.com/localden">@localden</a></li>
+    </ul>
+
+    <nav class="pager">
+      <a class="pager-link" href="06-skills.html"><span class="pager-label">← Previous</span><span class="pager-title">Skills &amp; Reusable Prompts</span></a>
+      <a class="pager-link pager-next" href="08-agent-architectures.html"><span class="pager-label">Next →</span><span class="pager-title">Agent Architectures</span></a>
+    </nav>
+
+  </div></main>
+</div>
+
+<button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="../assets/js/main.js"></script>
+<footer class="site-footer">
+  <p>Created by <strong>Duy Dao</strong><span class="sep">·</span><a href="https://github.com/xD4O" target="_blank" rel="noopener">GitHub @xD4O</a><span class="sep">·</span><a href="https://x.com/_cyr4x" target="_blank" rel="noopener">X @_cyr4x</a><span class="sep">·</span>AI Wiki · 2026</p>
+  <p class="star-cta">Found this useful? <a href="https://github.com/xD4O/AI-Wiki" target="_blank" rel="noopener">⭐ Star it on GitHub</a></p>
+</footer>
+</body>
+</html>

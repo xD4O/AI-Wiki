@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 11 · Evaluation, Safety &amp; Observability — AI Wiki Vol II</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+
+<button id="sidebar-toggle" class="sidebar-toggle" aria-label="Toggle navigation">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+</button>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <svg class="brand-logo" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="brand-g2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#22d3ee"/><stop offset="1" stop-color="#7c5cff"/></linearGradient></defs>
+        <rect x="4" y="4" width="56" height="56" rx="14" fill="url(#brand-g2)"/>
+        <text x="32" y="42" text-anchor="middle" fill="white" font-size="28" font-family="sans-serif" font-weight="700">II</text>
+      </svg>
+      <div><p class="brand-title">AI Wiki · Vol II</p><p class="brand-sub">The Agentic Frontier</p></div>
+    </div>
+    <nav class="nav-section"><p class="nav-title">Getting Started</p><ul class="nav-list">
+      <li class="nav-item"><a href="../../index.html"><span class="nav-num">I</span> Vol I · Foundations</a></li>
+      <li class="nav-item"><a href="../index.html"><span class="nav-num">◆</span> Vol II · Agentic Frontier</a></li>
+      <li class="nav-item"><a href="../../AI-Wiki-III/index.html"><span class="nav-num">III</span> Vol III · Research Frontier</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part I · Using Models</p><ul class="nav-list">
+      <li class="nav-item"><a href="01-chatbot-to-agent.html"><span class="nav-num">01</span> Chatbot → Agent</a></li>
+      <li class="nav-item"><a href="02-ollama-lmstudio.html"><span class="nav-num">02</span> Local Models</a></li>
+      <li class="nav-item"><a href="03-prompting.html"><span class="nav-num">03</span> The Art of Prompting</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part II · Context &amp; Memory</p><ul class="nav-list">
+      <li class="nav-item"><a href="04-context-engineering.html"><span class="nav-num">04</span> Context Engineering</a></li>
+      <li class="nav-item"><a href="05-rag.html"><span class="nav-num">05</span> RAG</a></li>
+      <li class="nav-item"><a href="06-skills.html"><span class="nav-num">06</span> Skills</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part III · Agents</p><ul class="nav-list">
+      <li class="nav-item"><a href="07-mcp.html"><span class="nav-num">07</span> MCP Protocol</a></li>
+      <li class="nav-item"><a href="08-agent-architectures.html"><span class="nav-num">08</span> Agent Architectures</a></li>
+      <li class="nav-item"><a href="09-multi-agent.html"><span class="nav-num">09</span> Multi-Agent</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part IV · Production</p><ul class="nav-list">
+      <li class="nav-item"><a href="10-interpretability.html"><span class="nav-num">10</span> Interpretability</a></li>
+      <li class="nav-item"><a href="11-evals-safety-ops.html"><span class="nav-num">11</span> Evals &amp; Ops</a></li>
+      <li class="nav-item"><a href="12-frontier-capstone.html"><span class="nav-num">12</span> Frontier &amp; Capstone</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Appendix</p><ul class="nav-list">
+      <li class="nav-item"><a href="../resources.html"><span class="nav-num">§</span> Resources</a></li>
+      <li class="nav-item"><a href="../vocabulary.html"><span class="nav-num">A</span> Vocabulary</a></li>
+      <li class="nav-item"><a href="../use-cases.html"><span class="nav-num">★</span> Use Cases 2026</a></li>
+    </ul></nav>
+  </aside>
+
+  <main class="main"><div class="content">
+
+    <header class="chapter-header">
+      <div class="chapter-meta">
+        <span class="chapter-num">CHAPTER 11</span>
+        <span class="pill pill-green">Part IV · Production</span>
+      </div>
+      <h1>Evaluation, Safety &amp; Observability</h1>
+      <p class="chapter-lede">The 80% of the work nobody demos. Evals, traces, guardrails, cost controls — how you know your agent is actually working in production.</p>
+    </header>
+
+    <div class="toc">
+      <h4>In this chapter</h4>
+      <ul>
+        <li><a href="#why">11.1 Evals Are 80% of the Work</a></li>
+        <li><a href="#task">11.2 Task Evals</a></li>
+        <li><a href="#system">11.3 System Evals — SWE-bench, τ-bench, GAIA</a></li>
+        <li><a href="#red">11.4 Red-Teaming &amp; Prompt-Injection Tests</a></li>
+        <li><a href="#obs">11.5 Observability — Traces, Spans, Cost</a></li>
+        <li><a href="#guard">11.6 Guardrails</a></li>
+        <li><a href="#cost">11.7 Cost Management</a></li>
+        <li><a href="#deploy">11.8 Deployment — A/B, Shadow, Rollback</a></li>
+        <li><a href="#resources">11.9 Further Reading</a></li>
+      </ul>
+    </div>
+
+    <h2 id="why">11.1 Evals Are 80% of the Work</h2>
+    <p>A working demo needs one good example. A production agent needs to be right 95% of the time on inputs it has never seen. The bridge between those two worlds is <strong>evaluation</strong>. Every serious team building with LLMs in 2026 spends most of their time on evals — not on prompts.</p>
+
+    <div class="diagram">
+      <svg viewBox="0 0 900 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Eval pyramid">
+        <g font-family="sans-serif">
+          <!-- pyramid -->
+          <polygon points="300,240 600,240 540,180 360,180" fill="rgba(52,211,153,0.18)" stroke="#34d399"/>
+          <polygon points="360,180 540,180 500,130 400,130" fill="rgba(34,211,238,0.18)" stroke="#22d3ee"/>
+          <polygon points="400,130 500,130 470,90 430,90" fill="rgba(124,92,255,0.18)" stroke="#7c5cff"/>
+          <polygon points="430,90 470,90 450,60 450,60" fill="rgba(255,92,168,0.18)" stroke="#ff5ca8"/>
+          <g font-family="sans-serif" fill="#e6edf3">
+            <text x="450" y="225" text-anchor="middle" font-size="12" font-weight="700">Unit: component-level asserts</text>
+            <text x="450" y="163" text-anchor="middle" font-size="12" font-weight="700">Integration: prompt-level goldens</text>
+            <text x="450" y="118" text-anchor="middle" font-size="12" font-weight="700">Task: end-to-end scenarios</text>
+            <text x="450" y="80" text-anchor="middle" font-size="11" font-weight="700">System</text>
+          </g>
+          <g font-family="sans-serif" fill="#9aa6b2" font-size="11">
+            <text x="40" y="230">Cheap, fast, many</text>
+            <text x="720" y="230">→ run on every PR</text>
+            <text x="40" y="100">Expensive, slow, few</text>
+            <text x="720" y="100">→ run nightly or on release</text>
+          </g>
+        </g>
+      </svg>
+      <span class="diagram-caption">The eval pyramid: many cheap checks at the base, a handful of end-to-end task evals at the tip.</span>
+    </div>
+
+    <h2 id="task">11.2 Task Evals</h2>
+    <ul>
+      <li><strong>Exact-match / F1</strong> — for tasks with a ground-truth string.</li>
+      <li><strong>Code correctness</strong> — run the produced code against unit tests.</li>
+      <li><strong>LLM-as-judge</strong> — a frontier model grades an assistant's output on a rubric. Great for open-ended tasks; bias the judge model and itemise the rubric.</li>
+      <li><strong>Pairwise preference</strong> — "is A better than B?" is easier for a judge than grading absolutely.</li>
+    </ul>
+
+<pre><code class="language-python">RUBRIC = """Score 1-5 on: correctness, completeness, tone.
+Return JSON: {correctness: int, completeness: int, tone: int, reason: str}"""
+
+def judge(question, answer, gold):
+    msg = f"Q: {question}\nGOLD: {gold}\nANSWER: {answer}"
+    return parse_json(client.chat(system=RUBRIC, user=msg))</code></pre>
+
+    <h2 id="system">11.3 System Evals — SWE-bench, τ-bench, GAIA</h2>
+    <table>
+      <thead><tr><th>Benchmark</th><th>What it measures</th><th>2026 status</th></tr></thead>
+      <tbody>
+        <tr><td><a href="https://www.swebench.com/verified.html">SWE-bench Verified</a></td><td>Resolving real GitHub issues</td><td>Widely gamed; still useful as a floor</td></tr>
+        <tr><td><a href="https://www.morphllm.com/swe-bench-pro">SWE-bench Pro</a></td><td>Harder, less contaminated coding tasks</td><td>The 2026 successor to Verified</td></tr>
+        <tr><td><a href="https://github.com/sierra-research/tau2-bench">τ2-bench</a></td><td>Multi-turn tool use with user simulators</td><td>Best agent-policy benchmark</td></tr>
+        <tr><td><a href="https://hal.cs.princeton.edu/gaia">GAIA</a></td><td>Generalist agent tasks</td><td>The canonical generalist eval</td></tr>
+        <tr><td><a href="https://os-world.github.io/">OSWorld-Verified</a></td><td>Computer-use tasks on a real desktop</td><td>Rapid progress but brittle evals</td></tr>
+        <tr><td><a href="https://gorilla.cs.berkeley.edu/leaderboard.html">BFCL</a></td><td>Function-calling accuracy</td><td>Widely used for local / open models</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="red">11.4 Red-Teaming &amp; Prompt-Injection Tests</h2>
+    <p>Ship a <em>prompt-injection regression suite</em> alongside your normal tests. At minimum:</p>
+    <ul>
+      <li>Obvious injections in user input ("ignore all previous instructions…")</li>
+      <li>Injections in retrieved content (a malicious line in a RAG doc)</li>
+      <li>Injections in tool outputs (a compromised webpage fetched by the agent)</li>
+      <li>Data-exfiltration attempts (asking the model to leak system prompt or credentials)</li>
+    </ul>
+    <p>Automated harnesses: <a href="https://garak.ai/">garak</a>, Inspect Red-Team, Meta's <a href="https://huggingface.co/meta-llama/Llama-Guard-3-8B">Llama-Guard-4</a> as a content classifier layer.</p>
+
+    <h2 id="obs">11.5 Observability</h2>
+    <p>A production agent call can fan out to tens of LLM calls, tool calls, and retrievals. Without traces you are blind. Instrument every call with:</p>
+    <ul>
+      <li><strong>Correlation ID</strong> so all spans of one request can be stitched together.</li>
+      <li><strong>Input and output tokens</strong> per span (cost attribution).</li>
+      <li><strong>Latency</strong> per span.</li>
+      <li><strong>Verdict</strong> (success / error / tool-call) — makes aggregate dashboards trivial.</li>
+    </ul>
+
+    <table>
+      <thead><tr><th>Tool</th><th>Shape</th></tr></thead>
+      <tbody>
+        <tr><td><a href="https://langfuse.com/">Langfuse</a></td><td>Open-source, self-hostable, great UI</td></tr>
+        <tr><td><a href="https://www.helicone.ai/">Helicone</a></td><td>Proxy-based; drop-in on any OpenAI-compatible endpoint</td></tr>
+        <tr><td>LangSmith</td><td>Paid, tight LangChain integration</td></tr>
+        <tr><td>Arize Phoenix / W&amp;B Weave</td><td>Enterprise, deep ML-ops integrations</td></tr>
+        <tr><td>OpenTelemetry (OTel)</td><td>Vendor-neutral standard — pipe traces anywhere</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="guard">11.6 Guardrails</h2>
+    <p>Guardrails live on both sides of the model:</p>
+    <ul>
+      <li><strong>Input filters.</strong> Strip or flag PII, block known-malicious patterns, language detect.</li>
+      <li><strong>Output validators.</strong> Re-parse structured output against a schema, re-run if invalid.</li>
+      <li><strong>Content policies.</strong> Dedicated classifier (Llama-Guard-4, NeMo Guardrails) to catch unsafe outputs.</li>
+      <li><strong>Grounding checks.</strong> For RAG: verify every claim in the answer is supported by retrieved chunks.</li>
+    </ul>
+
+<pre><code class="language-python"># Guardrails sandwich — input filter, model, output validator
+def safe_chat(user):
+    if pii_detected(user) or injection_detected(user):
+        return "Refused: sensitive input"
+    raw = model.chat(user)
+    if not schema.validate(raw):
+        raw = model.chat(user + "\n\nReply as valid JSON only.")
+    if unsafe(raw):
+        return "Refused: unsafe output"
+    return raw</code></pre>
+
+    <h2 id="cost">11.7 Cost Management</h2>
+    <ul>
+      <li><strong>Prompt caching</strong> (Ch 04) — often a 2–5× cost reduction on agent loops.</li>
+      <li><strong>Model routing.</strong> Easy tasks to Haiku-class / local; hard tasks to Opus-class. A small router model pays for itself.</li>
+      <li><strong>Streaming</strong> — cost the same, but perceived latency drops dramatically.</li>
+      <li><strong>Batch mode</strong> — 50% off at Anthropic/OpenAI for non-interactive jobs.</li>
+      <li><strong>Hard budgets.</strong> A per-request cap and a per-agent-run cap. Always.</li>
+    </ul>
+
+    <h2 id="deploy">11.8 Deployment — A/B, Shadow, Rollback</h2>
+    <p>Treat a new prompt like a new binary:</p>
+    <ol>
+      <li><strong>Shadow</strong> — run the new prompt alongside the old, compare outputs, don't serve users yet.</li>
+      <li><strong>Canary</strong> — 1% of traffic, then 10%, then 50%. Watch evals + error rates.</li>
+      <li><strong>Rollback</strong> — keep the old prompt and old model pinned. Revert in one switch.</li>
+      <li><strong>Version your prompts.</strong> Git-commit them. Tag them. Log which version served each request.</li>
+    </ol>
+
+    <h2 id="resources">11.9 Further Reading</h2>
+    <ul>
+      <li><strong>Hamel Husain — Your AI Product Needs Evals</strong>: <a href="https://hamel.dev/blog/posts/evals/">hamel.dev/blog/posts/evals</a> (essential read)</li>
+      <li><strong>SWE-bench Verified</strong>: <a href="https://www.swebench.com/verified.html">swebench.com/verified</a></li>
+      <li><strong>SWE-bench Pro</strong>: <a href="https://www.morphllm.com/swe-bench-pro">morphllm.com/swe-bench-pro</a></li>
+      <li><strong>τ2-bench</strong>: <a href="https://github.com/sierra-research/tau2-bench">github.com/sierra-research/tau2-bench</a></li>
+      <li><strong>GAIA</strong>: <a href="https://arxiv.org/abs/2311.12983">arXiv:2311.12983</a></li>
+      <li><strong>Langfuse</strong>: <a href="https://langfuse.com/">langfuse.com</a></li>
+      <li><strong>Helicone</strong>: <a href="https://www.helicone.ai/">helicone.ai</a></li>
+      <li><strong>NVIDIA NeMo Guardrails</strong>: <a href="https://github.com/NVIDIA-NeMo/Guardrails">github.com/NVIDIA-NeMo/Guardrails</a></li>
+      <li><strong>Guardrails AI</strong>: <a href="https://guardrailsai.com/">guardrailsai.com</a></li>
+      <li><strong>HELM</strong>: <a href="https://crfm.stanford.edu/helm/">crfm.stanford.edu/helm</a></li>
+      <li><strong>LM Evaluation Harness</strong>: <a href="https://github.com/EleutherAI/lm-evaluation-harness">EleutherAI lm-evaluation-harness</a></li>
+      <li><strong>lighteval (HF)</strong>: <a href="https://github.com/huggingface/lighteval">github.com/huggingface/lighteval</a></li>
+      <li><strong>Llama-Guard-4</strong>: <a href="https://huggingface.co/meta-llama/Llama-Guard-3-8B">huggingface.co/meta-llama/Llama-Guard-4</a></li>
+      <li><strong>Anthropic RSP updates</strong>: <a href="https://www.anthropic.com/rsp-updates">anthropic.com/rsp-updates</a></li>
+    </ul>
+
+    <h3>People to follow</h3>
+    <ul>
+      <li><strong>Hamel Husain</strong> — <a href="https://hamel.dev/">hamel.dev</a></li>
+      <li><strong>Shreya Shankar</strong> — <a href="https://www.sh-reya.com/">sh-reya.com</a></li>
+      <li><strong>Eugene Yan</strong> — <a href="https://eugeneyan.com/">eugeneyan.com</a></li>
+      <li><strong>Chip Huyen</strong> — <a href="https://huyenchip.com/">huyenchip.com</a></li>
+    </ul>
+
+    <nav class="pager">
+      <a class="pager-link" href="10-interpretability.html"><span class="pager-label">← Previous</span><span class="pager-title">Interpretability</span></a>
+      <a class="pager-link pager-next" href="12-frontier-capstone.html"><span class="pager-label">Next →</span><span class="pager-title">Frontier &amp; Capstone</span></a>
+    </nav>
+
+  </div></main>
+</div>
+
+<button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="../assets/js/main.js"></script>
+<footer class="site-footer">
+  <p>Created by <strong>Duy Dao</strong><span class="sep">·</span><a href="https://github.com/xD4O" target="_blank" rel="noopener">GitHub @xD4O</a><span class="sep">·</span><a href="https://x.com/_cyr4x" target="_blank" rel="noopener">X @_cyr4x</a><span class="sep">·</span>AI Wiki · 2026</p>
+  <p class="star-cta">Found this useful? <a href="https://github.com/xD4O/AI-Wiki" target="_blank" rel="noopener">⭐ Star it on GitHub</a></p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 03 · The Art of Prompting — AI Wiki Vol II</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+
+<button id="sidebar-toggle" class="sidebar-toggle" aria-label="Toggle navigation">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+</button>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <svg class="brand-logo" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="brand-g2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#22d3ee"/><stop offset="1" stop-color="#7c5cff"/></linearGradient></defs>
+        <rect x="4" y="4" width="56" height="56" rx="14" fill="url(#brand-g2)"/>
+        <text x="32" y="42" text-anchor="middle" fill="white" font-size="28" font-family="sans-serif" font-weight="700">II</text>
+      </svg>
+      <div><p class="brand-title">AI Wiki · Vol II</p><p class="brand-sub">The Agentic Frontier</p></div>
+    </div>
+    <nav class="nav-section"><p class="nav-title">Getting Started</p><ul class="nav-list">
+      <li class="nav-item"><a href="../../index.html"><span class="nav-num">I</span> Vol I · Foundations</a></li>
+      <li class="nav-item"><a href="../index.html"><span class="nav-num">◆</span> Vol II · Agentic Frontier</a></li>
+      <li class="nav-item"><a href="../../AI-Wiki-III/index.html"><span class="nav-num">III</span> Vol III · Research Frontier</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part I · Using Models</p><ul class="nav-list">
+      <li class="nav-item"><a href="01-chatbot-to-agent.html"><span class="nav-num">01</span> Chatbot → Agent</a></li>
+      <li class="nav-item"><a href="02-ollama-lmstudio.html"><span class="nav-num">02</span> Local Models</a></li>
+      <li class="nav-item"><a href="03-prompting.html"><span class="nav-num">03</span> The Art of Prompting</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part II · Context &amp; Memory</p><ul class="nav-list">
+      <li class="nav-item"><a href="04-context-engineering.html"><span class="nav-num">04</span> Context Engineering</a></li>
+      <li class="nav-item"><a href="05-rag.html"><span class="nav-num">05</span> RAG</a></li>
+      <li class="nav-item"><a href="06-skills.html"><span class="nav-num">06</span> Skills</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part III · Agents</p><ul class="nav-list">
+      <li class="nav-item"><a href="07-mcp.html"><span class="nav-num">07</span> MCP Protocol</a></li>
+      <li class="nav-item"><a href="08-agent-architectures.html"><span class="nav-num">08</span> Agent Architectures</a></li>
+      <li class="nav-item"><a href="09-multi-agent.html"><span class="nav-num">09</span> Multi-Agent</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part IV · Production</p><ul class="nav-list">
+      <li class="nav-item"><a href="10-interpretability.html"><span class="nav-num">10</span> Interpretability</a></li>
+      <li class="nav-item"><a href="11-evals-safety-ops.html"><span class="nav-num">11</span> Evals &amp; Ops</a></li>
+      <li class="nav-item"><a href="12-frontier-capstone.html"><span class="nav-num">12</span> Frontier &amp; Capstone</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Appendix</p><ul class="nav-list">
+      <li class="nav-item"><a href="../resources.html"><span class="nav-num">§</span> Resources</a></li>
+      <li class="nav-item"><a href="../vocabulary.html"><span class="nav-num">A</span> Vocabulary</a></li>
+      <li class="nav-item"><a href="../use-cases.html"><span class="nav-num">★</span> Use Cases 2026</a></li>
+    </ul></nav>
+  </aside>
+
+  <main class="main"><div class="content">
+
+    <header class="chapter-header">
+      <div class="chapter-meta">
+        <span class="chapter-num">CHAPTER 03</span>
+        <span class="pill pill-accent">Part I · Using Models</span>
+      </div>
+      <h1>The Art of Prompting</h1>
+      <p class="chapter-lede">A principled approach to prompting — not cargo-culted tricks. Think of a prompt as a lens that picks a region of the model's distribution.</p>
+    </header>
+
+    <div class="toc">
+      <h4>In this chapter</h4>
+      <ul>
+        <li><a href="#lens">3.1 Why Prompts Matter: The Lens Metaphor</a></li>
+        <li><a href="#anatomy">3.2 Anatomy of a Good Prompt</a></li>
+        <li><a href="#families">3.3 Zero-shot, Few-shot, CoT, Self-Consistency</a></li>
+        <li><a href="#struct">3.4 Structured Output</a></li>
+        <li><a href="#anti">3.5 Anti-Patterns</a></li>
+        <li><a href="#choose">3.6 Prompt vs. Context vs. Fine-Tune</a></li>
+        <li><a href="#reasoning">3.7 Prompting Reasoning Models</a></li>
+        <li><a href="#resources">3.8 Further Reading</a></li>
+      </ul>
+    </div>
+
+    <h2 id="lens">3.1 Why Prompts Matter: The Lens Metaphor</h2>
+    <p>A language model is a probability distribution over next tokens conditioned on the input. The prompt is the condition — it doesn't change the model, it <em>picks a region</em> of the model's distribution. Good prompts make the right region sharp; bad prompts make it flat.</p>
+
+    <div class="diagram">
+      <svg viewBox="0 0 900 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Prompt as a lens">
+        <g font-family="sans-serif">
+          <!-- Wide distribution -->
+          <text x="180" y="40" text-anchor="middle" fill="#e6edf3" font-size="14" font-weight="700">Vague prompt</text>
+          <text x="180" y="58" text-anchor="middle" fill="#9aa6b2" font-size="11">"write about dogs"</text>
+          <path d="M 40 200 Q 180 100 320 200" fill="rgba(255,92,168,0.25)" stroke="#ff5ca8" stroke-width="2"/>
+          <line x1="40" y1="200" x2="320" y2="200" stroke="#232a36" stroke-width="1"/>
+          <text x="180" y="225" text-anchor="middle" fill="#9aa6b2" font-size="11">broad, low-confidence output</text>
+
+          <!-- Focused distribution -->
+          <text x="720" y="40" text-anchor="middle" fill="#e6edf3" font-size="14" font-weight="700">Precise prompt</text>
+          <text x="720" y="58" text-anchor="middle" fill="#9aa6b2" font-size="11">"write 3 bullet points on golden retriever health"</text>
+          <path d="M 580 200 Q 720 80 860 200" fill="rgba(52,211,153,0.3)" stroke="#34d399" stroke-width="2"/>
+          <line x1="580" y1="200" x2="860" y2="200" stroke="#232a36" stroke-width="1"/>
+          <text x="720" y="225" text-anchor="middle" fill="#9aa6b2" font-size="11">narrow, high-confidence output</text>
+
+          <!-- Model (arrow between) -->
+          <g transform="translate(390 110)">
+            <rect width="120" height="60" rx="14" fill="rgba(124,92,255,0.15)" stroke="#7c5cff" stroke-width="2"/>
+            <text x="60" y="30" text-anchor="middle" fill="#e6edf3" font-size="13" font-weight="700">LLM</text>
+            <text x="60" y="48" text-anchor="middle" fill="#9aa6b2" font-size="11">same weights</text>
+          </g>
+        </g>
+      </svg>
+      <span class="diagram-caption">The model doesn't change. The <em>prompt</em> selects which region of its output distribution is sharp.</span>
+    </div>
+
+    <h2 id="anatomy">3.2 Anatomy of a Good Prompt</h2>
+    <p>A robust prompt has six parts. You don't always need all six, but when things go wrong it's usually because one is missing.</p>
+
+    <table>
+      <thead><tr><th>Part</th><th>What it does</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Role</strong></td><td>Narrows the persona / style</td><td>"You are a senior SRE reviewing an incident postmortem."</td></tr>
+        <tr><td><strong>Task</strong></td><td>What to produce</td><td>"Identify root cause and list three follow-ups."</td></tr>
+        <tr><td><strong>Constraints</strong></td><td>Length, format, tone</td><td>"≤ 200 words, markdown bullets, no emoji."</td></tr>
+        <tr><td><strong>Examples</strong></td><td>Canonical input→output pairs</td><td>Two solved incidents in the same format</td></tr>
+        <tr><td><strong>Format</strong></td><td>How to serialize the answer</td><td>JSON schema, XML tags, section headers</td></tr>
+        <tr><td><strong>Edge cases</strong></td><td>What to do when input is weird</td><td>"If the log is empty, reply with <code>UNKNOWN</code>."</td></tr>
+      </tbody>
+    </table>
+
+<pre><code class="language-python">PROMPT = """You are a senior SRE reviewing postmortems.
+
+TASK
+Given an incident log, identify the root cause and list three follow-ups.
+
+CONSTRAINTS
+- Reply in markdown.
+- 200 words max.
+- Use the headings `## Root cause` and `## Follow-ups`.
+- If the log contains no timestamps, reply with `UNKNOWN`.
+
+EXAMPLE
+Input:
+  2024-01-12 09:32 DB timeout on orders-db...
+Output:
+  ## Root cause
+  Connection pool exhausted under burst traffic.
+  ## Follow-ups
+  - Raise pool size from 50 → 200.
+  - Add p99 latency alert at 500ms.
+  - Schedule load test before next launch.
+
+NOW PROCESS
+{log}
+"""</code></pre>
+
+    <h2 id="families">3.3 Zero-shot, Few-shot, CoT, Self-Consistency</h2>
+    <table>
+      <thead><tr><th>Technique</th><th>When to use</th><th>Cost</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Zero-shot</strong></td><td>Task is in-distribution — the model "gets it"</td><td>Cheapest</td></tr>
+        <tr><td><strong>Few-shot</strong></td><td>Task needs a specific format or style; examples pin it</td><td>Longer prompt, one call</td></tr>
+        <tr><td><strong>Chain-of-Thought</strong></td><td>Multi-step reasoning; let the model "think out loud"</td><td>More output tokens</td></tr>
+        <tr><td><strong>Self-consistency</strong></td><td>High-stakes tasks where a wrong answer is worse than latency</td><td>N× sampling</td></tr>
+      </tbody>
+    </table>
+
+<pre><code class="language-python"># Self-consistency in 10 lines
+from collections import Counter
+
+def self_consistent(prompt, n=5):
+    answers = [client.chat(prompt, temperature=0.7) for _ in range(n)]
+    # pull the final answer from each rollout (adapt to your schema)
+    finals = [a.split("Answer:")[-1].strip() for a in answers]
+    return Counter(finals).most_common(1)[0][0]</code></pre>
+
+    <h2 id="struct">3.4 Structured Output</h2>
+    <p>Unstructured prose is nearly useless for downstream code. Three ways to get machine-parseable output from a model:</p>
+
+    <h3>JSON mode / Structured output</h3>
+<pre><code class="language-python">from pydantic import BaseModel
+
+class Ticket(BaseModel):
+    severity: str  # "p0" | "p1" | "p2"
+    summary: str
+    owner: str
+
+# OpenAI SDK
+r = client.chat.completions.parse(
+    model="gpt-4o",
+    messages=[{"role": "user", "content": "triage: 'db is down!'"}],
+    response_format=Ticket,
+)
+ticket: Ticket = r.choices[0].message.parsed</code></pre>
+
+    <h3>XML-tagged sections (Anthropic idiom)</h3>
+<pre><code class="language-python">PROMPT = """Summarise the document.
+
+&lt;document&gt;
+{doc}
+&lt;/document&gt;
+
+Return:
+&lt;summary&gt;one paragraph&lt;/summary&gt;
+&lt;key_facts&gt;bulleted list&lt;/key_facts&gt;"""</code></pre>
+
+    <h3>Response prefilling</h3>
+<pre><code class="language-python"># Start the model's response for it — guarantees JSON
+r = client.messages.create(
+    model="claude-opus-4-7",
+    max_tokens=1024,
+    messages=[
+        {"role": "user", "content": "extract name and age as JSON"},
+        {"role": "assistant", "content": "{"},
+    ],
+)
+data = "{" + r.content[0].text  # prepend the opening brace back</code></pre>
+
+    <h2 id="anti">3.5 Anti-Patterns</h2>
+    <div class="callout danger">
+      <svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+      <div class="callout-body">
+        <div class="callout-title">"Don't hallucinate" is a negative constraint</div>
+        <p>Models are bad at negation. <em>"Don't make up citations"</em> plants the very word you're trying to avoid. Instead: <em>"If you are not certain a source exists, reply 'source unknown.'"</em> — that's a positive, verifiable rule.</p>
+      </div>
+    </div>
+
+    <ul>
+      <li><strong>Over-specifying.</strong> Every sentence you add narrows the lens — but also adds chance of contradiction.</li>
+      <li><strong>Double negatives.</strong> "Make sure not to avoid brevity" — just say "be brief."</li>
+      <li><strong>Contradictory instructions.</strong> "Be thorough but concise" is picked at random.</li>
+      <li><strong>Cargo-culted phrases.</strong> "Take a deep breath" helped GPT-3.5. Current frontier models are trained past it.</li>
+      <li><strong>Mixing many tasks.</strong> Ask for a summary <em>or</em> a classification, not both in one turn — chain them instead.</li>
+    </ul>
+
+    <h2 id="choose">3.6 Prompt vs. Context vs. Fine-Tune</h2>
+    <div class="diagram">
+      <svg viewBox="0 0 900 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="When to prompt / RAG / fine-tune">
+        <defs><marker id="pf-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7c5cff"/></marker></defs>
+        <g font-family="sans-serif">
+          <!-- Root -->
+          <rect x="370" y="20" width="160" height="50" rx="10" fill="#161b24" stroke="#7c5cff" stroke-width="2"/>
+          <text x="450" y="42" text-anchor="middle" fill="#e6edf3" font-size="13" font-weight="700">Does it already work?</text>
+          <text x="450" y="60" text-anchor="middle" fill="#9aa6b2" font-size="11">test the model, unmodified</text>
+
+          <!-- Yes -->
+          <rect x="60" y="110" width="180" height="60" rx="10" fill="rgba(52,211,153,0.15)" stroke="#34d399" stroke-width="2"/>
+          <text x="150" y="135" text-anchor="middle" fill="#34d399" font-size="13" font-weight="700">yes → ship it</text>
+          <text x="150" y="155" text-anchor="middle" fill="#9aa6b2" font-size="11">don't prematurely prompt-tune</text>
+
+          <!-- Branch 1 -->
+          <rect x="270" y="110" width="180" height="60" rx="10" fill="rgba(34,211,238,0.15)" stroke="#22d3ee" stroke-width="2"/>
+          <text x="360" y="132" text-anchor="middle" fill="#22d3ee" font-size="13" font-weight="700">missing knowledge</text>
+          <text x="360" y="152" text-anchor="middle" fill="#9aa6b2" font-size="11">→ RAG (Ch 05)</text>
+
+          <rect x="470" y="110" width="180" height="60" rx="10" fill="rgba(251,191,36,0.15)" stroke="#fbbf24" stroke-width="2"/>
+          <text x="560" y="132" text-anchor="middle" fill="#fbbf24" font-size="13" font-weight="700">missing format/style</text>
+          <text x="560" y="152" text-anchor="middle" fill="#9aa6b2" font-size="11">→ better prompt / few-shot</text>
+
+          <rect x="670" y="110" width="180" height="60" rx="10" fill="rgba(255,92,168,0.15)" stroke="#ff5ca8" stroke-width="2"/>
+          <text x="760" y="132" text-anchor="middle" fill="#ff5ca8" font-size="13" font-weight="700">missing capability</text>
+          <text x="760" y="152" text-anchor="middle" fill="#9aa6b2" font-size="11">→ bigger model OR fine-tune</text>
+
+          <!-- Second level -->
+          <rect x="370" y="210" width="360" height="50" rx="10" fill="#161b24" stroke="#7c5cff" stroke-width="1.5" stroke-dasharray="3 3"/>
+          <text x="550" y="240" text-anchor="middle" fill="#9aa6b2" font-size="12">fine-tune only after prompt + RAG exhausted — expensive to maintain</text>
+
+          <g stroke="#7c5cff" stroke-width="1.5" fill="none">
+            <path d="M 450 70 L 150 108" marker-end="url(#pf-a)"/>
+            <path d="M 450 70 L 360 108" marker-end="url(#pf-a)"/>
+            <path d="M 450 70 L 560 108" marker-end="url(#pf-a)"/>
+            <path d="M 450 70 L 760 108" marker-end="url(#pf-a)"/>
+          </g>
+        </g>
+      </svg>
+      <span class="diagram-caption">Decision tree. Start with the smallest change that works.</span>
+    </div>
+
+    <h2 id="reasoning">3.7 Prompting Reasoning Models</h2>
+    <p>Reasoning models (Claude with extended thinking, DeepSeek-R1, QwQ-32B, OpenAI's o-series) are a different animal. Traditional CoT prompting <em>hurts</em> them — they've been RL-trained to reason natively, and your scaffolding conflicts with their learned process.</p>
+
+    <div class="callout tip">
+      <svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/></svg>
+      <div class="callout-body">
+        <div class="callout-title">Rules of thumb for reasoning models</div>
+        <ul>
+          <li>State the problem. State the goal. <em>Stop there.</em></li>
+          <li>No "think step by step" — they already do.</li>
+          <li>No elaborate few-shot chains — show the output format, not the reasoning.</li>
+          <li>Ask them to <em>verify</em> their own answer at the end if stakes are high.</li>
+          <li>Budget tokens generously — they spend 5–50× more on hidden thinking.</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2 id="resources">3.8 Further Reading</h2>
+    <ul>
+      <li><strong>Anthropic prompt engineering</strong> — <a href="https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/overview">docs.claude.com</a></li>
+      <li><strong>OpenAI Prompting Guide</strong> — <a href="https://platform.openai.com/docs/guides/prompt-engineering">platform.openai.com</a></li>
+      <li><strong>Lilian Weng — Prompt Engineering</strong> — <a href="https://lilianweng.github.io/posts/2023-03-15-prompt-engineering/">lilianweng.github.io</a> (still the best survey)</li>
+      <li><strong>promptingguide.ai</strong> — <a href="https://www.promptingguide.ai/">DAIR.AI comprehensive guide</a></li>
+      <li><strong>Chain-of-Thought paper</strong> — <a href="https://arxiv.org/abs/2201.11903">arXiv:2201.11903</a></li>
+      <li><strong>Self-Consistency</strong> — <a href="https://arxiv.org/abs/2203.11171">arXiv:2203.11171</a></li>
+    </ul>
+
+    <h3>People to follow</h3>
+    <ul>
+      <li><strong>Riley Goodside</strong> — <a href="https://twitter.com/goodside">@goodside</a> — prompt-engineering folklore in real time</li>
+      <li><strong>Ethan Mollick · One Useful Thing</strong> — <a href="https://www.oneusefulthing.org/">oneusefulthing.org</a></li>
+      <li><strong>Simon Willison · prompt engineering tag</strong> — <a href="https://simonwillison.net/tags/prompt-engineering/">simonwillison.net/tags/prompt-engineering</a></li>
+    </ul>
+
+    <h3>Reasoning models on Hugging Face</h3>
+    <ul>
+      <li><a href="https://huggingface.co/deepseek-ai/DeepSeek-R1">deepseek-ai/DeepSeek-R1</a> — canonical open reasoning model</li>
+      <li><a href="https://huggingface.co/Qwen/QwQ-32B-Preview">Qwen/QwQ-32B-Preview</a></li>
+    </ul>
+
+    <nav class="pager">
+      <a class="pager-link" href="02-ollama-lmstudio.html"><span class="pager-label">← Previous</span><span class="pager-title">Local Models</span></a>
+      <a class="pager-link pager-next" href="04-context-engineering.html"><span class="pager-label">Next →</span><span class="pager-title">Context Engineering</span></a>
+    </nav>
+
+  </div></main>
+</div>
+
+<button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="../assets/js/main.js"></script>
+<footer class="site-footer">
+  <p>Created by <strong>Duy Dao</strong><span class="sep">·</span><a href="https://github.com/xD4O" target="_blank" rel="noopener">GitHub @xD4O</a><span class="sep">·</span><a href="https://x.com/_cyr4x" target="_blank" rel="noopener">X @_cyr4x</a><span class="sep">·</span>AI Wiki · 2026</p>
+  <p class="star-cta">Found this useful? <a href="https://github.com/xD4O/AI-Wiki" target="_blank" rel="noopener">⭐ Star it on GitHub</a></p>
+</footer>
+</body>
+</html>

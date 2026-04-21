@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 08 · Model-Based RL &amp; Planning — AI Wiki Vol III</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="stylesheet" href="../assets/css/styles.css"></head>
+<body>
+
+<button id="sidebar-toggle" class="sidebar-toggle"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg></button>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <svg class="brand-logo" viewBox="0 0 64 64"><defs><linearGradient id="bg3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff5ca8"/><stop offset="1" stop-color="#7c5cff"/></linearGradient></defs><rect x="2" y="2" width="60" height="60" rx="14" fill="url(#bg3)"/><text x="32" y="42" text-anchor="middle" fill="white" font-size="26" font-weight="800">III</text></svg>
+      <div><p class="brand-title">AI Wiki · Vol III</p><p class="brand-sub">The Research Frontier</p></div>
+    </div>
+    <nav class="nav-section"><p class="nav-title">Getting Started</p><ul class="nav-list">
+      <li class="nav-item"><a href="../../index.html"><span class="nav-num">I</span> Vol I · Foundations</a></li>
+      <li class="nav-item"><a href="../../AI-Wiki-II/index.html"><span class="nav-num">II</span> Vol II · Agentic Frontier</a></li>
+      <li class="nav-item"><a href="../index.html"><span class="nav-num">◆</span> Vol III · Research Frontier</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part I · Architecture</p><ul class="nav-list"><li class="nav-item"><a href="01-post-transformer.html"><span class="nav-num">01</span> Past Attention</a></li><li class="nav-item"><a href="02-mamba-ssm.html"><span class="nav-num">02</span> Mamba &amp; SSMs</a></li><li class="nav-item"><a href="03-blt-tokenization.html"><span class="nav-num">03</span> BLT</a></li><li class="nav-item"><a href="04-sparse-revolution.html"><span class="nav-num">04</span> Sparse Revolution</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part II · World Models</p><ul class="nav-list"><li class="nav-item"><a href="05-jepa.html"><span class="nav-num">05</span> JEPA</a></li><li class="nav-item"><a href="06-generative-world-models.html"><span class="nav-num">06</span> Sora · Veo · Genie</a></li><li class="nav-item"><a href="07-embodied-foundation.html"><span class="nav-num">07</span> Embodied</a></li><li class="nav-item"><a href="08-model-based-rl.html"><span class="nav-num">08</span> MB-RL</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part III · Reasoning</p><ul class="nav-list"><li class="nav-item"><a href="09-rlvr.html"><span class="nav-num">09</span> RL Verifiable</a></li><li class="nav-item"><a href="10-inference-compute.html"><span class="nav-num">10</span> Inference Compute</a></li><li class="nav-item"><a href="11-memory-titans.html"><span class="nav-num">11</span> Memory · Titans</a></li><li class="nav-item"><a href="12-faithfulness.html"><span class="nav-num">12</span> Faithfulness</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part IV · Systems &amp; Control</p><ul class="nav-list"><li class="nav-item"><a href="13-meta-prompting.html"><span class="nav-num">13</span> Meta-Prompting</a></li><li class="nav-item"><a href="14-agentic-orchestration.html"><span class="nav-num">14</span> Orchestration</a></li><li class="nav-item"><a href="15-deterministic-gates.html"><span class="nav-num">15</span> Deterministic Gates</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part V · Open Problems</p><ul class="nav-list"><li class="nav-item"><a href="16-interp-frontier.html"><span class="nav-num">16</span> Interp Frontier</a></li><li class="nav-item"><a href="17-alignment-beyond-rlhf.html"><span class="nav-num">17</span> Alignment</a></li><li class="nav-item"><a href="18-benchmark-crisis.html"><span class="nav-num">18</span> Benchmarks</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part VI · Big Picture</p><ul class="nav-list"><li class="nav-item"><a href="19-ai-for-science.html"><span class="nav-num">19</span> AI for Science</a></li><li class="nav-item"><a href="20-scaling-debates.html"><span class="nav-num">20</span> Scaling</a></li><li class="nav-item"><a href="21-compute-geopolitics-agi.html"><span class="nav-num">21</span> Compute · AGI</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Appendix</p><ul class="nav-list">
+      <li class="nav-item"><a href="../resources.html"><span class="nav-num">§</span> Resources</a></li>
+      <li class="nav-item"><a href="../vocabulary.html"><span class="nav-num">A</span> Vocabulary</a></li>
+    </ul></nav>
+  </aside>
+
+  <main class="main"><div class="content">
+
+    <header class="chapter-header">
+      <div class="chapter-meta"><span class="chapter-num">CHAPTER 08</span><span class="pill pill-cyan">Part II · World Models</span></div>
+      <h1>Model-Based RL &amp; Planning</h1>
+      <p class="chapter-lede">The other family of world-model thinking — not "generate a video that looks right" but "build a compact predictor, then <em>search</em> inside it." Dreamer, MuZero, and the tree-search lineage that quietly powers 2026's reasoning agents.</p>
+    </header>
+
+    <div class="timeline-ribbon">
+      <span class="timeline-event"><strong>2016</strong> AlphaGo</span>
+      <span class="timeline-event"><strong>2019</strong> MuZero</span>
+      <span class="timeline-event"><strong>2023</strong> Dreamer-V3</span>
+      <span class="timeline-event"><strong>2023</strong> Voyager</span>
+      <span class="timeline-event"><strong>2024</strong> OMNI-EPIC (Clune)</span>
+      <span class="timeline-event"><strong>2025</strong> tree search inside LLM reasoners</span>
+    </div>
+
+    <details class="eli5">
+      <summary><span class="eli5-icon">🧒</span> ELI5 — explain like I'm five</summary>
+      <div class="eli5-body">
+        <p>Two ways to get good at chess. <strong>Method A</strong>: play a million games and build up instinct. <strong>Method B</strong>: learn how the pieces move, then when your turn comes, <em>imagine</em> the next few moves in your head and pick the best one.</p>
+        <p>Most AI today uses Method A ("model-free RL"). Model-based RL is Method B: learn a <em>world model</em> (how things change when you act), then <em>search</em> inside it. Dreamer and MuZero are Method B success stories.</p>
+        <p>Why care in 2026? Because when an LLM "thinks before answering," it's starting to look a lot like Method B.</p>
+      </div>
+    </details>
+
+    <div class="toc">
+      <h4>In this chapter</h4>
+      <ul>
+        <li><a href="#dreamer">8.1 Dreamer — Imagining in Latent Space</a></li>
+        <li><a href="#muzero">8.2 MuZero — Planning in a Learned Model</a></li>
+        <li><a href="#llm">8.3 LLM Tree Search as Descendants</a></li>
+        <li><a href="#open-ended">8.4 Open-Ended Agents</a></li>
+        <li><a href="#resources">8.5 Further Reading</a></li>
+      </ul>
+    </div>
+
+    <h2 id="dreamer">8.1 Dreamer — Imagining in Latent Space</h2>
+    <p>Hafner's <strong>Dreamer</strong> line (V1 → V3) learns three things jointly:</p>
+    <ul>
+      <li>A <em>representation</em> of the environment's state from raw observations.</li>
+      <li>A <em>dynamics</em> model: given state + action, predict next state.</li>
+      <li>A <em>policy + value</em> trained by <em>imagining</em> rollouts inside the dynamics model — no extra environment interaction.</li>
+    </ul>
+    <p>Dreamer-V3 (2023) was the first to master Minecraft diamond collection from scratch without task-specific tuning — a long-horizon exploration problem that prior model-free RL had failed on. The recipe works across 150+ tasks with one set of hyperparameters.</p>
+
+    <div class="diagram">
+      <svg viewBox="0 0 900 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Dreamer-V3 loop">
+        <defs><filter id="dr-sh"><feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#000" flood-opacity="0.3"/></filter>
+          <marker id="dr-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7c5cff"/></marker>
+        </defs>
+        <g font-family="-apple-system, Inter, sans-serif">
+          <!-- Environment -->
+          <g filter="url(#dr-sh)"><rect x="40" y="130" width="140" height="60" rx="10" fill="rgba(34,211,238,0.15)" stroke="#22d3ee"/></g>
+          <text x="110" y="155" text-anchor="middle" fill="#22d3ee" font-size="13" font-weight="700">Environment</text>
+          <text x="110" y="172" text-anchor="middle" fill="#9aa6b2" font-size="10">obs, reward</text>
+
+          <!-- Encoder -->
+          <g filter="url(#dr-sh)"><rect x="220" y="40" width="130" height="50" rx="10" fill="rgba(52,211,153,0.18)" stroke="#34d399"/></g>
+          <text x="285" y="60" text-anchor="middle" fill="#34d399" font-size="12" font-weight="700">Encoder</text>
+          <text x="285" y="76" text-anchor="middle" fill="#9aa6b2" font-size="10">obs → latent z</text>
+
+          <!-- Dynamics -->
+          <g filter="url(#dr-sh)"><rect x="220" y="130" width="130" height="60" rx="10" fill="rgba(124,92,255,0.2)" stroke="#7c5cff" stroke-width="2"/></g>
+          <text x="285" y="155" text-anchor="middle" fill="#e6edf3" font-size="13" font-weight="700">Dynamics</text>
+          <text x="285" y="172" text-anchor="middle" fill="#9aa6b2" font-size="10">z, a → z'</text>
+
+          <!-- Reward / value -->
+          <g filter="url(#dr-sh)"><rect x="220" y="230" width="130" height="50" rx="10" fill="rgba(251,191,36,0.15)" stroke="#fbbf24"/></g>
+          <text x="285" y="250" text-anchor="middle" fill="#fbbf24" font-size="12" font-weight="700">Reward / Value</text>
+          <text x="285" y="266" text-anchor="middle" fill="#9aa6b2" font-size="10">z → r̂, V̂</text>
+
+          <!-- Imagination rollout -->
+          <g>
+            <text x="560" y="35" text-anchor="middle" fill="#ff5ca8" font-size="13" font-weight="700">Imagined rollout (no env interaction)</text>
+            <g font-size="10">
+              <circle cx="460" cy="100" r="18" fill="#161b24" stroke="#ff5ca8"/><text x="460" y="104" text-anchor="middle" fill="#ff5ca8">z₀</text>
+              <circle cx="530" cy="100" r="18" fill="#161b24" stroke="#ff5ca8"/><text x="530" y="104" text-anchor="middle" fill="#ff5ca8">z₁</text>
+              <circle cx="600" cy="100" r="18" fill="#161b24" stroke="#ff5ca8"/><text x="600" y="104" text-anchor="middle" fill="#ff5ca8">z₂</text>
+              <circle cx="670" cy="100" r="18" fill="#161b24" stroke="#ff5ca8"/><text x="670" y="104" text-anchor="middle" fill="#ff5ca8">z₃</text>
+              <text x="720" y="104" fill="#ff5ca8">…</text>
+              <g stroke="#ff5ca8" stroke-width="1.2" fill="none" marker-end="url(#dr-arr)">
+                <line x1="478" y1="100" x2="512" y2="100"/>
+                <line x1="548" y1="100" x2="582" y2="100"/>
+                <line x1="618" y1="100" x2="652" y2="100"/>
+                <line x1="688" y1="100" x2="712" y2="100"/>
+              </g>
+            </g>
+            <text x="560" y="145" text-anchor="middle" fill="#9aa6b2" font-size="11">Actor samples actions; dynamics rolls forward; value sums rewards.</text>
+          </g>
+
+          <!-- Policy (actor) -->
+          <g filter="url(#dr-sh)"><rect x="740" y="190" width="130" height="60" rx="10" fill="rgba(52,211,153,0.15)" stroke="#34d399"/></g>
+          <text x="805" y="215" text-anchor="middle" fill="#34d399" font-size="13" font-weight="700">Policy π</text>
+          <text x="805" y="232" text-anchor="middle" fill="#9aa6b2" font-size="10">trained on imagined ∇</text>
+
+          <!-- Arrows -->
+          <g stroke="#7c5cff" stroke-width="1.4" fill="none" marker-end="url(#dr-arr)">
+            <path d="M 180 150 L 218 150"/>
+            <path d="M 180 150 Q 200 70 218 65"/>
+            <path d="M 285 190 L 285 228"/>
+            <path d="M 350 155 Q 410 120 442 105"/>
+            <path d="M 805 190 Q 700 150 500 105"/>
+            <path d="M 180 170 Q 100 250 110 195" stroke="#34d399" stroke-dasharray="4 3"/>
+          </g>
+
+          <text x="450" y="305" text-anchor="middle" fill="#9aa6b2" font-size="11" font-style="italic">Minecraft diamond emerges at ~10⁸ imagined steps — the real environment rollouts are a small fraction of the total compute.</text>
+        </g>
+      </svg>
+      <span class="diagram-caption">Dreamer-V3: a world model learned online, a policy learned inside its imagination. Sample-efficient RL at scale.</span>
+    </div>
+
+    <h2 id="muzero">8.2 MuZero — Planning in a Learned Model</h2>
+    <p>DeepMind's <strong>MuZero</strong> (2019) learned a <em>compact</em> dynamics model (enough to predict rewards and values) and did MCTS on top — mastering Go, chess, shogi, and 57 Atari games with one algorithm. The key insight: you don't need a pixel-accurate world model for planning; you need a reward-accurate one.</p>
+    <p>MuZero was the last "board game" milestone before the field pivoted to LLM agents. Its DNA is visible in every LLM tree-search system.</p>
+
+    <h2 id="llm">8.3 LLM Tree Search as Descendants</h2>
+    <p>Vol II Ch 08 introduced LATS and Tree-of-Thoughts at a practitioner level. From a model-based-RL framing:</p>
+    <ul>
+      <li>The <em>world model</em> is the LLM's next-state-given-actions prediction.</li>
+      <li>The <em>value function</em> is a reward model or self-consistency score.</li>
+      <li>The <em>search</em> is MCTS or beam search over "thought" nodes.</li>
+    </ul>
+    <p>This lineage matters in 2026 because inference-time compute (Ch 10) is essentially MB-RL-style planning adapted to language. The techniques are old; the substrate is new.</p>
+
+    <h2 id="open-ended">8.4 Open-Ended Agents</h2>
+    <p>Jeff Clune's line — <strong>Voyager</strong> (Minecraft GPT-4 agent), <strong>OMNI-EPIC</strong> (2024), <strong>Open-Ended Learning</strong> — pushes beyond "solve this task" toward "generate interesting tasks and solve them." The research bet: the path from current agents to AGI is not a benchmark to saturate but a <em>process</em> that keeps generating new benchmarks for itself.</p>
+
+    <div class="debate-grid">
+      <div class="debate-side pro">
+        <h5>Planning is what agents need</h5>
+        <p>Direct-policy RL plateaus. MB-RL + search has the best sample efficiency. Every LLM reasoning breakthrough since 2024 has added some form of search. The path forward is richer world models and better planners, not bigger policies.</p>
+      </div>
+      <div class="debate-side con">
+        <h5>Just scale the policy</h5>
+        <p>Dreamer and MuZero were beautiful papers but didn't ship in production. Frontier LLMs do reasoning with a single forward pass (for non-reasoning models) or implicit CoT (for reasoning models). Planning-in-a-learned-model adds complexity that scale has rendered optional.</p>
+      </div>
+    </div>
+
+    <div class="open-questions">
+      <h4>❓ Open questions</h4>
+      <ul>
+        <li>Is there a hybrid where an LLM <em>is</em> the world model and RL is done in its imagination space (Dreamer-of-language)?</li>
+        <li>Do open-ended agents generalise to new task distributions, or just expand within their generator's prior?</li>
+        <li>What's the sample-efficiency delta between RL on verifiable rewards (Ch 09) and Dreamer-style MB-RL, at the same compute?</li>
+      </ul>
+    </div>
+
+    <h2 id="resources">8.5 Further Reading</h2>
+    <details class="further">
+      <summary><span class="eli5-icon" style="background:rgba(251,191,36,0.14)">📚</span> Further learning</summary>
+      <div class="further-body">
+        <ul>
+          <li><span class="kind paper">paper</span><a href="https://arxiv.org/abs/2301.04104">Dreamer-V3 (Hafner 2023)</a></li>
+          <li><span class="kind paper">paper</span><a href="https://arxiv.org/abs/1911.08265">MuZero (Schrittwieser et al. 2020)</a></li>
+          <li><span class="kind paper">paper</span><a href="https://arxiv.org/abs/2305.16291">Voyager (Wang et al. 2023)</a></li>
+          <li><span class="kind paper">paper</span><a href="https://arxiv.org/abs/2405.15568">OMNI-EPIC (Faldor &amp; Clune 2024)</a></li>
+          <li><span class="kind video">video</span><a href="https://www.youtube.com/watch?v=vfpZu0R1s1Y">Danijar Hafner — Dreamer-V3 talk</a></li>
+          <li><span class="kind blog">blog</span>Jeff Clune — open-endedness research</li>
+          <li><span class="kind code">code</span><a href="https://github.com/danijar/dreamerv3">github.com/danijar/dreamerv3</a></li>
+        </ul>
+      </div>
+    </details>
+
+    <nav class="pager">
+      <a class="pager-link" href="07-embodied-foundation.html"><span class="pager-label">← Previous</span><span class="pager-title">Embodied Foundation Models</span></a>
+      <a class="pager-link pager-next" href="09-rlvr.html"><span class="pager-label">Next →</span><span class="pager-title">RL on Verifiable Rewards</span></a>
+    </nav>
+
+  </div></main>
+</div>
+
+<button id="theme-toggle" class="theme-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="../assets/js/main.js"></script>
+<footer class="site-footer">
+  <p>Created by <strong>Duy Dao</strong><span class="sep">·</span><a href="https://github.com/xD4O" target="_blank" rel="noopener">GitHub @xD4O</a><span class="sep">·</span><a href="https://x.com/_cyr4x" target="_blank" rel="noopener">X @_cyr4x</a><span class="sep">·</span>AI Wiki · 2026</p>
+  <p class="star-cta">Found this useful? <a href="https://github.com/xD4O/AI-Wiki" target="_blank" rel="noopener">⭐ Star it on GitHub</a></p>
+</footer>
+</body></html>

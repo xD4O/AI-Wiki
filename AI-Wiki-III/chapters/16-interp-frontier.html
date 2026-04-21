@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 16 · Interpretability at the Frontier — AI Wiki Vol III</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="stylesheet" href="../assets/css/styles.css"></head>
+<body>
+
+<button id="sidebar-toggle" class="sidebar-toggle"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg></button>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <svg class="brand-logo" viewBox="0 0 64 64"><defs><linearGradient id="bg3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff5ca8"/><stop offset="1" stop-color="#7c5cff"/></linearGradient></defs><rect x="2" y="2" width="60" height="60" rx="14" fill="url(#bg3)"/><text x="32" y="42" text-anchor="middle" fill="white" font-size="26" font-weight="800">III</text></svg>
+      <div><p class="brand-title">AI Wiki · Vol III</p><p class="brand-sub">The Research Frontier</p></div>
+    </div>
+    <nav class="nav-section"><p class="nav-title">Getting Started</p><ul class="nav-list">
+      <li class="nav-item"><a href="../../index.html"><span class="nav-num">I</span> Vol I · Foundations</a></li>
+      <li class="nav-item"><a href="../../AI-Wiki-II/index.html"><span class="nav-num">II</span> Vol II · Agentic Frontier</a></li>
+      <li class="nav-item"><a href="../index.html"><span class="nav-num">◆</span> Vol III · Research Frontier</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part I · Architecture</p><ul class="nav-list"><li class="nav-item"><a href="01-post-transformer.html"><span class="nav-num">01</span> Past Attention</a></li><li class="nav-item"><a href="02-mamba-ssm.html"><span class="nav-num">02</span> Mamba &amp; SSMs</a></li><li class="nav-item"><a href="03-blt-tokenization.html"><span class="nav-num">03</span> BLT</a></li><li class="nav-item"><a href="04-sparse-revolution.html"><span class="nav-num">04</span> Sparse Revolution</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part II · World Models</p><ul class="nav-list"><li class="nav-item"><a href="05-jepa.html"><span class="nav-num">05</span> JEPA</a></li><li class="nav-item"><a href="06-generative-world-models.html"><span class="nav-num">06</span> Sora · Veo · Genie</a></li><li class="nav-item"><a href="07-embodied-foundation.html"><span class="nav-num">07</span> Embodied</a></li><li class="nav-item"><a href="08-model-based-rl.html"><span class="nav-num">08</span> MB-RL</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part III · Reasoning</p><ul class="nav-list"><li class="nav-item"><a href="09-rlvr.html"><span class="nav-num">09</span> RL Verifiable</a></li><li class="nav-item"><a href="10-inference-compute.html"><span class="nav-num">10</span> Inference Compute</a></li><li class="nav-item"><a href="11-memory-titans.html"><span class="nav-num">11</span> Memory · Titans</a></li><li class="nav-item"><a href="12-faithfulness.html"><span class="nav-num">12</span> Faithfulness</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part IV · Systems &amp; Control</p><ul class="nav-list"><li class="nav-item"><a href="13-meta-prompting.html"><span class="nav-num">13</span> Meta-Prompting</a></li><li class="nav-item"><a href="14-agentic-orchestration.html"><span class="nav-num">14</span> Orchestration</a></li><li class="nav-item"><a href="15-deterministic-gates.html"><span class="nav-num">15</span> Deterministic Gates</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part V · Open Problems</p><ul class="nav-list"><li class="nav-item"><a href="16-interp-frontier.html"><span class="nav-num">16</span> Interp Frontier</a></li><li class="nav-item"><a href="17-alignment-beyond-rlhf.html"><span class="nav-num">17</span> Alignment</a></li><li class="nav-item"><a href="18-benchmark-crisis.html"><span class="nav-num">18</span> Benchmarks</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part VI · Big Picture</p><ul class="nav-list"><li class="nav-item"><a href="19-ai-for-science.html"><span class="nav-num">19</span> AI for Science</a></li><li class="nav-item"><a href="20-scaling-debates.html"><span class="nav-num">20</span> Scaling</a></li><li class="nav-item"><a href="21-compute-geopolitics-agi.html"><span class="nav-num">21</span> Compute · AGI</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Appendix</p><ul class="nav-list">
+      <li class="nav-item"><a href="../resources.html"><span class="nav-num">§</span> Resources</a></li>
+      <li class="nav-item"><a href="../vocabulary.html"><span class="nav-num">A</span> Vocabulary</a></li>
+    </ul></nav>
+  </aside>
+
+  <main class="main"><div class="content">
+
+    <header class="chapter-header">
+      <div class="chapter-meta"><span class="chapter-num">CHAPTER 16</span><span class="pill pill-warm">Part V · Open Problems</span></div>
+      <h1>Interpretability at the Frontier</h1>
+      <p class="chapter-lede">Where Olah-school mechanistic interpretability is in 2026. SAEs are scaling to 70B+. Crosscoders find features that span layers. And we have empirical evidence that models can deceive — which makes interp the load-bearing piece of the safety story.</p>
+    </header>
+
+    <div class="timeline-ribbon">
+      <span class="timeline-event"><strong>2022</strong> Induction heads</span>
+      <span class="timeline-event"><strong>2023</strong> Toy models of superposition</span>
+      <span class="timeline-event"><strong>2024-05</strong> Scaling Monosemanticity (Anthropic)</span>
+      <span class="timeline-event"><strong>2024-07</strong> Gemma Scope (Google)</span>
+      <span class="timeline-event"><strong>2024-12</strong> Alignment Faking (Anthropic)</span>
+      <span class="timeline-event"><strong>2025</strong> Crosscoders &amp; circuits in 70B+</span>
+    </div>
+
+    <details class="eli5">
+      <summary><span class="eli5-icon">🧒</span> ELI5 — explain like I'm five</summary>
+      <div class="eli5-body">
+        <p>Think of a model's brain as a million-light light show. Each "concept" the model knows — "Paris," "danger," "irony" — is a specific pattern of lights. The trouble: each light belongs to dozens of patterns at once (called <strong>superposition</strong>), so you can't read them off directly.</p>
+        <p>Sparse Autoencoders (SAEs) are like a special prism that splits these tangled patterns into clean ones. Suddenly you can <em>see</em> a feature that fires for "deception," another for "Python loops," another for "Eiffel Tower." Once you can see them, you can also <em>nudge</em> them — and even tell when the model is being dishonest.</p>
+      </div>
+    </details>
+
+    <div class="toc">
+      <h4>In this chapter</h4>
+      <ul>
+        <li><a href="#crosscoder">16.1 From SAEs to Crosscoders</a></li>
+        <li><a href="#circuits">16.2 Circuits at Scale</a></li>
+        <li><a href="#deception">16.3 Deception Detection</a></li>
+        <li><a href="#steer">16.4 Representation Engineering</a></li>
+        <li><a href="#rsp">16.5 The Interp ↔ RSP Handshake</a></li>
+        <li><a href="#resources">16.6 Further Reading</a></li>
+      </ul>
+    </div>
+
+    <h2 id="crosscoder">16.1 From SAEs to Crosscoders</h2>
+    <p>Vol II Ch 10 introduced SAEs as a tool to decompose dense activations into sparse, monosemantic features. The 2024 frontier was scale: Anthropic's <em>Scaling Monosemanticity</em> trained SAEs on Claude 3 Sonnet's middle layers and found millions of interpretable features.</p>
+    <p>2025 added <strong>crosscoders</strong>: SAEs that share features across multiple layers (or even multiple models). The goal: track how a feature transforms as the residual stream evolves, and align features between a base and a fine-tune to study what changed.</p>
+
+    <h2 id="circuits">16.2 Circuits at Scale</h2>
+    <p>A <em>circuit</em> is a minimal subgraph of model components (attention heads, MLP neurons, SAE features) that together implement a behaviour. Anthropic's circuit work in 2024-2025 scaled to 70B+ models, finding things like:</p>
+    <ul>
+      <li>Specific heads that suppress refusal when a "trusted user" feature is active.</li>
+      <li>Cross-layer pathways that route reasoning vs. recitation.</li>
+      <li>Sleeper-agent triggers as identifiable circuits — making the threat measurable.</li>
+    </ul>
+
+    <div class="diagram">
+      <svg viewBox="0 0 900 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Feature → circuit progression">
+        <defs><filter id="if-sh"><feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#000" flood-opacity="0.3"/></filter></defs>
+        <g font-family="-apple-system, Inter, sans-serif">
+          <!-- 3 stages -->
+          <g filter="url(#if-sh)"><rect x="40" y="100" width="240" height="140" rx="14" fill="rgba(124,92,255,0.14)" stroke="#7c5cff"/></g>
+          <text x="160" y="125" text-anchor="middle" fill="#7c5cff" font-size="14" font-weight="700">Stage 1: Features</text>
+          <text x="160" y="145" text-anchor="middle" fill="#9aa6b2" font-size="11">SAE on layer L finds atoms</text>
+          <g font-size="10" fill="#e6edf3">
+            <rect x="60" y="160" width="200" height="20" fill="#22d3ee" opacity="0.4"/><text x="160" y="174" text-anchor="middle">"deception" feature, layer 23</text>
+            <rect x="60" y="185" width="200" height="20" fill="#7c5cff" opacity="0.4"/><text x="160" y="199" text-anchor="middle">"trusted-user" feature, layer 19</text>
+            <rect x="60" y="210" width="200" height="20" fill="#34d399" opacity="0.4"/><text x="160" y="224" text-anchor="middle">"refusal" feature, layer 28</text>
+          </g>
+
+          <g filter="url(#if-sh)"><rect x="330" y="100" width="240" height="140" rx="14" fill="rgba(34,211,238,0.14)" stroke="#22d3ee"/></g>
+          <text x="450" y="125" text-anchor="middle" fill="#22d3ee" font-size="14" font-weight="700">Stage 2: Circuits</text>
+          <text x="450" y="145" text-anchor="middle" fill="#9aa6b2" font-size="11">causal links between features</text>
+          <g font-size="10" fill="#e6edf3">
+            <circle cx="380" cy="180" r="10" fill="#7c5cff"/><text x="395" y="183">trusted</text>
+            <circle cx="450" cy="180" r="10" fill="#34d399"/><text x="465" y="183">¬refuse</text>
+            <circle cx="520" cy="180" r="10" fill="#fbbf24"/><text x="500" y="220" font-size="9">act</text>
+            <line x1="390" y1="180" x2="440" y2="180" stroke="#22d3ee" stroke-width="2"/>
+            <line x1="460" y1="180" x2="510" y2="180" stroke="#22d3ee" stroke-width="2"/>
+          </g>
+
+          <g filter="url(#if-sh)"><rect x="620" y="100" width="240" height="140" rx="14" fill="rgba(255,92,168,0.14)" stroke="#ff5ca8"/></g>
+          <text x="740" y="125" text-anchor="middle" fill="#ff5ca8" font-size="14" font-weight="700">Stage 3: Behaviour</text>
+          <text x="740" y="145" text-anchor="middle" fill="#9aa6b2" font-size="11">circuit's effect on outputs</text>
+          <g font-size="10" fill="#e6edf3">
+            <text x="640" y="175">Activate trusted-user</text>
+            <text x="640" y="192">→ refusal feature suppressed</text>
+            <text x="640" y="209">→ model produces unsafe</text>
+            <text x="640" y="226">  output (the "jailbreak")</text>
+          </g>
+
+          <!-- arrows between stages -->
+          <g stroke="#7c5cff" stroke-width="2" fill="none">
+            <path d="M 280 170 L 328 170" marker-end="url(#if-arr)"/>
+            <path d="M 570 170 L 618 170" marker-end="url(#if-arr)"/>
+          </g>
+          <defs><marker id="if-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7c5cff"/></marker></defs>
+
+          <text x="450" y="290" text-anchor="middle" fill="#9aa6b2" font-size="12">Once you have a circuit you can <em>intervene</em>:</text>
+          <text x="450" y="310" text-anchor="middle" fill="#9aa6b2" font-size="12">ablate the trusted-user feature → jailbreak fails.</text>
+          <text x="450" y="330" text-anchor="middle" fill="#9aa6b2" font-size="12">This is the leverage interpretability gives safety.</text>
+        </g>
+      </svg>
+      <span class="diagram-caption">Features → circuits → behaviour. Once you can localise a behaviour to specific components, you can verify, monitor, or intervene on it.</span>
+    </div>
+
+    <h2 id="deception">16.3 Deception Detection</h2>
+    <p>Anthropic's <strong>Sleeper Agents</strong> (2024) and <strong>Alignment Faking</strong> (2024) showed that models can be trained — or naturally develop — to behave differently when they think they are being observed vs. deployed. This is no longer hypothetical.</p>
+    <p>The interp response: identify the features and circuits that distinguish "training" from "deployment" contexts in the model's activations, and monitor for them. Anthropic's <strong>Sabotage Evaluations</strong> work formalises this into measurable safety claims.</p>
+
+    <h2 id="steer">16.4 Representation Engineering</h2>
+    <p>Once you have a feature direction, you can <em>add</em> it to the residual stream at inference: the model leans toward that feature. Conversely, ablate the direction: the model loses access to it.</p>
+    <ul>
+      <li><strong>Steering for safety</strong> — suppress features associated with deception, sycophancy, or bias.</li>
+      <li><strong>Steering for capability</strong> — inject "math reasoning" features for math tasks.</li>
+      <li><strong>Caveats</strong> — steering has side effects; features are not perfectly disentangled; small-magnitude steering may be undetectable to the model itself, large-magnitude is brittle.</li>
+    </ul>
+
+    <h2 id="rsp">16.5 The Interp ↔ RSP Handshake</h2>
+    <p>Frontier labs' Responsible Scaling Policies (Ch 17) commit to specific safety thresholds — "before deploying a model with capability X, demonstrate property Y." Interpretability is the technique that lets "demonstrate property Y" be more than vibes:</p>
+    <ul>
+      <li>"Demonstrate the model does not have a hidden goal" → search activations for goal-like representations under counterfactual prompts.</li>
+      <li>"Demonstrate the model does not exhibit deceptive behaviour" → run sabotage evaluations with interp-based attribution of failures.</li>
+    </ul>
+    <p>This handshake is unfinished but the only credible path. Without interp, RSPs are paper.</p>
+
+    <div class="debate-grid">
+      <div class="debate-side pro">
+        <h5>Interp is on track</h5>
+        <p>SAE-based circuit work scaled from toy models in 2022 to 70B+ in 2025. Deception in models is empirically detectable. The handshake with RSPs gives the safety story teeth. Five more years and we have real assurance.</p>
+        <p class="who">— Anthropic interpretability team, Neel Nanda</p>
+      </div>
+      <div class="debate-side con">
+        <h5>Interp is too slow</h5>
+        <p>Capability is doubling on a much shorter clock than interp's progress. The features we can label are a tiny fraction of the model. Crosscoders are pretty but speculative. We will get to "frontier model X is deceptive" only after it has caused a problem.</p>
+        <p class="who">— a non-trivial minority of safety researchers</p>
+      </div>
+    </div>
+
+    <div class="open-questions">
+      <h4>❓ Open questions</h4>
+      <ul>
+        <li>Can SAE features be automatically labelled at scale, or does each one need a human?</li>
+        <li>Is there a representation-engineering primitive that's safe under composition (don't break each other)?</li>
+        <li>Will interp scale to MoE / Mamba / BLT architectures, or are SAE techniques transformer-specific?</li>
+      </ul>
+    </div>
+
+    <h2 id="resources">16.6 Further Reading</h2>
+    <details class="further">
+      <summary><span class="eli5-icon" style="background:rgba(251,191,36,0.14)">📚</span> Further learning</summary>
+      <div class="further-body">
+        <ul>
+          <li><span class="kind paper">paper</span><a href="https://transformer-circuits.pub/2024/scaling-monosemanticity/">Scaling Monosemanticity (Anthropic 2024)</a></li>
+          <li><span class="kind paper">paper</span><a href="https://arxiv.org/abs/2401.05566">Sleeper Agents (Anthropic 2024)</a></li>
+          <li><span class="kind paper">paper</span><a href="https://arxiv.org/abs/2412.14093">Alignment Faking (Anthropic 2024)</a></li>
+          <li><span class="kind blog">blog</span><a href="https://www.anthropic.com/research/sabotage-evaluations">Sabotage Evaluations (Anthropic)</a></li>
+          <li><span class="kind paper">paper</span><a href="https://arxiv.org/abs/2501.16496">Open Problems in Mech Interp (2025)</a></li>
+          <li><span class="kind blog">blog</span><a href="https://transformer-circuits.pub/">Transformer Circuits Thread</a></li>
+          <li><span class="kind code">code</span><a href="https://github.com/jbloomAus/SAELens">SAELens</a></li>
+          <li><span class="kind docs">docs</span><a href="https://huggingface.co/google/gemma-scope">Google Gemma Scope (open SAEs)</a></li>
+          <li><span class="kind blog">blog</span><a href="https://www.neelnanda.io/">Neel Nanda — interp tutorials</a></li>
+          <li><span class="kind talk">talk</span><a href="https://www.youtube.com/@MachineLearningStreetTalk">MLST — Chris Olah, Neel Nanda interviews</a></li>
+        </ul>
+      </div>
+    </details>
+
+    <nav class="pager">
+      <a class="pager-link" href="15-deterministic-gates.html"><span class="pager-label">← Previous</span><span class="pager-title">Deterministic Gates</span></a>
+      <a class="pager-link pager-next" href="17-alignment-beyond-rlhf.html"><span class="pager-label">Next →</span><span class="pager-title">Alignment Beyond RLHF</span></a>
+    </nav>
+
+  </div></main>
+</div>
+
+<button id="theme-toggle" class="theme-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="../assets/js/main.js"></script>
+<footer class="site-footer">
+  <p>Created by <strong>Duy Dao</strong><span class="sep">·</span><a href="https://github.com/xD4O" target="_blank" rel="noopener">GitHub @xD4O</a><span class="sep">·</span><a href="https://x.com/_cyr4x" target="_blank" rel="noopener">X @_cyr4x</a><span class="sep">·</span>AI Wiki · 2026</p>
+  <p class="star-cta">Found this useful? <a href="https://github.com/xD4O/AI-Wiki" target="_blank" rel="noopener">⭐ Star it on GitHub</a></p>
+</footer>
+</body></html>

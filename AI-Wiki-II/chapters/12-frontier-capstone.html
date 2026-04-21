@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 12 · Frontier 2026 &amp; Capstone — AI Wiki Vol II</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+
+<button id="sidebar-toggle" class="sidebar-toggle" aria-label="Toggle navigation">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+</button>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <svg class="brand-logo" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="brand-g2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#22d3ee"/><stop offset="1" stop-color="#7c5cff"/></linearGradient></defs>
+        <rect x="4" y="4" width="56" height="56" rx="14" fill="url(#brand-g2)"/>
+        <text x="32" y="42" text-anchor="middle" fill="white" font-size="28" font-family="sans-serif" font-weight="700">II</text>
+      </svg>
+      <div><p class="brand-title">AI Wiki · Vol II</p><p class="brand-sub">The Agentic Frontier</p></div>
+    </div>
+    <nav class="nav-section"><p class="nav-title">Getting Started</p><ul class="nav-list">
+      <li class="nav-item"><a href="../../index.html"><span class="nav-num">I</span> Vol I · Foundations</a></li>
+      <li class="nav-item"><a href="../index.html"><span class="nav-num">◆</span> Vol II · Agentic Frontier</a></li>
+      <li class="nav-item"><a href="../../AI-Wiki-III/index.html"><span class="nav-num">III</span> Vol III · Research Frontier</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part I · Using Models</p><ul class="nav-list">
+      <li class="nav-item"><a href="01-chatbot-to-agent.html"><span class="nav-num">01</span> Chatbot → Agent</a></li>
+      <li class="nav-item"><a href="02-ollama-lmstudio.html"><span class="nav-num">02</span> Local Models</a></li>
+      <li class="nav-item"><a href="03-prompting.html"><span class="nav-num">03</span> The Art of Prompting</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part II · Context &amp; Memory</p><ul class="nav-list">
+      <li class="nav-item"><a href="04-context-engineering.html"><span class="nav-num">04</span> Context Engineering</a></li>
+      <li class="nav-item"><a href="05-rag.html"><span class="nav-num">05</span> RAG</a></li>
+      <li class="nav-item"><a href="06-skills.html"><span class="nav-num">06</span> Skills</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part III · Agents</p><ul class="nav-list">
+      <li class="nav-item"><a href="07-mcp.html"><span class="nav-num">07</span> MCP Protocol</a></li>
+      <li class="nav-item"><a href="08-agent-architectures.html"><span class="nav-num">08</span> Agent Architectures</a></li>
+      <li class="nav-item"><a href="09-multi-agent.html"><span class="nav-num">09</span> Multi-Agent</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part IV · Production</p><ul class="nav-list">
+      <li class="nav-item"><a href="10-interpretability.html"><span class="nav-num">10</span> Interpretability</a></li>
+      <li class="nav-item"><a href="11-evals-safety-ops.html"><span class="nav-num">11</span> Evals &amp; Ops</a></li>
+      <li class="nav-item"><a href="12-frontier-capstone.html"><span class="nav-num">12</span> Frontier &amp; Capstone</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Appendix</p><ul class="nav-list">
+      <li class="nav-item"><a href="../resources.html"><span class="nav-num">§</span> Resources</a></li>
+      <li class="nav-item"><a href="../vocabulary.html"><span class="nav-num">A</span> Vocabulary</a></li>
+      <li class="nav-item"><a href="../use-cases.html"><span class="nav-num">★</span> Use Cases 2026</a></li>
+    </ul></nav>
+  </aside>
+
+  <main class="main"><div class="content">
+
+    <header class="chapter-header">
+      <div class="chapter-meta">
+        <span class="chapter-num">CHAPTER 12</span>
+        <span class="pill pill-green">Part IV · Production</span>
+      </div>
+      <h1>Frontier 2026 &amp; Building Your Own Stack</h1>
+      <p class="chapter-lede">Where the field is heading — reasoning, computer use, multimodality, continual memory, on-device — and a ~300-line capstone that combines everything in this book.</p>
+    </header>
+
+    <div class="toc">
+      <h4>In this chapter</h4>
+      <ul>
+        <li><a href="#reason">12.1 Reasoning &amp; Inference-Time Compute</a></li>
+        <li><a href="#cu">12.2 Computer Use &amp; Browser Agents</a></li>
+        <li><a href="#multi">12.3 Native Multimodality</a></li>
+        <li><a href="#memory">12.4 Continual Learning &amp; Persistent Memory</a></li>
+        <li><a href="#ondev">12.5 On-Device Models</a></li>
+        <li><a href="#capstone">12.6 Capstone — Build Your Own Agentic App</a></li>
+        <li><a href="#signals">12.7 Signals to Watch</a></li>
+        <li><a href="#resources">12.8 Further Reading</a></li>
+      </ul>
+    </div>
+
+    <h2 id="reason">12.1 Reasoning &amp; Inference-Time Compute</h2>
+    <p>The big shift of 2024–2025 was that <em>quality no longer scales only with training compute</em> — it also scales with <em>inference</em> compute. RL-trained reasoning models (OpenAI's o-series, DeepSeek-R1, Claude extended thinking, Qwen QwQ) spend up to tens of thousands of tokens "thinking" before answering.</p>
+
+    <div class="diagram">
+      <svg viewBox="0 0 900 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Inference-time scaling curve">
+        <g font-family="sans-serif">
+          <!-- axes -->
+          <line x1="80" y1="220" x2="830" y2="220" stroke="#6b7687"/>
+          <line x1="80" y1="40" x2="80" y2="220" stroke="#6b7687"/>
+          <text x="455" y="250" text-anchor="middle" fill="#9aa6b2" font-size="12">think-tokens (log)</text>
+          <text x="30" y="130" text-anchor="middle" fill="#9aa6b2" font-size="12" transform="rotate(-90 30 130)">accuracy</text>
+          <!-- curve rising then plateau -->
+          <path d="M 80 200 C 220 195 300 150 450 90 C 600 60 750 55 830 50" fill="none" stroke="#7c5cff" stroke-width="3"/>
+          <g font-size="11" fill="#e6edf3">
+            <circle cx="130" cy="197" r="4" fill="#22d3ee"/><text x="140" y="201">zero-shot</text>
+            <circle cx="280" cy="165" r="4" fill="#7c5cff"/><text x="290" y="170">CoT</text>
+            <circle cx="450" cy="90" r="4" fill="#fbbf24"/><text x="460" y="95">reasoning model, 1k thinking toks</text>
+            <circle cx="700" cy="55" r="4" fill="#ff5ca8"/><text x="710" y="60">reasoning + self-consistency, 50k toks</text>
+          </g>
+        </g>
+      </svg>
+      <span class="diagram-caption">Spending tokens at inference is now a first-class quality lever. Cost-per-correct-answer can still win vs. a larger model.</span>
+    </div>
+
+    <h2 id="cu">12.2 Computer Use &amp; Browser Agents</h2>
+    <p>In 2024–2025, Anthropic, OpenAI, and Google shipped <strong>computer-use</strong> modes — models that see screenshots and emit mouse/keyboard actions. In 2026 this moved from demo to real workflows: form-filling in legacy enterprise apps, browser QA, and Claude surfaces inside Chrome, Excel, and PowerPoint.</p>
+    <p>Browser agents (BrowserBase, Playwright-MCP, OpenAI Operator, Replit) sit alongside — better than pure computer-use for web-scoped tasks because the DOM is richer signal than pixels.</p>
+
+    <h2 id="multi">12.3 Native Multimodality</h2>
+    <p>Vision, audio, and video are no longer bolted onto text models; they are trained jointly from scratch. Practical implications:</p>
+    <ul>
+      <li><strong>Voice.</strong> Realtime speech-to-speech models (GPT-4o-realtime, Gemini Live) remove the STT/TTS pipeline entirely.</li>
+      <li><strong>Vision.</strong> Image / PDF / chart understanding is now baseline. Qwen 2.5-VL, Claude vision, Gemini Flash all handle document extraction well enough to replace Tesseract for most tasks.</li>
+      <li><strong>Video.</strong> Long-form video understanding (hours) is still the frontier.</li>
+    </ul>
+
+    <h2 id="memory">12.4 Continual Learning &amp; Persistent Memory</h2>
+    <p>A model's training is frozen, but we can give it a memory that <em>isn't</em>. Libraries like <a href="https://letta.com/">Letta</a> (formerly MemGPT) and <a href="https://github.com/mem0ai/mem0">mem0</a> maintain a structured store of facts, preferences, and past interactions, retrieved into each turn.</p>
+    <p>Recent survey work (<a href="https://arxiv.org/abs/2512.13564">arXiv:2512.13564</a>) and position pieces like <a href="https://arxiv.org/abs/2511.01093">"Continual Learning, Not Training"</a> argue the next frontier is a model that <em>updates</em> from deployment experience without losing calibration — still an open problem.</p>
+
+    <h2 id="ondev">12.5 On-Device Models</h2>
+    <p>Apple Intelligence (3B on-device + private-cloud fallback), Qualcomm/MediaTek NPU runtimes, and Google's Gemini Nano have put useful models on every phone. The watershed: a 2–4B model fine-tuned + quantized onto an NPU is now fast enough to do autocomplete, summarization, and transcription without a network round-trip.</p>
+
+    <h2 id="capstone">12.6 Capstone — Build Your Own Agentic App</h2>
+    <p>A ~300-line reference app that stitches Chapters 2, 4, 5, 7, 8, and 11 into one workflow: a <strong>local personal research assistant</strong> that reads your Obsidian vault, answers questions with citations, can browse the web when needed, and logs every run.</p>
+
+    <div class="diagram">
+      <svg viewBox="0 0 900 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Capstone architecture">
+        <defs><marker id="cs-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7c5cff"/></marker></defs>
+        <g font-family="sans-serif">
+          <!-- User -->
+          <rect x="30" y="130" width="110" height="50" rx="10" fill="#161b24" stroke="#22d3ee" stroke-width="1.5"/>
+          <text x="85" y="160" text-anchor="middle" fill="#22d3ee" font-size="13" font-weight="700">You</text>
+          <!-- Agent loop -->
+          <rect x="180" y="80" width="200" height="150" rx="14" fill="rgba(124,92,255,0.15)" stroke="#7c5cff" stroke-width="2"/>
+          <text x="280" y="110" text-anchor="middle" fill="#e6edf3" font-size="13" font-weight="700">ReAct loop</text>
+          <text x="280" y="132" text-anchor="middle" fill="#9aa6b2" font-size="11">Claude Opus / Qwen 2.5</text>
+          <text x="280" y="152" text-anchor="middle" fill="#9aa6b2" font-size="11">prompt-cached system</text>
+          <text x="280" y="172" text-anchor="middle" fill="#9aa6b2" font-size="11">rolling summaries</text>
+          <text x="280" y="192" text-anchor="middle" fill="#9aa6b2" font-size="11">budget = $0.50 / run</text>
+
+          <!-- MCP tools -->
+          <rect x="440" y="40" width="180" height="65" rx="10" fill="rgba(34,211,238,0.12)" stroke="#22d3ee" stroke-width="1.5"/>
+          <text x="530" y="65" text-anchor="middle" fill="#22d3ee" font-size="12" font-weight="700">MCP · obsidian</text>
+          <text x="530" y="85" text-anchor="middle" fill="#9aa6b2" font-size="11">read_note, search_vault</text>
+
+          <rect x="440" y="120" width="180" height="65" rx="10" fill="rgba(52,211,153,0.12)" stroke="#34d399" stroke-width="1.5"/>
+          <text x="530" y="145" text-anchor="middle" fill="#34d399" font-size="12" font-weight="700">MCP · web</text>
+          <text x="530" y="165" text-anchor="middle" fill="#9aa6b2" font-size="11">fetch, search</text>
+
+          <rect x="440" y="200" width="180" height="65" rx="10" fill="rgba(251,191,36,0.12)" stroke="#fbbf24" stroke-width="1.5"/>
+          <text x="530" y="225" text-anchor="middle" fill="#fbbf24" font-size="12" font-weight="700">LanceDB</text>
+          <text x="530" y="245" text-anchor="middle" fill="#9aa6b2" font-size="11">vault embeddings + BM25</text>
+
+          <!-- Observability -->
+          <rect x="680" y="120" width="180" height="80" rx="10" fill="rgba(255,92,168,0.12)" stroke="#ff5ca8" stroke-width="1.5"/>
+          <text x="770" y="145" text-anchor="middle" fill="#ff5ca8" font-size="12" font-weight="700">Langfuse</text>
+          <text x="770" y="165" text-anchor="middle" fill="#9aa6b2" font-size="11">traces + cost per run</text>
+          <text x="770" y="183" text-anchor="middle" fill="#9aa6b2" font-size="11">eval set: 30 goldens</text>
+
+          <g stroke="#7c5cff" stroke-width="1.5" fill="none">
+            <path d="M 140 155 L 178 155" marker-end="url(#cs-a)"/>
+            <path d="M 380 110 L 438 72" marker-end="url(#cs-a)"/>
+            <path d="M 380 155 L 438 152" marker-end="url(#cs-a)"/>
+            <path d="M 380 200 L 438 232" marker-end="url(#cs-a)"/>
+            <path d="M 380 155 L 678 155" marker-end="url(#cs-a)"/>
+          </g>
+        </g>
+      </svg>
+      <span class="diagram-caption">The capstone: every layer of Volume II in one 300-line program.</span>
+    </div>
+
+<pre><code class="language-python">"""Capstone: local personal research assistant (abridged).
+Fills the blanks with Ch 2/4/5/7/11 patterns — see /AI-Wiki-II/chapters/.
+"""
+import os, time, json, pathlib, lancedb, ollama
+from openai import OpenAI
+from langfuse.decorators import observe
+
+VAULT = pathlib.Path.home() / "obsidian-vault"
+DB    = lancedb.connect("./.assistant")
+
+# 1. Nightly ingest: chunk + embed vault notes
+def ingest():
+    from lancedb.embeddings import get_registry
+    em = get_registry().get("ollama").create(name="mxbai-embed-large")
+    rows = []
+    for md in VAULT.rglob("*.md"):
+        text = md.read_text()
+        for i in range(0, len(text), 700):
+            chunk = text[i:i+800]
+            rows.append({"path": str(md), "text": chunk, "vector": em.compute_source_embeddings([chunk])[0]})
+    DB.create_table("vault", rows, mode="overwrite").create_fts_index("text")
+
+# 2. Agent loop with prompt caching, rolling summary, budget cap
+client = OpenAI(base_url="http://localhost:11434/v1", api_key="ollama")
+TOOLS = load_mcp_tools(["obsidian", "web"])   # see Ch 07 for registration
+
+SYSTEM = """You are Duy's research assistant. Always cite the vault note by path.
+If the vault doesn't contain the answer, use web.fetch. Keep answers under 400 words."""
+
+@observe()  # Langfuse trace wrapper
+def assistant(question, max_steps=10, budget_usd=0.50):
+    spent, history = 0.0, [{"role": "system", "content": SYSTEM}, {"role": "user", "content": question}]
+    for step in range(max_steps):
+        r = client.chat.completions.create(
+            model="qwen2.5:32b", messages=history, tools=TOOLS,
+            extra_body={"cache_control": {"type": "ephemeral"}},
+        )
+        spent += estimate_cost(r.usage)
+        if spent > budget_usd:
+            return "(budget exceeded)"
+        msg = r.choices[0].message
+        history.append(msg.model_dump())
+        if not msg.tool_calls:
+            return msg.content
+        for call in msg.tool_calls:
+            result = run_mcp_tool(call.function.name, json.loads(call.function.arguments))
+            history.append({"role": "tool", "tool_call_id": call.id, "content": result})
+
+if __name__ == "__main__":
+    if "--ingest" in os.sys.argv: ingest()
+    else: print(assistant(" ".join(os.sys.argv[1:])))
+</code></pre>
+
+    <p>Run it:</p>
+<pre><code class="language-bash">python assistant.py --ingest          # build the index
+python assistant.py "what did I decide about the quarterly planning doc?"</code></pre>
+
+    <div class="callout tip">
+      <svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/></svg>
+      <div class="callout-body">
+        <div class="callout-title">Now extend it</div>
+        <p>Swap in a cloud frontier model when a local router classifies the question as "hard." Add a planner subagent (Ch 09) for multi-vault research tasks. Wire up a prompt-injection eval suite (Ch 11) so you know when the web fetcher gets poisoned. The wiki is a map — the territory is up to you.</p>
+      </div>
+    </div>
+
+    <h2 id="signals">12.7 Signals to Watch</h2>
+    <ul>
+      <li><strong>Benchmark migration.</strong> When the field abandons a benchmark (SWE-bench Verified) it's because the frontier broke through it. Watch what replaces it — that's the new ceiling.</li>
+      <li><strong>Open-weight gap.</strong> Every year the delta between the best closed and best open model shrinks. Track it on LMSYS Arena.</li>
+      <li><strong>Inference-compute curves.</strong> When a small model + big thinking budget beats a bigger model, that changes product economics.</li>
+      <li><strong>On-device capability.</strong> When a 4B model genuinely replaces a 70B for your task, your architecture changes.</li>
+      <li><strong>MCP adoption.</strong> Number of first-party MCP servers published by SaaS vendors. When Salesforce / Workday / Oracle ship one, the "agent operating system" layer has arrived.</li>
+    </ul>
+
+    <h2 id="resources">12.8 Further Reading &amp; Final Note</h2>
+    <ul>
+      <li><strong>Simon Willison — LLM predictions for 2026</strong>: <a href="https://simonwillison.net/2026/Jan/8/llm-predictions-for-2026/">simonwillison.net</a></li>
+      <li><strong>DeepSeek-R1 Nature paper</strong>: <a href="https://www.nature.com/articles/s41586-025-09422-z">nature.com</a></li>
+      <li><strong>Anthropic — Computer Use</strong>: <a href="https://www.anthropic.com/news/3-5-models-and-computer-use">anthropic.com/news</a></li>
+      <li><strong>Memory in the Age of AI Agents</strong>: <a href="https://arxiv.org/abs/2512.13564">arXiv:2512.13564</a></li>
+      <li><strong>Continual Learning, Not Training</strong>: <a href="https://arxiv.org/abs/2511.01093">arXiv:2511.01093</a></li>
+      <li><strong>Humanity's Last Exam</strong>: <a href="https://lastexam.ai/">lastexam.ai</a></li>
+      <li><strong>FrontierMath</strong>: <a href="https://epoch.ai/frontiermath">epoch.ai/frontiermath</a></li>
+      <li><strong>ARC-AGI</strong>: <a href="https://arcprize.org/">arcprize.org</a></li>
+    </ul>
+
+    <h3>People to follow</h3>
+    <ul>
+      <li><strong>Andrej Karpathy</strong> — <a href="https://twitter.com/karpathy">@karpathy</a></li>
+      <li><strong>Dwarkesh Patel</strong> — <a href="https://www.dwarkesh.com/">dwarkesh.com</a></li>
+      <li><strong>Nathan Lambert · Interconnects</strong> — <a href="https://www.interconnects.ai/">interconnects.ai</a></li>
+      <li><strong>Dario Amodei</strong> — <a href="https://www.darioamodei.com/">darioamodei.com</a></li>
+      <li><strong>Simon Willison</strong> — <a href="https://simonwillison.net/">simonwillison.net</a></li>
+    </ul>
+
+    <div class="callout tip">
+      <svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/></svg>
+      <div class="callout-body">
+        <div class="callout-title">You've finished Volume II</div>
+        <p>Volume I taught the mathematics and architecture of models. Volume II taught the art of making them useful. There is no Volume III — everything after this is the field moving faster than any book can. Go build.</p>
+      </div>
+    </div>
+
+    <nav class="pager">
+      <a class="pager-link" href="11-evals-safety-ops.html"><span class="pager-label">← Previous</span><span class="pager-title">Evals, Safety &amp; Ops</span></a>
+      <a class="pager-link pager-next" href="../resources.html"><span class="pager-label">Appendix →</span><span class="pager-title">Resources &amp; Links</span></a>
+    </nav>
+
+  </div></main>
+</div>
+
+<button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="../assets/js/main.js"></script>
+<footer class="site-footer">
+  <p>Created by <strong>Duy Dao</strong><span class="sep">·</span><a href="https://github.com/xD4O" target="_blank" rel="noopener">GitHub @xD4O</a><span class="sep">·</span><a href="https://x.com/_cyr4x" target="_blank" rel="noopener">X @_cyr4x</a><span class="sep">·</span>AI Wiki · 2026</p>
+  <p class="star-cta">Found this useful? <a href="https://github.com/xD4O/AI-Wiki" target="_blank" rel="noopener">⭐ Star it on GitHub</a></p>
+</footer>
+</body>
+</html>

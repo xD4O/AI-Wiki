@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 01 · Why We're Looking Past Attention — AI Wiki Vol III</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+
+<button id="sidebar-toggle" class="sidebar-toggle" aria-label="Toggle navigation">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+</button>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <svg class="brand-logo" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="bg3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff5ca8"/><stop offset="1" stop-color="#7c5cff"/></linearGradient></defs>
+        <rect x="2" y="2" width="60" height="60" rx="14" fill="url(#bg3)"/>
+        <text x="32" y="42" text-anchor="middle" fill="white" font-size="26" font-family="sans-serif" font-weight="800">III</text>
+      </svg>
+      <div><p class="brand-title">AI Wiki · Vol III</p><p class="brand-sub">The Research Frontier</p></div>
+    </div>
+    <nav class="nav-section"><p class="nav-title">Getting Started</p><ul class="nav-list">
+      <li class="nav-item"><a href="../../index.html"><span class="nav-num">I</span> Vol I · Foundations</a></li>
+      <li class="nav-item"><a href="../../AI-Wiki-II/index.html"><span class="nav-num">II</span> Vol II · Agentic Frontier</a></li>
+      <li class="nav-item"><a href="../index.html"><span class="nav-num">◆</span> Vol III · Research Frontier</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part I · Architecture</p><ul class="nav-list">
+      <li class="nav-item"><a href="01-post-transformer.html"><span class="nav-num">01</span> Past Attention</a></li>
+      <li class="nav-item"><a href="02-mamba-ssm.html"><span class="nav-num">02</span> Mamba &amp; SSMs</a></li>
+      <li class="nav-item"><a href="03-blt-tokenization.html"><span class="nav-num">03</span> BLT</a></li>
+      <li class="nav-item"><a href="04-sparse-revolution.html"><span class="nav-num">04</span> Sparse Revolution</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part II · World Models</p><ul class="nav-list">
+      <li class="nav-item"><a href="05-jepa.html"><span class="nav-num">05</span> JEPA</a></li>
+      <li class="nav-item"><a href="06-generative-world-models.html"><span class="nav-num">06</span> Sora · Veo · Genie</a></li>
+      <li class="nav-item"><a href="07-embodied-foundation.html"><span class="nav-num">07</span> Embodied</a></li>
+      <li class="nav-item"><a href="08-model-based-rl.html"><span class="nav-num">08</span> MB-RL</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part III · Reasoning</p><ul class="nav-list">
+      <li class="nav-item"><a href="09-rlvr.html"><span class="nav-num">09</span> RL Verifiable</a></li>
+      <li class="nav-item"><a href="10-inference-compute.html"><span class="nav-num">10</span> Inference Compute</a></li>
+      <li class="nav-item"><a href="11-memory-titans.html"><span class="nav-num">11</span> Memory · Titans</a></li>
+      <li class="nav-item"><a href="12-faithfulness.html"><span class="nav-num">12</span> Faithfulness</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part IV · Systems &amp; Control</p><ul class="nav-list">
+      <li class="nav-item"><a href="13-meta-prompting.html"><span class="nav-num">13</span> Meta-Prompting</a></li>
+      <li class="nav-item"><a href="14-agentic-orchestration.html"><span class="nav-num">14</span> Orchestration</a></li>
+      <li class="nav-item"><a href="15-deterministic-gates.html"><span class="nav-num">15</span> Deterministic Gates</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part V · Open Problems</p><ul class="nav-list">
+      <li class="nav-item"><a href="16-interp-frontier.html"><span class="nav-num">16</span> Interp Frontier</a></li>
+      <li class="nav-item"><a href="17-alignment-beyond-rlhf.html"><span class="nav-num">17</span> Alignment</a></li>
+      <li class="nav-item"><a href="18-benchmark-crisis.html"><span class="nav-num">18</span> Benchmarks</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part VI · Big Picture</p><ul class="nav-list">
+      <li class="nav-item"><a href="19-ai-for-science.html"><span class="nav-num">19</span> AI for Science</a></li>
+      <li class="nav-item"><a href="20-scaling-debates.html"><span class="nav-num">20</span> Scaling</a></li>
+      <li class="nav-item"><a href="21-compute-geopolitics-agi.html"><span class="nav-num">21</span> Compute · AGI</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Appendix</p><ul class="nav-list">
+      <li class="nav-item"><a href="../resources.html"><span class="nav-num">§</span> Resources</a></li>
+      <li class="nav-item"><a href="../vocabulary.html"><span class="nav-num">A</span> Vocabulary</a></li>
+    </ul></nav>
+  </aside>
+
+  <main class="main"><div class="content">
+
+    <header class="chapter-header">
+      <div class="chapter-meta">
+        <span class="chapter-num">CHAPTER 01</span>
+        <span class="pill pill-accent">Part I · Architecture</span>
+      </div>
+      <h1>Why We're Looking Past Attention</h1>
+      <p class="chapter-lede">Before we survey the successors, let's make the charges against the transformer concrete. What, specifically, is wrong at April-2026 scale — and what isn't?</p>
+    </header>
+
+    <div class="timeline-ribbon">
+      <span class="timeline-event"><strong>2017</strong> "Attention Is All You Need"</span>
+      <span class="timeline-event"><strong>2020</strong> GPT-3 scales</span>
+      <span class="timeline-event"><strong>2022</strong> Chinchilla</span>
+      <span class="timeline-event"><strong>2023-12</strong> Mamba-1</span>
+      <span class="timeline-event"><strong>2024-05</strong> Mamba-2 · SSD</span>
+      <span class="timeline-event"><strong>2024-12</strong> BLT</span>
+      <span class="timeline-event"><strong>2025</strong> o-series · R1</span>
+      <span class="timeline-event"><strong>2026-04</strong> you are here</span>
+    </div>
+
+    <details class="eli5">
+      <summary><span class="eli5-icon">🧒</span> ELI5 — explain like I'm five</summary>
+      <div class="eli5-body">
+        <p>Imagine you're in a classroom with 100 kids. Every time the teacher asks a question, every kid has to check with <em>every other kid</em> before answering. For 100 kids, that's 10,000 little conversations. For 1,000 kids, a million. This is how transformers ("attention") work — every word looks at every other word.</p>
+        <p>It works amazingly well, but it's <strong>expensive</strong> (costs scale with the square of the class size), and it has weird side-effects: the teacher chops words into odd pieces called tokens, so the model sometimes can't spell "strawberry" right. And every word carries around 16-bit decimal numbers when it could often get by with just three values: positive, zero, or negative.</p>
+        <p>Researchers are trying to <em>replace</em> attention with faster math (Mamba), <em>get rid of</em> the word-chopping (BLT), and <em>simplify</em> the numbers (BitNet). Volume III is a tour of what's working and what isn't.</p>
+      </div>
+    </details>
+
+    <div class="toc">
+      <h4>In this chapter</h4>
+      <ul>
+        <li><a href="#setup">1.1 The Setup — Why a Successor at All?</a></li>
+        <li><a href="#n2">1.2 The O(n²) Sin</a></li>
+        <li><a href="#tok">1.3 The Tokenization Original Sin</a></li>
+        <li><a href="#matmul">1.4 The Dense-Matmul Tax</a></li>
+        <li><a href="#reason">1.5 The Reasoning Gap</a></li>
+        <li><a href="#landscape">1.6 The 2026 Landscape</a></li>
+        <li><a href="#resources">1.7 Further Reading</a></li>
+      </ul>
+    </div>
+
+    <h2 id="setup">1.1 The Setup — Why a Successor at All?</h2>
+    <p>The transformer is an extraordinary piece of engineering. Two ideas — multi-head self-attention and the residual stream — took us from BERT to Claude Opus 4.7 in roughly eight years. Most of that time the main delta has been <em>more of the same</em>: wider models, more data, better training recipes.</p>
+    <p>And yet: by April 2026 four distinct architectural attacks are credibly in flight. Why?</p>
+    <p>Because <em>attention has specific, quantifiable flaws</em> that no amount of dumping compute on it will fix. Let's walk them.</p>
+
+    <h2 id="n2">1.2 The O(n²) Sin</h2>
+    <p>Standard self-attention computes a similarity score between every pair of tokens. For a sequence of <em>n</em> tokens that's n² scores — both in compute and in the size of the attention matrix. The <strong>KV cache</strong>, which holds the keys and values of every past token so we don't recompute them at generation time, also grows linearly in <em>n</em> — which means at inference the memory bill is dominated by cache, not weights.</p>
+    <p>At n = 2K this is invisible. At n = 200K it is the bill.</p>
+
+    <div class="diagram">
+      <svg viewBox="0 0 900 380" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Compute and memory vs. context length">
+        <defs>
+          <filter id="shadow1"><feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#000" flood-opacity="0.3"/></filter>
+          <linearGradient id="pink-fill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#ff5ca8" stop-opacity="0.3"/>
+            <stop offset="1" stop-color="#ff5ca8" stop-opacity="0"/>
+          </linearGradient>
+          <linearGradient id="green-fill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#34d399" stop-opacity="0.3"/>
+            <stop offset="1" stop-color="#34d399" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+
+        <g font-family="-apple-system, Inter, sans-serif">
+          <!-- Axes -->
+          <line x1="80" y1="320" x2="850" y2="320" stroke="#6b7687" stroke-width="1.2"/>
+          <line x1="80" y1="40" x2="80" y2="320" stroke="#6b7687" stroke-width="1.2"/>
+          <text x="465" y="355" text-anchor="middle" fill="#9aa6b2" font-size="12" font-weight="600">context length (tokens)</text>
+          <text x="35" y="180" text-anchor="middle" fill="#9aa6b2" font-size="12" font-weight="600" transform="rotate(-90 35 180)">compute &amp; memory</text>
+
+          <!-- x-axis ticks -->
+          <g font-size="11" fill="#6b7687" text-anchor="middle">
+            <text x="150" y="338">2K</text>
+            <text x="280" y="338">8K</text>
+            <text x="410" y="338">32K</text>
+            <text x="540" y="338">128K</text>
+            <text x="670" y="338">512K</text>
+            <text x="800" y="338">2M</text>
+          </g>
+
+          <!-- Transformer n² curve (filled area) -->
+          <path d="M 80 318 Q 200 316 280 310 Q 380 300 460 260 Q 540 200 620 120 Q 700 60 800 50 L 800 320 L 80 320 z" fill="url(#pink-fill)" stroke="none"/>
+          <path d="M 80 318 Q 200 316 280 310 Q 380 300 460 260 Q 540 200 620 120 Q 700 60 800 50" fill="none" stroke="#ff5ca8" stroke-width="3"/>
+          <text x="700" y="90" fill="#ff5ca8" font-size="13" font-weight="700">Transformer O(n²)</text>
+
+          <!-- SSM / Mamba linear curve -->
+          <path d="M 80 318 Q 250 310 440 295 Q 620 280 800 255" fill="url(#green-fill)" stroke="none" opacity="0.5"/>
+          <path d="M 80 318 Q 250 310 440 295 Q 620 280 800 255" fill="none" stroke="#34d399" stroke-width="3"/>
+          <text x="650" y="275" fill="#34d399" font-size="13" font-weight="700">Mamba / SSM O(n)</text>
+
+          <!-- Annotation boxes -->
+          <g filter="url(#shadow1)">
+            <rect x="160" y="60" width="200" height="70" rx="10" fill="#161b24" stroke="#ff5ca8"/>
+          </g>
+          <text x="175" y="82" fill="#ff5ca8" font-size="12" font-weight="700">At 128K → 512K</text>
+          <text x="175" y="102" fill="#e6edf3" font-size="11">KV cache dominates VRAM;</text>
+          <text x="175" y="117" fill="#e6edf3" font-size="11">prefill latency becomes linear.</text>
+
+          <g filter="url(#shadow1)">
+            <rect x="400" y="170" width="220" height="60" rx="10" fill="#161b24" stroke="#34d399"/>
+          </g>
+          <text x="415" y="193" fill="#34d399" font-size="12" font-weight="700">SSMs / linear attention</text>
+          <text x="415" y="213" fill="#e6edf3" font-size="11">constant-memory recurrence</text>
+        </g>
+      </svg>
+      <span class="diagram-caption">Attention's quadratic cost is a hard wall at long contexts. SSMs trade it for an informational compression loss we'll characterise in Ch 02.</span>
+    </div>
+
+    <h2 id="tok">1.3 The Tokenization Original Sin</h2>
+    <p>Transformers operate over <strong>tokens</strong> — roughly, chunks of 3–4 characters produced by a BPE tokenizer. Byte-pair encoding was a pragmatic choice in 2015. It has aged poorly.</p>
+
+    <table>
+      <thead><tr><th>Failure mode</th><th>Why it happens</th></tr></thead>
+      <tbody>
+        <tr><td><strong>"Count the <em>r</em>s in strawberry"</strong></td><td>"strawberry" is one or two tokens, not ten characters. The model never sees the letters.</td></tr>
+        <tr><td><strong>Arithmetic on big numbers</strong></td><td>"12345" might tokenize as one symbol; "54321" as another. Digit-level reasoning can't carry over.</td></tr>
+        <tr><td><strong>Non-English &amp; code</strong></td><td>BPE was fit on English-heavy data. Thai, Tamil, emoji, rare code tokens use 2–5× more tokens per character — a cost and quality tax.</td></tr>
+        <tr><td><strong>Reversal &amp; substring ops</strong></td><td>"Reverse the word 'happiness'" requires operating inside a token. The model fakes it from memorised examples.</td></tr>
+        <tr><td><strong>Spelling drift</strong></td><td>Low-frequency tokens are under-fit; the model "knows" a word exists but misspells it.</td></tr>
+      </tbody>
+    </table>
+
+    <p>These aren't curiosities. They're the long tail that fine-tuning covers up and that real users hit every day.</p>
+
+    <h2 id="matmul">1.4 The Dense-Matmul Tax</h2>
+    <p>A transformer's FLOPs are dominated by large, dense matrix multiplies — MLP projections and attention projections — in BF16 or FP16. The <strong>weights themselves</strong> are the headline VRAM cost, and the <strong>matmuls</strong> the headline compute cost.</p>
+    <p>Two 2024 lines of work attack this in opposite directions:</p>
+    <ul>
+      <li><strong>Sparsity</strong> (fine-grained MoE, conditional routing) — do full-precision math, but only a fraction of it per token. Covered in Chapter 04.</li>
+      <li><strong>Low precision</strong> (BitNet b1.58, matmul-free LMs) — use trivial arithmetic (ternary weights, pure adds) on every parameter. Also Chapter 04.</li>
+    </ul>
+
+    <h2 id="reason">1.5 The Reasoning Gap</h2>
+    <p>Frontier LLMs still fail on problems a competent 14-year-old would solve — specifically, problems that are perturbations of a training distribution rather than exact matches. Apple's <strong>GSM-Symbolic</strong> (2024) replaced numbers in GSM8K with new numbers and same-structure names; frontier models dropped 5–25 points. The argument is not "the model is bad"; it's "the model's generalisation looks template-matching more than reasoning."</p>
+    <p>We return to this debate in Chapter 12 with both sides' strongest evidence. For now, file it under "things attention plus more data hasn't obviously solved."</p>
+
+    <h2 id="landscape">1.6 The 2026 Landscape</h2>
+
+    <div class="diagram">
+      <svg viewBox="0 0 960 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Post-transformer architectures, 2026 taxonomy">
+        <defs>
+          <filter id="tx-shadow"><feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#000" flood-opacity="0.35"/></filter>
+          <marker id="tx-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7c5cff"/></marker>
+        </defs>
+        <g font-family="-apple-system, Inter, sans-serif">
+          <!-- Root: Transformer -->
+          <g filter="url(#tx-shadow)">
+            <rect x="380" y="20" width="200" height="60" rx="12" fill="#161b24" stroke="#7c5cff" stroke-width="2"/>
+          </g>
+          <text x="480" y="45" text-anchor="middle" fill="#e6edf3" font-size="14" font-weight="700">Transformer (2017)</text>
+          <text x="480" y="64" text-anchor="middle" fill="#9aa6b2" font-size="11">quadratic attention, BPE, FP16</text>
+
+          <!-- 4 branches -->
+          <!-- 1. Efficient attention -->
+          <g filter="url(#tx-shadow)">
+            <rect x="40" y="140" width="180" height="55" rx="10" fill="rgba(34,211,238,0.12)" stroke="#22d3ee"/>
+          </g>
+          <text x="130" y="163" text-anchor="middle" fill="#22d3ee" font-size="13" font-weight="700">Efficient attention</text>
+          <text x="130" y="182" text-anchor="middle" fill="#9aa6b2" font-size="10.5">Flash · Ring · Paged</text>
+          <text x="130" y="212" text-anchor="middle" fill="#6b7687" font-size="10.5" font-style="italic">same algorithm, faster</text>
+
+          <!-- 2. SSM -->
+          <g filter="url(#tx-shadow)">
+            <rect x="250" y="140" width="180" height="55" rx="10" fill="rgba(52,211,153,0.14)" stroke="#34d399"/>
+          </g>
+          <text x="340" y="163" text-anchor="middle" fill="#34d399" font-size="13" font-weight="700">State Space Models</text>
+          <text x="340" y="182" text-anchor="middle" fill="#9aa6b2" font-size="10.5">Mamba-2, Jamba, Griffin</text>
+          <text x="340" y="212" text-anchor="middle" fill="#6b7687" font-size="10.5" font-style="italic">linear-cost recurrence</text>
+
+          <!-- 3. Byte-level -->
+          <g filter="url(#tx-shadow)">
+            <rect x="460" y="140" width="180" height="55" rx="10" fill="rgba(251,191,36,0.14)" stroke="#fbbf24"/>
+          </g>
+          <text x="550" y="163" text-anchor="middle" fill="#fbbf24" font-size="13" font-weight="700">Byte-level / patches</text>
+          <text x="550" y="182" text-anchor="middle" fill="#9aa6b2" font-size="10.5">BLT · MegaByte · SpaceByte</text>
+          <text x="550" y="212" text-anchor="middle" fill="#6b7687" font-size="10.5" font-style="italic">no BPE</text>
+
+          <!-- 4. Sparse / low-bit -->
+          <g filter="url(#tx-shadow)">
+            <rect x="670" y="140" width="180" height="55" rx="10" fill="rgba(255,92,168,0.14)" stroke="#ff5ca8"/>
+          </g>
+          <text x="760" y="163" text-anchor="middle" fill="#ff5ca8" font-size="13" font-weight="700">Sparse / low-bit</text>
+          <text x="760" y="182" text-anchor="middle" fill="#9aa6b2" font-size="10.5">DeepSeek-MoE · BitNet</text>
+          <text x="760" y="212" text-anchor="middle" fill="#6b7687" font-size="10.5" font-style="italic">less math per token</text>
+
+          <!-- bottom row -->
+          <g filter="url(#tx-shadow)">
+            <rect x="140" y="285" width="180" height="55" rx="10" fill="rgba(124,92,255,0.14)" stroke="#7c5cff"/>
+          </g>
+          <text x="230" y="308" text-anchor="middle" fill="#7c5cff" font-size="13" font-weight="700">Diffusion-for-text</text>
+          <text x="230" y="327" text-anchor="middle" fill="#9aa6b2" font-size="10.5">Mercury · SEDD · MDLM</text>
+
+          <g filter="url(#tx-shadow)">
+            <rect x="370" y="285" width="180" height="55" rx="10" fill="rgba(255,138,92,0.14)" stroke="#ff8a5c"/>
+          </g>
+          <text x="460" y="308" text-anchor="middle" fill="#ff8a5c" font-size="13" font-weight="700">Hybrids</text>
+          <text x="460" y="327" text-anchor="middle" fill="#9aa6b2" font-size="10.5">Jamba · Samba · Zamba</text>
+
+          <g filter="url(#tx-shadow)">
+            <rect x="600" y="285" width="180" height="55" rx="10" fill="rgba(34,211,238,0.14)" stroke="#22d3ee"/>
+          </g>
+          <text x="690" y="308" text-anchor="middle" fill="#22d3ee" font-size="13" font-weight="700">Non-generative</text>
+          <text x="690" y="327" text-anchor="middle" fill="#9aa6b2" font-size="10.5">I-JEPA · V-JEPA 2 (Ch 05)</text>
+
+          <!-- Arrows from root -->
+          <g stroke="#7c5cff" stroke-width="1.4" fill="none" opacity="0.6">
+            <path d="M 440 80 Q 360 110 200 138" marker-end="url(#tx-arr)"/>
+            <path d="M 460 80 Q 400 110 330 138" marker-end="url(#tx-arr)"/>
+            <path d="M 500 80 Q 520 110 540 138" marker-end="url(#tx-arr)"/>
+            <path d="M 520 80 Q 600 110 730 138" marker-end="url(#tx-arr)"/>
+            <path d="M 480 80 Q 400 220 240 282" marker-end="url(#tx-arr)"/>
+            <path d="M 480 80 Q 480 200 460 282" marker-end="url(#tx-arr)"/>
+            <path d="M 480 80 Q 560 220 680 282" marker-end="url(#tx-arr)"/>
+          </g>
+
+          <text x="480" y="400" text-anchor="middle" fill="#6b7687" font-size="11" font-style="italic">the seven directions Volume III's Parts I &amp; II cover</text>
+        </g>
+      </svg>
+      <span class="diagram-caption">The post-Transformer landscape, April 2026. Each branch is an explicit answer to one of the sins above.</span>
+    </div>
+
+    <div class="callout warn">
+      <svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.7L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.7a2 2 0 00-3.4 0z"/></svg>
+      <div class="callout-body">
+        <div class="callout-title">The transformer is not dying</div>
+        <p>Reports of the transformer's death are greatly exaggerated. Every frontier model shipping in April 2026 is still a transformer or a transformer-hybrid. Parts I and II of this volume are about the <em>ideas that are already winning</em> inside those hybrids — and the ones that are credibly trying to replace them whole.</p>
+      </div>
+    </div>
+
+    <div class="debate-grid">
+      <div class="debate-side pro">
+        <h5>Case for replacement</h5>
+        <p>"Attention is quadratic, tokenization is broken, and dense matmul is wasteful. Every one of those costs has a working attack in 2026. A post-Transformer stack is happening whether you like it or not."</p>
+        <p class="who">— Albert Gu, Tri Dao, Meta FAIR (BLT), Microsoft (BitNet)</p>
+      </div>
+      <div class="debate-side con">
+        <h5>Case for evolution</h5>
+        <p>"Every proposed replacement so far has shipped as a hybrid. The attention block is still there because it is the best known in-context learning primitive. You don't replace a primitive by committee — you compete on benchmarks."</p>
+        <p class="who">— most production frontier stacks (Anthropic, OpenAI, Google, Mistral) as of April 2026</p>
+      </div>
+    </div>
+
+    <div class="open-questions">
+      <h4>❓ Open questions</h4>
+      <ul>
+        <li>Is the reasoning gap an <em>architectural</em> problem or a <em>training-data</em> problem?</li>
+        <li>Can any single architecture win all four attacks (attention, tokenization, matmul, reasoning) at once, or is the hybrid always optimal?</li>
+        <li>At what context length does the quadratic wall actually start mattering to users, in 2026 dollars?</li>
+      </ul>
+    </div>
+
+    <h2 id="resources">1.7 Further Reading</h2>
+
+    <details class="further">
+      <summary><span class="eli5-icon" style="background:rgba(251,191,36,0.14)">📚</span> Further learning — videos, papers, talks</summary>
+      <div class="further-body">
+        <ul>
+          <li><span class="kind video">video</span><a href="https://www.youtube.com/watch?v=zduSFxRajkE">Karpathy — Let's build the GPT tokenizer</a> — two hours on why BPE is weird, with runnable code.</li>
+          <li><span class="kind paper">paper</span><a href="https://arxiv.org/abs/1706.03762">Vaswani et al. — Attention Is All You Need (2017)</a> — the original.</li>
+          <li><span class="kind paper">paper</span><a href="https://arxiv.org/abs/2305.13245">GQA — Grouped-Query Attention (Google 2023)</a> — the "just make attention cheaper" response.</li>
+          <li><span class="kind blog">blog</span>Nathan Lambert — post-Transformer architectures — practitioner's map of what shipped.</li>
+          <li><span class="kind talk">talk</span><a href="https://www.youtube.com/@MachineLearningStreetTalk">MLST interviews with Albert Gu, Tri Dao, Yann LeCun</a> — long form on why people left attention.</li>
+          <li><span class="kind docs">docs</span>Hugging Face — long-context methods survey.</li>
+        </ul>
+      </div>
+    </details>
+
+    <h3>Primary sources cited in this chapter</h3>
+    <ul class="ref-list">
+      <li><a href="https://arxiv.org/abs/1706.03762">Vaswani et al. (2017) — Attention Is All You Need</a></li>
+      <li><a href="https://arxiv.org/abs/2307.09288">Touvron et al. (2023) — Llama 2</a> — canonical modern transformer</li>
+      <li><a href="https://arxiv.org/abs/2410.05229">Mirzadeh et al. (2024) — GSM-Symbolic</a> — evidence of the reasoning gap</li>
+      <li><a href="https://goombalab.github.io/">Albert Gu's blog</a> · <a href="https://tridao.me/">Tri Dao's blog</a> — the SSM case</li>
+      <li><a href="https://arxiv.org/abs/2412.09871">Pagnoni et al. (2024) — BLT</a> — the tokenization case (Ch 03)</li>
+      <li><a href="https://arxiv.org/abs/2402.17764">Ma et al. (2024) — BitNet b1.58</a> — the low-bit case (Ch 04)</li>
+    </ul>
+
+    <nav class="pager">
+      <a class="pager-link" href="../index.html"><span class="pager-label">← Volume III Home</span><span class="pager-title">Overview</span></a>
+      <a class="pager-link pager-next" href="02-mamba-ssm.html"><span class="pager-label">Next →</span><span class="pager-title">State Space Models &amp; Mamba</span></a>
+    </nav>
+
+  </div></main>
+</div>
+
+<button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="../assets/js/main.js"></script>
+<footer class="site-footer">
+  <p>Created by <strong>Duy Dao</strong><span class="sep">·</span><a href="https://github.com/xD4O" target="_blank" rel="noopener">GitHub @xD4O</a><span class="sep">·</span><a href="https://x.com/_cyr4x" target="_blank" rel="noopener">X @_cyr4x</a><span class="sep">·</span>AI Wiki · 2026</p>
+  <p class="star-cta">Found this useful? <a href="https://github.com/xD4O/AI-Wiki" target="_blank" rel="noopener">⭐ Star it on GitHub</a></p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resources &amp; Links — AI Wiki Vol III</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="stylesheet" href="assets/css/styles.css"></head>
+<body>
+
+<button id="sidebar-toggle" class="sidebar-toggle"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg></button>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <svg class="brand-logo" viewBox="0 0 64 64"><defs><linearGradient id="bg3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff5ca8"/><stop offset="1" stop-color="#7c5cff"/></linearGradient></defs><rect x="2" y="2" width="60" height="60" rx="14" fill="url(#bg3)"/><text x="32" y="42" text-anchor="middle" fill="white" font-size="26" font-weight="800">III</text></svg>
+      <div><p class="brand-title">AI Wiki · Vol III</p><p class="brand-sub">The Research Frontier</p></div>
+    </div>
+    <nav class="nav-section"><p class="nav-title">Getting Started</p><ul class="nav-list">
+      <li class="nav-item"><a href="../index.html"><span class="nav-num">I</span> Vol I · Foundations</a></li>
+      <li class="nav-item"><a href="../AI-Wiki-II/index.html"><span class="nav-num">II</span> Vol II · Agentic Frontier</a></li>
+      <li class="nav-item"><a href="index.html"><span class="nav-num">◆</span> Vol III · Research Frontier</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part I · Architecture</p><ul class="nav-list"><li class="nav-item"><a href="chapters/01-post-transformer.html"><span class="nav-num">01</span> Past Attention</a></li><li class="nav-item"><a href="chapters/02-mamba-ssm.html"><span class="nav-num">02</span> Mamba &amp; SSMs</a></li><li class="nav-item"><a href="chapters/03-blt-tokenization.html"><span class="nav-num">03</span> BLT</a></li><li class="nav-item"><a href="chapters/04-sparse-revolution.html"><span class="nav-num">04</span> Sparse Revolution</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part II · World Models</p><ul class="nav-list"><li class="nav-item"><a href="chapters/05-jepa.html"><span class="nav-num">05</span> JEPA</a></li><li class="nav-item"><a href="chapters/06-generative-world-models.html"><span class="nav-num">06</span> Sora · Veo · Genie</a></li><li class="nav-item"><a href="chapters/07-embodied-foundation.html"><span class="nav-num">07</span> Embodied</a></li><li class="nav-item"><a href="chapters/08-model-based-rl.html"><span class="nav-num">08</span> MB-RL</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part III · Reasoning</p><ul class="nav-list"><li class="nav-item"><a href="chapters/09-rlvr.html"><span class="nav-num">09</span> RL Verifiable</a></li><li class="nav-item"><a href="chapters/10-inference-compute.html"><span class="nav-num">10</span> Inference Compute</a></li><li class="nav-item"><a href="chapters/11-memory-titans.html"><span class="nav-num">11</span> Memory · Titans</a></li><li class="nav-item"><a href="chapters/12-faithfulness.html"><span class="nav-num">12</span> Faithfulness</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part IV · Systems &amp; Control</p><ul class="nav-list"><li class="nav-item"><a href="chapters/13-meta-prompting.html"><span class="nav-num">13</span> Meta-Prompting</a></li><li class="nav-item"><a href="chapters/14-agentic-orchestration.html"><span class="nav-num">14</span> Orchestration</a></li><li class="nav-item"><a href="chapters/15-deterministic-gates.html"><span class="nav-num">15</span> Deterministic Gates</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part V · Open Problems</p><ul class="nav-list"><li class="nav-item"><a href="chapters/16-interp-frontier.html"><span class="nav-num">16</span> Interp Frontier</a></li><li class="nav-item"><a href="chapters/17-alignment-beyond-rlhf.html"><span class="nav-num">17</span> Alignment</a></li><li class="nav-item"><a href="chapters/18-benchmark-crisis.html"><span class="nav-num">18</span> Benchmarks</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part VI · Big Picture</p><ul class="nav-list"><li class="nav-item"><a href="chapters/19-ai-for-science.html"><span class="nav-num">19</span> AI for Science</a></li><li class="nav-item"><a href="chapters/20-scaling-debates.html"><span class="nav-num">20</span> Scaling</a></li><li class="nav-item"><a href="chapters/21-compute-geopolitics-agi.html"><span class="nav-num">21</span> Compute · AGI</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Appendix</p><ul class="nav-list">
+      <li class="nav-item"><a href="resources.html"><span class="nav-num">§</span> Resources</a></li>
+      <li class="nav-item"><a href="vocabulary.html"><span class="nav-num">A</span> Vocabulary</a></li>
+    </ul></nav>
+  </aside>
+
+  <main class="main"><div class="content">
+
+    <header class="chapter-header">
+      <div class="chapter-meta"><span class="chapter-num">APPENDIX</span><span class="pill pill-cyan">§ Resources</span></div>
+      <h1>Resources &amp; Links</h1>
+      <p class="chapter-lede">The master list — primary papers, code repos, blogs, talks, podcasts, leaderboards, and people. Verified April 2026.</p>
+    </header>
+
+    <details class="eli5">
+      <summary><span class="eli5-icon">🧒</span> ELI5 — what is this page?</summary>
+      <div class="eli5-body">
+        <p>Every chapter has its own "Further learning" box — this page collects them all in one place, plus the meta-resources (newsletters, podcasts, leaderboards, conferences, awesome-lists) that live above any single chapter.</p>
+      </div>
+    </details>
+
+    <div class="callout note">
+      <svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+      <div class="callout-body">
+        <div class="callout-title">State of the research, April 2026</div>
+        <ul>
+          <li><strong>Architecture.</strong> Mamba-2 + hybrids in production. BLT (Meta, Dec 2024) is the credible "kill BPE" candidate. BitNet b1.58 is the credible 1-bit story.</li>
+          <li><strong>World models.</strong> V-JEPA 2 vs. Sora/Veo/Genie 3. π2 / GR00T N2 in robotics.</li>
+          <li><strong>Training.</strong> RLVR + GRPO is the recipe (DeepSeek-R1 in Nature). Inference compute is a first-class scaling axis.</li>
+          <li><strong>Systems.</strong> LangGraph + Temporal-style durable execution + DSPy meta-prompting + constrained decoding are the production-default stack.</li>
+          <li><strong>Safety.</strong> SAE circuits in 70B+. Sleeper Agents / Alignment Faking real. RSPs at three frontier labs. UK + US AISI as evaluators of record.</li>
+          <li><strong>Benchmarks.</strong> ARC-AGI-2, FrontierMath, HLE, METR task-horizon replace MMLU / HumanEval / GSM8K.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="toc">
+      <h4>Jump to</h4>
+      <ul>
+        <li><a href="#by-chapter">Per-chapter resources</a></li>
+        <li><a href="#newsletters">Newsletters</a></li>
+        <li><a href="#podcasts">Podcasts</a></li>
+        <li><a href="#confs">Conferences</a></li>
+        <li><a href="#leaderboards">Leaderboards</a></li>
+        <li><a href="#code">Reference implementations</a></li>
+        <li><a href="#people">People to follow</a></li>
+      </ul>
+    </div>
+
+    <h2 id="by-chapter">Per-chapter resources</h2>
+
+    <h3>Part I · Architecture</h3>
+    <ul>
+      <li><strong>Ch 01 — Past Attention:</strong> <a href="https://arxiv.org/abs/1706.03762">Attention Is All You Need</a> · <a href="https://www.youtube.com/watch?v=zduSFxRajkE">Karpathy tokenizer talk</a> · <a href="https://www.interconnects.ai/">Nathan Lambert — post-Transformer surveys</a></li>
+      <li><strong>Ch 02 — Mamba:</strong> <a href="https://arxiv.org/abs/2312.00752">Mamba</a> · <a href="https://arxiv.org/abs/2405.21060">Mamba-2</a> · <a href="https://arxiv.org/abs/2403.19887">Jamba</a> · <a href="https://arxiv.org/abs/2406.07522">Samba</a> · <a href="https://arxiv.org/abs/2402.19427">Griffin</a> · <a href="https://github.com/state-spaces/mamba">repo</a></li>
+      <li><strong>Ch 03 — BLT:</strong> <a href="https://arxiv.org/abs/2412.09871">BLT (Meta FAIR)</a> · <a href="https://arxiv.org/abs/2305.07185">MegaByte</a> · <a href="https://github.com/facebookresearch/blt">repo</a></li>
+      <li><strong>Ch 04 — Sparse:</strong> <a href="https://arxiv.org/abs/2401.06066">DeepSeek-MoE</a> · <a href="https://arxiv.org/abs/2402.17764">BitNet b1.58</a> · <a href="https://arxiv.org/abs/2406.02528">MatMul-Free</a> · <a href="https://arxiv.org/abs/2310.16834">SEDD</a> · <a href="https://github.com/microsoft/BitNet">microsoft/BitNet</a></li>
+    </ul>
+
+    <h3>Part II · World Models</h3>
+    <ul>
+      <li><strong>Ch 05 — JEPA:</strong> <a href="https://arxiv.org/abs/2301.08243">I-JEPA</a> · <a href="https://arxiv.org/abs/2404.08471">V-JEPA</a> · <a href="https://openreview.net/forum?id=BZ5a1r-kVsf">LeCun's "Path" 2022</a> · <a href="https://github.com/facebookresearch/jepa">repo</a></li>
+      <li><strong>Ch 06 — Generative WM:</strong> <a href="https://openai.com/research/video-generation-models-as-world-simulators">Sora TR</a> · <a href="https://deepmind.google/discover/blog/genie-2-a-large-scale-foundation-world-model/">Genie 2</a> · <a href="https://arxiv.org/abs/2309.17080">GAIA-1</a></li>
+      <li><strong>Ch 07 — Embodied:</strong> <a href="https://arxiv.org/abs/2307.15818">RT-2</a> · <a href="https://www.physicalintelligence.company/blog/pi0">π0</a> · <a href="https://developer.nvidia.com/isaac/gr00t">GR00T N1</a> · <a href="https://droid-dataset.github.io/">DROID</a> · <a href="https://arxiv.org/abs/2310.08864">Open X-Embodiment</a></li>
+      <li><strong>Ch 08 — MB-RL:</strong> <a href="https://arxiv.org/abs/2301.04104">Dreamer-V3</a> · <a href="https://arxiv.org/abs/1911.08265">MuZero</a> · <a href="https://arxiv.org/abs/2305.16291">Voyager</a> · <a href="https://github.com/danijar/dreamerv3">dreamerv3</a></li>
+    </ul>
+
+    <h3>Part III · Reasoning &amp; Training</h3>
+    <ul>
+      <li><strong>Ch 09 — RLVR:</strong> <a href="https://www.nature.com/articles/s41586-025-09422-z">DeepSeek-R1 (Nature)</a> · <a href="https://arxiv.org/abs/2402.03300">GRPO</a> · <a href="https://arxiv.org/abs/2305.20050">"Let's Verify Step by Step"</a> · <a href="https://openai.com/index/openai-o1-system-card/">o1 system card</a> · <a href="https://github.com/huggingface/trl">HF TRL</a></li>
+      <li><strong>Ch 10 — Inference Compute:</strong> <a href="https://arxiv.org/abs/2408.03314">Snell et al.</a> · <a href="https://arxiv.org/abs/2406.07394">MCTS for LLMs</a> · <a href="https://arxiv.org/abs/2305.10601">Tree of Thoughts</a></li>
+      <li><strong>Ch 11 — Memory · Titans:</strong> <a href="https://arxiv.org/abs/2501.00663">Titans (Google Research)</a> · <a href="https://arxiv.org/abs/2407.04620">TTT for sequences</a> · <a href="https://arxiv.org/abs/2511.01093">Continual Learning, Not Training</a> · <a href="https://memgpt.ai/">MemGPT / Letta</a></li>
+      <li><strong>Ch 12 — Faithfulness:</strong> <a href="https://arxiv.org/abs/2410.05229">GSM-Symbolic (Apple)</a> · <a href="https://arxiv.org/abs/2305.04388">Turpin CoT faithfulness</a> · <a href="https://transformer-circuits.pub/">Anthropic Transformer Circuits</a></li>
+    </ul>
+
+    <h3>Part IV · Systems &amp; Control</h3>
+    <ul>
+      <li><strong>Ch 13 — Meta-Prompting:</strong> <a href="https://arxiv.org/abs/2310.03714">DSPy</a> · <a href="https://arxiv.org/abs/2406.11695">MIPRO</a> · <a href="https://arxiv.org/abs/2211.01910">APE</a> · <a href="https://arxiv.org/abs/2309.03409">OPRO</a> · <a href="https://arxiv.org/abs/2406.07496">TextGrad</a> · <a href="https://github.com/stanfordnlp/dspy">dspy repo</a></li>
+      <li><strong>Ch 14 — Orchestration:</strong> <a href="https://langchain-ai.github.io/langgraph/">LangGraph</a> · <a href="https://bair.berkeley.edu/blog/2024/02/18/compound-ai-systems/">Compound AI Systems</a> · <a href="https://docs.temporal.io/">Temporal</a> · <a href="https://restate.dev/">Restate</a> · <a href="https://arxiv.org/abs/2310.03314">DBOS</a> · <a href="https://github.com/openai/openai-agents-python">OpenAI Agents SDK</a></li>
+      <li><strong>Ch 15 — Gates:</strong> <a href="https://arxiv.org/abs/2307.09702">Outlines</a> · <a href="https://arxiv.org/abs/2305.13971">Guidance</a> · <a href="https://github.com/sgl-project/sglang">SGLang</a> · <a href="https://platform.openai.com/docs/guides/structured-outputs">OpenAI structured outputs</a> · <a href="https://deepmind.google/discover/blog/ai-solves-imo-problems-at-silver-medal-level/">AlphaProof</a></li>
+    </ul>
+
+    <h3>Part V · Open Problems</h3>
+    <ul>
+      <li><strong>Ch 16 — Interp:</strong> <a href="https://transformer-circuits.pub/2024/scaling-monosemanticity/">Scaling Monosemanticity</a> · <a href="https://arxiv.org/abs/2401.05566">Sleeper Agents</a> · <a href="https://arxiv.org/abs/2412.14093">Alignment Faking</a> · <a href="https://arxiv.org/abs/2501.16496">Open Problems in MI 2025</a> · <a href="https://github.com/jbloomAus/SAELens">SAELens</a></li>
+      <li><strong>Ch 17 — Alignment:</strong> <a href="https://arxiv.org/abs/2312.09390">Weak-to-Strong</a> · <a href="https://arxiv.org/abs/1805.00899">Debate</a> · <a href="https://arxiv.org/abs/2212.08073">Constitutional AI</a> · <a href="https://www.anthropic.com/rsp-updates">Anthropic RSP</a> · <a href="https://deepmind.google/discover/blog/introducing-the-frontier-safety-framework/">DeepMind FSF</a> · <a href="https://openai.com/safety/preparedness/">OpenAI Prep</a></li>
+      <li><strong>Ch 18 — Benchmarks:</strong> <a href="https://arcprize.org/">ARC-AGI</a> · <a href="https://epoch.ai/frontiermath">FrontierMath</a> · <a href="https://lastexam.ai/">HLE</a> · <a href="https://metr.org/blog/2025-03-19-measuring-ai-ability-to-complete-long-tasks/">METR task horizons</a> · <a href="https://www.morphllm.com/swe-bench-pro">SWE-bench Pro</a></li>
+    </ul>
+
+    <h3>Part VI · Big Picture</h3>
+    <ul>
+      <li><strong>Ch 19 — Science:</strong> <a href="https://www.nature.com/articles/s41586-024-07487-w">AlphaFold 3</a> · <a href="https://www.science.org/doi/10.1126/science.adi2336">GraphCast</a> · <a href="https://www.nature.com/articles/s41586-023-06735-9">GNoME</a> · <a href="https://deepmind.google/discover/blog/ai-solves-imo-problems-at-silver-medal-level/">AlphaProof</a> · <a href="https://arxiv.org/abs/2206.07697">MACE</a></li>
+      <li><strong>Ch 20 — Scaling:</strong> <a href="https://arxiv.org/abs/2203.15556">Chinchilla</a> · <a href="https://arxiv.org/abs/2211.04325">Villalobos data-limits</a> · <a href="https://ai-2027.com/">AI 2027 scenario</a> · <a href="http://www.incompleteideas.net/IncIdeas/BitterLesson.html">Bitter Lesson</a> · <a href="https://www.darioamodei.com/essay/machines-of-loving-grace">Amodei essay</a></li>
+      <li><strong>Ch 21 — Compute · AGI:</strong> <a href="https://artificialintelligenceact.eu/">EU AI Act</a> · <a href="https://www.aisi.gov.uk/">UK AISI</a> · <a href="https://epoch.ai/">Epoch AI</a> · <a href="https://www.semianalysis.com/">SemiAnalysis</a> · <a href="https://www.dwarkesh.com/podcast">Dwarkesh interviews</a></li>
+    </ul>
+
+    <h2 id="newsletters">Newsletters</h2>
+    <div class="grid grid-2">
+      <div class="card"><h3><a href="https://www.interconnects.ai/">Interconnects</a></h3><p>Nathan Lambert — open models &amp; RL.</p></div>
+      <div class="card"><h3><a href="https://importai.substack.com/">Import AI</a></h3><p>Jack Clark — weekly digest.</p></div>
+      <div class="card"><h3><a href="https://www.deeplearning.ai/the-batch/">The Batch</a></h3><p>DeepLearning.AI — broad news.</p></div>
+      <div class="card"><h3><a href="https://magazine.sebastianraschka.com/">Ahead of AI</a></h3><p>Sebastian Raschka — technical deep dives.</p></div>
+      <div class="card"><h3><a href="https://www.latent.space/">Latent Space</a></h3><p>swyx + Alessio — AI eng stack.</p></div>
+      <div class="card"><h3><a href="https://www.oneusefulthing.org/">One Useful Thing</a></h3><p>Ethan Mollick — applied/empirical.</p></div>
+      <div class="card"><h3><a href="https://simonwillison.net/">Simon Willison</a></h3><p>Best daily LLM coverage.</p></div>
+      <div class="card"><h3><a href="https://garymarcus.substack.com/">Marcus on AI</a></h3><p>Critical voice on LLM hype.</p></div>
+    </div>
+
+    <h2 id="podcasts">Podcasts</h2>
+    <ul>
+      <li><a href="https://www.dwarkesh.com/podcast">Dwarkesh Podcast</a> — long-form technical interviews</li>
+      <li><a href="https://www.latent.space/podcast">Latent Space Podcast</a></li>
+      <li><a href="https://www.youtube.com/@MachineLearningStreetTalk">Machine Learning Street Talk (MLST)</a></li>
+      <li><a href="https://www.nopriors.com/">No Priors — Sarah Guo &amp; Elad Gil</a></li>
+      <li><a href="https://www.cognitiverevolution.ai/">Cognitive Revolution — Nathan Labenz</a></li>
+      <li><a href="https://lexfridman.com/podcast/">Lex Fridman</a></li>
+    </ul>
+
+    <h2 id="confs">Conferences</h2>
+    <ul>
+      <li><a href="https://neurips.cc/">NeurIPS</a> · <a href="https://icml.cc/">ICML</a> · <a href="https://iclr.cc/">ICLR</a> · <a href="https://colmweb.org/">COLM</a></li>
+      <li><a href="https://www.aclweb.org/portal/">ACL</a> · <a href="https://2025.emnlp.org/">EMNLP</a></li>
+      <li><a href="https://www.ai.engineer/">AI Engineer Summit</a></li>
+      <li>RSS / CoRL — robotics &amp; embodied AI</li>
+      <li>Interpretability workshops at NeurIPS / ICML</li>
+    </ul>
+
+    <h2 id="leaderboards">Leaderboards</h2>
+    <ul>
+      <li><a href="https://lmarena.ai/">LMSYS Chatbot Arena</a> — live human preferences</li>
+      <li><a href="https://huggingface.co/spaces/open-llm-leaderboard/open_llm_leaderboard">Open LLM Leaderboard v2</a></li>
+      <li><a href="https://artificialanalysis.ai/">Artificial Analysis</a></li>
+      <li><a href="https://livebench.ai/">LiveBench</a></li>
+      <li><a href="https://gorilla.cs.berkeley.edu/leaderboard.html">Berkeley Function-Calling</a></li>
+      <li><a href="https://arcprize.org/">ARC Prize</a></li>
+    </ul>
+
+    <h2 id="code">Reference implementations</h2>
+    <ul>
+      <li><a href="https://github.com/state-spaces/mamba">state-spaces/mamba</a> · <a href="https://github.com/facebookresearch/blt">facebookresearch/blt</a> · <a href="https://github.com/microsoft/BitNet">microsoft/BitNet</a></li>
+      <li><a href="https://github.com/facebookresearch/jepa">facebookresearch/jepa</a> · <a href="https://github.com/danijar/dreamerv3">dreamerv3</a></li>
+      <li><a href="https://github.com/deepseek-ai/DeepSeek-R1">DeepSeek-R1</a> · <a href="https://github.com/huggingface/trl">HF TRL (GRPO)</a></li>
+      <li><a href="https://github.com/stanfordnlp/dspy">stanfordnlp/dspy</a> · <a href="https://github.com/dottxt-ai/outlines">dottxt-ai/outlines</a> · <a href="https://github.com/guidance-ai/guidance">guidance-ai/guidance</a> · <a href="https://github.com/sgl-project/sglang">sglang</a></li>
+      <li><a href="https://langchain-ai.github.io/langgraph/">LangGraph</a> · <a href="https://github.com/openai/openai-agents-python">OpenAI Agents SDK</a> · <a href="https://github.com/pydantic/pydantic-ai">pydantic-ai</a></li>
+      <li><a href="https://github.com/jbloomAus/SAELens">SAELens</a> · <a href="https://huggingface.co/google/gemma-scope">Gemma Scope (open SAEs)</a></li>
+      <li><a href="https://github.com/google-deepmind/alphafold">alphafold</a> · <a href="https://github.com/google-deepmind/graphcast">graphcast</a></li>
+    </ul>
+
+    <h2 id="people">People to follow (research-frontier focus)</h2>
+    <ul>
+      <li><strong>Architecture:</strong> Albert Gu (<a href="https://goombalab.github.io/">blog</a>) · Tri Dao (<a href="https://tridao.me/">blog</a>) · Yann LeCun (<a href="https://twitter.com/ylecun">@ylecun</a>)</li>
+      <li><strong>Reasoning / training:</strong> Noam Brown · Jason Wei · Lilian Weng (<a href="https://lilianweng.github.io/">blog</a>)</li>
+      <li><strong>Systems / orchestration:</strong> Omar Khattab (DSPy) · Harrison Chase (LangChain) · Matei Zaharia</li>
+      <li><strong>Interpretability:</strong> Chris Olah (<a href="https://twitter.com/ch402">@ch402</a>) · Neel Nanda (<a href="https://www.neelnanda.io/">blog</a>) · Trenton Bricken</li>
+      <li><strong>Forecasting / scaling:</strong> Dwarkesh Patel · Nathan Lambert · Epoch AI</li>
+      <li><strong>Generalists:</strong> Andrej Karpathy · Simon Willison · Sebastian Raschka · Jeff Clune · François Chollet</li>
+    </ul>
+
+    <nav class="pager">
+      <a class="pager-link" href="chapters/21-compute-geopolitics-agi.html"><span class="pager-label">← Chapter 21</span><span class="pager-title">Compute · AGI</span></a>
+      <a class="pager-link pager-next" href="index.html"><span class="pager-label">Home →</span><span class="pager-title">Volume III Overview</span></a>
+    </nav>
+
+  </div></main>
+</div>
+
+<button id="theme-toggle" class="theme-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="assets/js/main.js"></script>
+<footer class="site-footer">
+  <p>Created by <strong>Duy Dao</strong><span class="sep">·</span><a href="https://github.com/xD4O" target="_blank" rel="noopener">GitHub @xD4O</a><span class="sep">·</span><a href="https://x.com/_cyr4x" target="_blank" rel="noopener">X @_cyr4x</a><span class="sep">·</span>AI Wiki · 2026</p>
+  <p class="star-cta">Found this useful? <a href="https://github.com/xD4O/AI-Wiki" target="_blank" rel="noopener">⭐ Star it on GitHub</a></p>
+</footer>
+</body></html>

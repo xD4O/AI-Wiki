@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 13 · Meta-Prompting &amp; Self-Optimizing Prompts — AI Wiki Vol III</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="stylesheet" href="../assets/css/styles.css"></head>
+<body>
+
+<button id="sidebar-toggle" class="sidebar-toggle"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg></button>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <svg class="brand-logo" viewBox="0 0 64 64"><defs><linearGradient id="bg3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff5ca8"/><stop offset="1" stop-color="#7c5cff"/></linearGradient></defs><rect x="2" y="2" width="60" height="60" rx="14" fill="url(#bg3)"/><text x="32" y="42" text-anchor="middle" fill="white" font-size="26" font-weight="800">III</text></svg>
+      <div><p class="brand-title">AI Wiki · Vol III</p><p class="brand-sub">The Research Frontier</p></div>
+    </div>
+    <nav class="nav-section"><p class="nav-title">Getting Started</p><ul class="nav-list">
+      <li class="nav-item"><a href="../../index.html"><span class="nav-num">I</span> Vol I · Foundations</a></li>
+      <li class="nav-item"><a href="../../AI-Wiki-II/index.html"><span class="nav-num">II</span> Vol II · Agentic Frontier</a></li>
+      <li class="nav-item"><a href="../index.html"><span class="nav-num">◆</span> Vol III · Research Frontier</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part I · Architecture</p><ul class="nav-list"><li class="nav-item"><a href="01-post-transformer.html"><span class="nav-num">01</span> Past Attention</a></li><li class="nav-item"><a href="02-mamba-ssm.html"><span class="nav-num">02</span> Mamba &amp; SSMs</a></li><li class="nav-item"><a href="03-blt-tokenization.html"><span class="nav-num">03</span> BLT</a></li><li class="nav-item"><a href="04-sparse-revolution.html"><span class="nav-num">04</span> Sparse Revolution</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part II · World Models</p><ul class="nav-list"><li class="nav-item"><a href="05-jepa.html"><span class="nav-num">05</span> JEPA</a></li><li class="nav-item"><a href="06-generative-world-models.html"><span class="nav-num">06</span> Sora · Veo · Genie</a></li><li class="nav-item"><a href="07-embodied-foundation.html"><span class="nav-num">07</span> Embodied</a></li><li class="nav-item"><a href="08-model-based-rl.html"><span class="nav-num">08</span> MB-RL</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part III · Reasoning</p><ul class="nav-list"><li class="nav-item"><a href="09-rlvr.html"><span class="nav-num">09</span> RL Verifiable</a></li><li class="nav-item"><a href="10-inference-compute.html"><span class="nav-num">10</span> Inference Compute</a></li><li class="nav-item"><a href="11-memory-titans.html"><span class="nav-num">11</span> Memory · Titans</a></li><li class="nav-item"><a href="12-faithfulness.html"><span class="nav-num">12</span> Faithfulness</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part IV · Systems &amp; Control</p><ul class="nav-list"><li class="nav-item"><a href="13-meta-prompting.html"><span class="nav-num">13</span> Meta-Prompting</a></li><li class="nav-item"><a href="14-agentic-orchestration.html"><span class="nav-num">14</span> Orchestration</a></li><li class="nav-item"><a href="15-deterministic-gates.html"><span class="nav-num">15</span> Deterministic Gates</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part V · Open Problems</p><ul class="nav-list"><li class="nav-item"><a href="16-interp-frontier.html"><span class="nav-num">16</span> Interp Frontier</a></li><li class="nav-item"><a href="17-alignment-beyond-rlhf.html"><span class="nav-num">17</span> Alignment</a></li><li class="nav-item"><a href="18-benchmark-crisis.html"><span class="nav-num">18</span> Benchmarks</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part VI · Big Picture</p><ul class="nav-list"><li class="nav-item"><a href="19-ai-for-science.html"><span class="nav-num">19</span> AI for Science</a></li><li class="nav-item"><a href="20-scaling-debates.html"><span class="nav-num">20</span> Scaling</a></li><li class="nav-item"><a href="21-compute-geopolitics-agi.html"><span class="nav-num">21</span> Compute · AGI</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Appendix</p><ul class="nav-list">
+      <li class="nav-item"><a href="../resources.html"><span class="nav-num">§</span> Resources</a></li>
+      <li class="nav-item"><a href="../vocabulary.html"><span class="nav-num">A</span> Vocabulary</a></li>
+    </ul></nav>
+  </aside>
+
+  <main class="main"><div class="content">
+
+    <header class="chapter-header">
+      <div class="chapter-meta"><span class="chapter-num">CHAPTER 13</span><span class="pill pill-yellow">Part IV · Systems &amp; Control</span></div>
+      <h1>Meta-Prompting &amp; Self-Optimizing Prompts</h1>
+      <p class="chapter-lede">What happens when prompts stop being hand-crafted strings and become <em>source code</em> compiled from a specification? DSPy, APE, OPRO, TextGrad — the 2023–2026 shift from prompt engineering to prompt programming.</p>
+    </header>
+
+    <div class="timeline-ribbon">
+      <span class="timeline-event"><strong>2022-11</strong> APE (Zhou et al.)</span>
+      <span class="timeline-event"><strong>2023-10</strong> DSPy v0.1 (Stanford)</span>
+      <span class="timeline-event"><strong>2023-12</strong> OPRO (Google)</span>
+      <span class="timeline-event"><strong>2024-06</strong> TextGrad (Stanford)</span>
+      <span class="timeline-event"><strong>2024-08</strong> MIPRO teleprompter</span>
+      <span class="timeline-event"><strong>2024-11</strong> PromptWizard (Microsoft)</span>
+      <span class="timeline-event"><strong>2025-2026</strong> DSPy in production</span>
+    </div>
+
+    <details class="eli5">
+      <summary><span class="eli5-icon">🧒</span> ELI5 — explain like I'm five</summary>
+      <div class="eli5-body">
+        <p>Imagine writing a prompt as a long paragraph: "You are a helpful assistant. Please answer the question carefully…" That's like writing machine code: fragile, task-specific, and nobody remembers why it says what it says six months later.</p>
+        <p><strong>DSPy</strong> is like Python for prompts. You declare <em>what</em> you want — "given a question, produce a short answer with citations" — and a <strong>compiler</strong> figures out <em>how</em> to prompt the model to do it, by trying many variations and measuring which works best on a small set of labelled examples. When you upgrade to a new model, you re-compile. The code stays the same; the prompts get regenerated.</p>
+        <p><strong>TextGrad</strong> goes further: the prompt is improved by <em>natural-language gradients</em> — "your output was wrong because you ignored constraint X" becomes an edit to the prompt itself.</p>
+      </div>
+    </details>
+
+    <div class="toc">
+      <h4>In this chapter</h4>
+      <ul>
+        <li><a href="#bottleneck">13.1 The Prompt-Engineering Bottleneck</a></li>
+        <li><a href="#dspy">13.2 DSPy — Prompts as Source Code</a></li>
+        <li><a href="#ape-opro">13.3 APE &amp; OPRO — the LLM as its Own Optimiser</a></li>
+        <li><a href="#textgrad">13.4 TextGrad — Natural-Language Gradients</a></li>
+        <li><a href="#meta">13.5 Meta-Prompts Inside Agents</a></li>
+        <li><a href="#code">13.6 Reference — Mini-DSPy</a></li>
+        <li><a href="#resources">13.7 Further Reading</a></li>
+      </ul>
+    </div>
+
+    <h2 id="bottleneck">13.1 The Prompt-Engineering Bottleneck</h2>
+    <p>Volume II Chapter 3 treated prompting as a craft. For one task, crafted prompts work. At scale — an org with hundreds of LLM-powered features, each with its own prompt, each needing to survive model upgrades — the craft becomes unmaintainable.</p>
+    <p>Three symptoms:</p>
+    <ul>
+      <li><strong>Upgrade tax.</strong> A prompt tuned for GPT-4 regresses on Claude. A Claude-tuned prompt regresses on Opus 4.7. Re-tune by hand every few months.</li>
+      <li><strong>Silent skill rot.</strong> Nobody owns the prompt. Quality drifts as edge cases accrete.</li>
+      <li><strong>No evals.</strong> You have the prompt; you don't have the test set that proves it works.</li>
+    </ul>
+    <p>Meta-prompting argues: the prompt should be <em>compiled</em> from a specification plus an eval set, not written by hand.</p>
+
+    <h2 id="dspy">13.2 DSPy — Prompts as Source Code</h2>
+    <p>Khattab et al.'s <strong>DSPy</strong> (Stanford 2023-ongoing) models an LLM program as a pipeline of <em>modules</em> with typed <em>signatures</em>. A <em>teleprompter</em> (the "compiler") takes your program + a metric + a small labelled dev set and produces a <em>compiled program</em> — the same modules, with their prompts (instructions, few-shot examples, output format) filled in by search.</p>
+
+    <div class="diagram">
+      <svg viewBox="0 0 900 380" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="DSPy compile loop">
+        <defs>
+          <filter id="dspy-sh"><feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#000" flood-opacity="0.3"/></filter>
+          <marker id="dspy-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7c5cff"/></marker>
+          <linearGradient id="hl" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fbbf24" stop-opacity="0.2"/><stop offset="1" stop-color="#ff5ca8" stop-opacity="0.2"/></linearGradient>
+        </defs>
+        <g font-family="-apple-system, Inter, sans-serif">
+          <!-- Inputs -->
+          <g filter="url(#dspy-sh)"><rect x="40" y="50" width="180" height="60" rx="10" fill="rgba(34,211,238,0.15)" stroke="#22d3ee"/></g>
+          <text x="130" y="75" text-anchor="middle" fill="#22d3ee" font-size="13" font-weight="700">Program</text>
+          <text x="130" y="93" text-anchor="middle" fill="#9aa6b2" font-size="10.5">modules + signatures</text>
+          <text x="130" y="107" text-anchor="middle" fill="#9aa6b2" font-size="10">ChainOfThought, Retrieve, …</text>
+
+          <g filter="url(#dspy-sh)"><rect x="40" y="130" width="180" height="60" rx="10" fill="rgba(52,211,153,0.15)" stroke="#34d399"/></g>
+          <text x="130" y="155" text-anchor="middle" fill="#34d399" font-size="13" font-weight="700">Dev set</text>
+          <text x="130" y="173" text-anchor="middle" fill="#9aa6b2" font-size="10.5">30-100 labelled examples</text>
+
+          <g filter="url(#dspy-sh)"><rect x="40" y="210" width="180" height="60" rx="10" fill="rgba(251,191,36,0.15)" stroke="#fbbf24"/></g>
+          <text x="130" y="235" text-anchor="middle" fill="#fbbf24" font-size="13" font-weight="700">Metric</text>
+          <text x="130" y="253" text-anchor="middle" fill="#9aa6b2" font-size="10.5">exact-match, F1, LLM-judge</text>
+
+          <!-- arrows to teleprompter -->
+          <g stroke="#7c5cff" stroke-width="1.5" fill="none" marker-end="url(#dspy-arr)">
+            <path d="M 220 80 L 308 150"/>
+            <path d="M 220 160 L 308 165"/>
+            <path d="M 220 240 L 308 180"/>
+          </g>
+
+          <!-- Teleprompter -->
+          <g filter="url(#dspy-sh)"><rect x="310" y="115" width="260" height="105" rx="14" fill="rgba(124,92,255,0.2)" stroke="#7c5cff" stroke-width="2"/></g>
+          <text x="440" y="145" text-anchor="middle" fill="#e6edf3" font-size="15" font-weight="700">Teleprompter</text>
+          <text x="440" y="167" text-anchor="middle" fill="#9aa6b2" font-size="11.5">BootstrapFewShot · MIPRO · COPRO</text>
+          <text x="440" y="185" text-anchor="middle" fill="#9aa6b2" font-size="11">sample prompts, score, iterate</text>
+          <text x="440" y="205" text-anchor="middle" fill="#9aa6b2" font-size="10.5" font-style="italic">inner-loop: O(100-1000) LLM calls</text>
+
+          <!-- LLM calls diagram -->
+          <g filter="url(#dspy-sh)"><rect x="310" y="250" width="260" height="60" rx="10" fill="rgba(255,92,168,0.12)" stroke="#ff5ca8"/></g>
+          <text x="440" y="275" text-anchor="middle" fill="#ff5ca8" font-size="12" font-weight="700">Inner: generate candidates</text>
+          <text x="440" y="293" text-anchor="middle" fill="#9aa6b2" font-size="10.5">instructions + few-shot examples from dev traces</text>
+          <line x1="440" y1="220" x2="440" y2="248" stroke="#7c5cff" stroke-width="1.5" marker-end="url(#dspy-arr)"/>
+
+          <!-- output -->
+          <g filter="url(#dspy-sh)"><rect x="640" y="130" width="220" height="80" rx="14" fill="url(#hl)" stroke="#fbbf24" stroke-width="1.5"/></g>
+          <text x="750" y="162" text-anchor="middle" fill="#e6edf3" font-size="14" font-weight="700">Compiled Program</text>
+          <text x="750" y="182" text-anchor="middle" fill="#9aa6b2" font-size="11">same modules, prompts filled in</text>
+          <text x="750" y="198" text-anchor="middle" fill="#9aa6b2" font-size="10.5" font-style="italic">portable across models</text>
+          <line x1="570" y1="167" x2="638" y2="167" stroke="#7c5cff" stroke-width="1.5" marker-end="url(#dspy-arr)"/>
+
+          <text x="450" y="345" text-anchor="middle" fill="#9aa6b2" font-size="11" font-style="italic">When you change model (GPT → Claude → open-weight), re-run the teleprompter. Source stays; prompts regenerate.</text>
+        </g>
+      </svg>
+      <span class="diagram-caption">DSPy: you write the program once, declare a metric and a dev set, and a teleprompter compiles it into working prompts. Model upgrade = recompile.</span>
+    </div>
+
+    <p>Core DSPy abstractions:</p>
+    <ul>
+      <li><strong>Signature</strong> — a typed input/output contract: "question → answer" or "context, question → rationale, answer".</li>
+      <li><strong>Module</strong> — a callable with a signature. <code>Predict</code>, <code>ChainOfThought</code>, <code>ReAct</code>, <code>ProgramOfThought</code>.</li>
+      <li><strong>Teleprompter</strong> — an optimiser. <code>BootstrapFewShot</code> bootstraps examples from the dev set; <code>MIPRO</code> jointly optimises instructions + few-shot; <code>COPRO</code> uses the LLM to propose instruction variants.</li>
+    </ul>
+
+<pre><code class="language-python">import dspy
+
+# 1. declare a program
+class RAG(dspy.Module):
+    def __init__(self):
+        self.retrieve = dspy.Retrieve(k=3)
+        self.gen = dspy.ChainOfThought("context, question -&gt; answer")
+    def forward(self, question):
+        ctx = self.retrieve(question).passages
+        return self.gen(context=ctx, question=question)
+
+# 2. compile
+teleprompter = dspy.teleprompt.MIPRO(metric=exact_match_f1)
+rag_compiled = teleprompter.compile(RAG(), trainset=dev_set)
+
+# 3. use — the compiled program behaves like the original
+rag_compiled("Who wrote Hamlet?")</code></pre>
+
+    <h2 id="ape-opro">13.3 APE &amp; OPRO — the LLM as its Own Optimiser</h2>
+    <p><strong>APE</strong> (Automatic Prompt Engineer, Zhou et al. 2022): ask an LLM to generate candidate prompts, score each on dev data, take the best. The original "LLM optimises its own prompt" paper.</p>
+    <p><strong>OPRO</strong> (Optimization by PROmpting, Yang et al. Google 2023): make the LLM an <em>iterative</em> optimiser. Feed it the trajectory of "prompts tried so far + scores" and ask for the next one. Works on arbitrary black-box objectives — traveling salesman, linear regression, prompts.</p>
+    <p>OPRO's funnier finding: the best prompt it discovers for math is "Take a deep breath and work on this problem step-by-step." Empirical fact, not a joke.</p>
+
+    <h2 id="textgrad">13.4 TextGrad — Natural-Language Gradients</h2>
+    <p>Yuksekgonul et al. (Stanford 2024) treat an LLM pipeline like a differentiable program where the "gradients" are free-form text. A wrong output is fed back to a "judge" LLM: "the output was wrong in this way; what should we change?" The judge's response is an edit to the upstream prompt. Iterate.</p>
+    <p>This is not gradient descent in the mathematical sense — but it's the right interface: you can compose TextGrad'd pipelines and "differentiate through" them.</p>
+
+    <h2 id="meta">13.5 Meta-Prompts Inside Agents</h2>
+    <p>Inside a running agent, meta-prompting appears as:</p>
+    <ul>
+      <li><strong>Self-rewriting system prompts.</strong> At the end of a task, the agent reflects on what went wrong and proposes an edit to its own system prompt. Used by Anthropic's Claude Code skill-creator pattern.</li>
+      <li><strong>Dynamic prompt composition.</strong> Select which sub-prompts to load based on the current state. Skills (Vol II Ch 06) are a special case.</li>
+      <li><strong>Prompt chaining with judges.</strong> Each step's output is judged; a failing judgment triggers a rewrite or retry with modified instructions.</li>
+    </ul>
+
+    <h2 id="code">13.6 Reference — Mini-DSPy</h2>
+<pre><code class="language-python">"""~120-line mini-DSPy for teaching. Production: use dspy-ai."""
+import dataclasses, random
+from typing import Callable
+
+@dataclasses.dataclass
+class Signature:
+    inputs: list[str]
+    outputs: list[str]
+
+class Predict:
+    def __init__(self, sig: Signature, llm: Callable):
+        self.sig, self.llm = sig, llm
+        self.demos: list[dict] = []             # few-shot traces
+        self.instruction: str = "Follow the signature."
+
+    def _prompt(self, **kw):
+        parts = [self.instruction]
+        for d in self.demos:
+            parts.append("Example:")
+            for f in self.sig.inputs:  parts.append(f"{f}: {d[f]}")
+            for f in self.sig.outputs: parts.append(f"{f}: {d[f]}")
+        parts.append("Now answer:")
+        for f in self.sig.inputs:  parts.append(f"{f}: {kw[f]}")
+        for f in self.sig.outputs: parts.append(f"{f}:")
+        return "\n".join(parts)
+
+    def __call__(self, **kw):
+        text = self.llm(self._prompt(**kw))
+        return parse_fields(text, self.sig.outputs)
+
+class BootstrapFewShot:
+    """Simplest teleprompter: bootstrap demos from dev set."""
+    def compile(self, module: Predict, trainset, metric, k=6, trials=8):
+        best, best_score = None, -1
+        for _ in range(trials):
+            candidate = random.sample(trainset, k)
+            module.demos = candidate
+            score = sum(metric(module(**x), x) for x in trainset) / len(trainset)
+            if score &gt; best_score:
+                best, best_score = list(candidate), score
+        module.demos = best
+        return module</code></pre>
+
+    <div class="debate-grid">
+      <div class="debate-side pro">
+        <h5>Prompts as source code</h5>
+        <p>Hand-crafted prompts are a liability. DSPy-style compilation survives model upgrades, generalises across tasks, and comes with evals built in. The "prompt engineer" job title is a transitional artefact.</p>
+        <p class="who">— Khattab (DSPy), Stanford NLP, production RAG teams</p>
+      </div>
+      <div class="debate-side con">
+        <h5>Meta-prompting as a crutch</h5>
+        <p>If you have an eval set, fine-tune. If you don't, meta-prompting is over-fitting to the dev set. DSPy-compiled prompts are opaque, brittle across distribution shift, and harder to debug than the prompts they replace. Prompt engineers aren't going anywhere.</p>
+        <p class="who">— parts of the Anthropic engineering team, most working prompt engineers</p>
+      </div>
+    </div>
+
+    <div class="open-questions">
+      <h4>❓ Open questions</h4>
+      <ul>
+        <li>Is meta-prompting really better than a very short fine-tune at the same data cost?</li>
+        <li>Can TextGrad-style "gradients" be made consistent enough for production reliability?</li>
+        <li>What does a <em>library</em> of compiled programs look like — how do they compose, version, and share?</li>
+      </ul>
+    </div>
+
+    <h2 id="resources">13.7 Further Reading</h2>
+    <details class="further">
+      <summary><span class="eli5-icon" style="background:rgba(251,191,36,0.14)">📚</span> Further learning — videos, papers, code, talks</summary>
+      <div class="further-body">
+        <ul>
+          <li><span class="kind paper">paper</span><a href="https://arxiv.org/abs/2310.03714">DSPy — Khattab et al. (2023)</a></li>
+          <li><span class="kind paper">paper</span><a href="https://arxiv.org/abs/2406.11695">MIPRO teleprompter (2024)</a></li>
+          <li><span class="kind paper">paper</span><a href="https://arxiv.org/abs/2211.01910">APE — Zhou et al. (2022)</a></li>
+          <li><span class="kind paper">paper</span><a href="https://arxiv.org/abs/2309.03409">OPRO — Yang et al. (Google 2023)</a></li>
+          <li><span class="kind paper">paper</span><a href="https://arxiv.org/abs/2406.07496">TextGrad — Yuksekgonul et al. (Stanford 2024)</a></li>
+          <li><span class="kind paper">paper</span><a href="https://arxiv.org/abs/2405.18369">PromptWizard (Microsoft 2024)</a></li>
+          <li><span class="kind code">code</span><a href="https://github.com/stanfordnlp/dspy">github.com/stanfordnlp/dspy</a></li>
+          <li><span class="kind video">video</span><a href="https://www.youtube.com/watch?v=im7bCLW2aM4">Omar Khattab — DSPy talk (Stanford)</a></li>
+          <li><span class="kind talk">talk</span><a href="https://www.latent.space/">Latent Space — DSPy interview</a></li>
+          <li><span class="kind blog">blog</span><a href="https://dspy.ai/">dspy.ai — official docs</a></li>
+          <li><span class="kind blog">blog</span><a href="https://hamel.dev/blog/posts/prompt/">Hamel Husain — critical take on meta-prompting</a></li>
+        </ul>
+      </div>
+    </details>
+
+    <nav class="pager">
+      <a class="pager-link" href="12-faithfulness.html"><span class="pager-label">← Previous</span><span class="pager-title">The Faithfulness Crisis</span></a>
+      <a class="pager-link pager-next" href="14-agentic-orchestration.html"><span class="pager-label">Next →</span><span class="pager-title">Agentic Orchestration</span></a>
+    </nav>
+
+  </div></main>
+</div>
+
+<button id="theme-toggle" class="theme-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="../assets/js/main.js"></script>
+<footer class="site-footer">
+  <p>Created by <strong>Duy Dao</strong><span class="sep">·</span><a href="https://github.com/xD4O" target="_blank" rel="noopener">GitHub @xD4O</a><span class="sep">·</span><a href="https://x.com/_cyr4x" target="_blank" rel="noopener">X @_cyr4x</a><span class="sep">·</span>AI Wiki · 2026</p>
+  <p class="star-cta">Found this useful? <a href="https://github.com/xD4O/AI-Wiki" target="_blank" rel="noopener">⭐ Star it on GitHub</a></p>
+</footer>
+</body></html>

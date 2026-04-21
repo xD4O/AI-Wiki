@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Wiki · Volume III — The Research Frontier</title>
+<meta name="description" content="Volume III: architectures beyond the transformer, world models, new training paradigms, systems & control, open problems, and the debates of April 2026.">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="stylesheet" href="assets/css/styles.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23ff5ca8'/%3E%3Cstop offset='1' stop-color='%237c5cff'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='url(%23g)'/%3E%3Ctext x='32' y='42' text-anchor='middle' fill='white' font-size='28' font-family='sans-serif' font-weight='bold'%3EIII%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+
+<button id="sidebar-toggle" class="sidebar-toggle" aria-label="Toggle navigation">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+</button>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <svg class="brand-logo" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="brand-g3" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#ff5ca8"/>
+            <stop offset="1" stop-color="#7c5cff"/>
+          </linearGradient>
+        </defs>
+        <rect x="2" y="2" width="60" height="60" rx="14" fill="url(#brand-g3)"/>
+        <text x="32" y="42" text-anchor="middle" fill="white" font-size="26" font-family="sans-serif" font-weight="800">III</text>
+      </svg>
+      <div>
+        <p class="brand-title">AI Wiki · Vol III</p>
+        <p class="brand-sub">The Research Frontier</p>
+      </div>
+    </div>
+
+    <nav class="nav-section"><p class="nav-title">Getting Started</p><ul class="nav-list">
+      <li class="nav-item"><a href="../index.html"><span class="nav-num">I</span> Vol I · Foundations</a></li>
+      <li class="nav-item"><a href="../AI-Wiki-II/index.html"><span class="nav-num">II</span> Vol II · Agentic Frontier</a></li>
+      <li class="nav-item"><a href="index.html"><span class="nav-num">◆</span> Vol III · Research Frontier</a></li>
+    </ul></nav>
+
+    <nav class="nav-section">
+      <p class="nav-title">Part I · Architecture</p>
+      <ul class="nav-list">
+        <li class="nav-item"><a href="chapters/01-post-transformer.html"><span class="nav-num">01</span> Past Attention</a></li>
+        <li class="nav-item"><a href="chapters/02-mamba-ssm.html"><span class="nav-num">02</span> Mamba &amp; SSMs</a></li>
+        <li class="nav-item"><a href="chapters/03-blt-tokenization.html"><span class="nav-num">03</span> BLT</a></li>
+        <li class="nav-item"><a href="chapters/04-sparse-revolution.html"><span class="nav-num">04</span> Sparse Revolution</a></li>
+      </ul>
+    </nav>
+
+    <nav class="nav-section">
+      <p class="nav-title">Part II · World Models</p>
+      <ul class="nav-list">
+        <li class="nav-item"><a href="chapters/05-jepa.html"><span class="nav-num">05</span> JEPA</a></li>
+        <li class="nav-item"><a href="chapters/06-generative-world-models.html"><span class="nav-num">06</span> Sora · Veo · Genie</a></li>
+        <li class="nav-item"><a href="chapters/07-embodied-foundation.html"><span class="nav-num">07</span> Embodied</a></li>
+        <li class="nav-item"><a href="chapters/08-model-based-rl.html"><span class="nav-num">08</span> MB-RL</a></li>
+      </ul>
+    </nav>
+
+    <nav class="nav-section">
+      <p class="nav-title">Part III · Reasoning</p>
+      <ul class="nav-list">
+        <li class="nav-item"><a href="chapters/09-rlvr.html"><span class="nav-num">09</span> RL on Verifiable</a></li>
+        <li class="nav-item"><a href="chapters/10-inference-compute.html"><span class="nav-num">10</span> Inference Compute</a></li>
+        <li class="nav-item"><a href="chapters/11-memory-titans.html"><span class="nav-num">11</span> Memory · Titans</a></li>
+        <li class="nav-item"><a href="chapters/12-faithfulness.html"><span class="nav-num">12</span> Faithfulness</a></li>
+      </ul>
+    </nav>
+
+    <nav class="nav-section">
+      <p class="nav-title">Part IV · Systems &amp; Control</p>
+      <ul class="nav-list">
+        <li class="nav-item"><a href="chapters/13-meta-prompting.html"><span class="nav-num">13</span> Meta-Prompting</a></li>
+        <li class="nav-item"><a href="chapters/14-agentic-orchestration.html"><span class="nav-num">14</span> Orchestration</a></li>
+        <li class="nav-item"><a href="chapters/15-deterministic-gates.html"><span class="nav-num">15</span> Deterministic Gates</a></li>
+      </ul>
+    </nav>
+
+    <nav class="nav-section">
+      <p class="nav-title">Part V · Open Problems</p>
+      <ul class="nav-list">
+        <li class="nav-item"><a href="chapters/16-interp-frontier.html"><span class="nav-num">16</span> Interp Frontier</a></li>
+        <li class="nav-item"><a href="chapters/17-alignment-beyond-rlhf.html"><span class="nav-num">17</span> Alignment</a></li>
+        <li class="nav-item"><a href="chapters/18-benchmark-crisis.html"><span class="nav-num">18</span> Benchmark Crisis</a></li>
+      </ul>
+    </nav>
+
+    <nav class="nav-section">
+      <p class="nav-title">Part VI · Big Picture</p>
+      <ul class="nav-list">
+        <li class="nav-item"><a href="chapters/19-ai-for-science.html"><span class="nav-num">19</span> AI for Science</a></li>
+        <li class="nav-item"><a href="chapters/20-scaling-debates.html"><span class="nav-num">20</span> Scaling Debates</a></li>
+        <li class="nav-item"><a href="chapters/21-compute-geopolitics-agi.html"><span class="nav-num">21</span> Compute · AGI</a></li>
+      </ul>
+    </nav>
+
+    <nav class="nav-section"><p class="nav-title">Appendix</p><ul class="nav-list">
+      <li class="nav-item"><a href="resources.html"><span class="nav-num">§</span> Resources</a></li>
+      <li class="nav-item"><a href="vocabulary.html"><span class="nav-num">A</span> Vocabulary</a></li>
+    </ul></nav>
+  </aside>
+
+  <main class="main">
+    <div class="content-wide">
+
+      <section class="hero">
+        <span class="hero-eyebrow">Volume III · April 2026</span>
+        <h1>The Research Frontier<br>Where the field is <em>actually</em> going</h1>
+        <p class="hero-subtitle">
+          Architectures beyond the transformer. World models vs. generation. RL on verifiable rewards.
+          Meta-prompting, orchestration, deterministic gates. Interpretability. The scaling debate.
+          With receipts.
+        </p>
+        <a class="hero-cta" href="chapters/01-post-transformer.html">
+          Start Volume III
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a class="hero-cta-secondary" href="#chapters">Browse Chapters</a>
+        <a class="hero-cta-secondary" href="https://github.com/xD4O/AI-Wiki" target="_blank" rel="noopener" style="margin-left:10px;">⭐ Star on GitHub</a>
+      </section>
+
+      <div class="stats">
+        <div class="stat"><span class="stat-value">21</span><div class="stat-label">Chapters</div></div>
+        <div class="stat"><span class="stat-value">6</span><div class="stat-label">Parts</div></div>
+        <div class="stat"><span class="stat-value">70+</span><div class="stat-label">Diagrams</div></div>
+        <div class="stat"><span class="stat-value">150+</span><div class="stat-label">Primary Sources</div></div>
+      </div>
+
+      <!-- Cover diagram: the research frontier, 2026 -->
+      <div class="diagram">
+        <svg viewBox="0 0 960 480" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The research frontier, 2026">
+          <defs>
+            <filter id="card-shadow" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#000" flood-opacity="0.35"/>
+            </filter>
+            <filter id="glow-pink" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur stdDeviation="4" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <linearGradient id="arch-grad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#7c5cff" stop-opacity="0.28"/>
+              <stop offset="1" stop-color="#7c5cff" stop-opacity="0.08"/>
+            </linearGradient>
+            <linearGradient id="wm-grad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#22d3ee" stop-opacity="0.28"/>
+              <stop offset="1" stop-color="#22d3ee" stop-opacity="0.08"/>
+            </linearGradient>
+            <linearGradient id="rea-grad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#34d399" stop-opacity="0.28"/>
+              <stop offset="1" stop-color="#34d399" stop-opacity="0.08"/>
+            </linearGradient>
+            <linearGradient id="sys-grad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#fbbf24" stop-opacity="0.28"/>
+              <stop offset="1" stop-color="#fbbf24" stop-opacity="0.08"/>
+            </linearGradient>
+            <linearGradient id="open-grad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#ff8a5c" stop-opacity="0.28"/>
+              <stop offset="1" stop-color="#ff8a5c" stop-opacity="0.08"/>
+            </linearGradient>
+            <linearGradient id="big-grad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#ff5ca8" stop-opacity="0.28"/>
+              <stop offset="1" stop-color="#ff5ca8" stop-opacity="0.08"/>
+            </linearGradient>
+            <linearGradient id="core-grad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#ff5ca8"/>
+              <stop offset="1" stop-color="#7c5cff"/>
+            </linearGradient>
+          </defs>
+
+          <g font-family="-apple-system, Inter, sans-serif">
+            <!-- Central "Frontier 2026" hub -->
+            <g filter="url(#glow-pink)">
+              <circle cx="480" cy="240" r="60" fill="url(#core-grad)" stroke="white" stroke-width="2"/>
+            </g>
+            <text x="480" y="236" text-anchor="middle" fill="white" font-size="15" font-weight="800">Frontier</text>
+            <text x="480" y="253" text-anchor="middle" fill="white" font-size="12" font-weight="600">April 2026</text>
+
+            <!-- 6 orbiting domains -->
+            <!-- Architecture (top-left) -->
+            <g filter="url(#card-shadow)">
+              <rect x="80" y="50" width="220" height="80" rx="14" fill="url(#arch-grad)" stroke="#7c5cff" stroke-width="1.5"/>
+            </g>
+            <text x="100" y="78" fill="#7c5cff" font-size="14" font-weight="700">I · Architecture</text>
+            <text x="100" y="98" fill="#e6edf3" font-size="11">Mamba · BLT · BitNet b1.58</text>
+            <text x="100" y="115" fill="#9aa6b2" font-size="11">MoE · diffusion-for-text</text>
+
+            <!-- World Models (top-right) -->
+            <g filter="url(#card-shadow)">
+              <rect x="660" y="50" width="220" height="80" rx="14" fill="url(#wm-grad)" stroke="#22d3ee" stroke-width="1.5"/>
+            </g>
+            <text x="680" y="78" fill="#22d3ee" font-size="14" font-weight="700">II · World Models</text>
+            <text x="680" y="98" fill="#e6edf3" font-size="11">JEPA · Sora · Veo · Genie</text>
+            <text x="680" y="115" fill="#9aa6b2" font-size="11">π0 · GR00T · Dreamer</text>
+
+            <!-- Reasoning (middle-left) -->
+            <g filter="url(#card-shadow)">
+              <rect x="40" y="200" width="220" height="80" rx="14" fill="url(#rea-grad)" stroke="#34d399" stroke-width="1.5"/>
+            </g>
+            <text x="60" y="228" fill="#34d399" font-size="14" font-weight="700">III · Reasoning &amp; Training</text>
+            <text x="60" y="248" fill="#e6edf3" font-size="11">RL on verifiable · R1 · GRPO</text>
+            <text x="60" y="265" fill="#9aa6b2" font-size="11">Titans · faithfulness</text>
+
+            <!-- Systems &amp; Control (middle-right) -->
+            <g filter="url(#card-shadow)">
+              <rect x="700" y="200" width="220" height="80" rx="14" fill="url(#sys-grad)" stroke="#fbbf24" stroke-width="1.5"/>
+            </g>
+            <text x="720" y="228" fill="#fbbf24" font-size="14" font-weight="700">IV · Systems &amp; Control</text>
+            <text x="720" y="248" fill="#e6edf3" font-size="11">DSPy · LangGraph · Temporal</text>
+            <text x="720" y="265" fill="#9aa6b2" font-size="11">Constrained decoding · gates</text>
+
+            <!-- Open Problems (bottom-left) -->
+            <g filter="url(#card-shadow)">
+              <rect x="80" y="350" width="220" height="80" rx="14" fill="url(#open-grad)" stroke="#ff8a5c" stroke-width="1.5"/>
+            </g>
+            <text x="100" y="378" fill="#ff8a5c" font-size="14" font-weight="700">V · Open Problems</text>
+            <text x="100" y="398" fill="#e6edf3" font-size="11">SAEs · deception · benchmarks</text>
+            <text x="100" y="415" fill="#9aa6b2" font-size="11">RSPs · weak-to-strong</text>
+
+            <!-- Big Picture (bottom-right) -->
+            <g filter="url(#card-shadow)">
+              <rect x="660" y="350" width="220" height="80" rx="14" fill="url(#big-grad)" stroke="#ff5ca8" stroke-width="1.5"/>
+            </g>
+            <text x="680" y="378" fill="#ff5ca8" font-size="14" font-weight="700">VI · Big Picture</text>
+            <text x="680" y="398" fill="#e6edf3" font-size="11">AI for Science · scaling</text>
+            <text x="680" y="415" fill="#9aa6b2" font-size="11">Compute · geopolitics · AGI</text>
+
+            <!-- Connecting lines -->
+            <g stroke="#7c5cff" stroke-width="1" stroke-dasharray="3 3" fill="none" opacity="0.4">
+              <line x1="300" y1="90" x2="428" y2="210"/>
+              <line x1="660" y1="90" x2="532" y2="210"/>
+              <line x1="260" y1="240" x2="420" y2="240"/>
+              <line x1="700" y1="240" x2="540" y2="240"/>
+              <line x1="300" y1="390" x2="428" y2="270"/>
+              <line x1="660" y1="390" x2="532" y2="270"/>
+            </g>
+          </g>
+        </svg>
+        <span class="diagram-caption">Volume III is a six-part tour of the research frontier as of April 2026.</span>
+      </div>
+
+      <h2 id="chapters">The Curriculum</h2>
+      <p>Twenty-one chapters in six parts. Each chapter ships with a polished SVG diagram set, a collapsible ELI5 summary, a collapsible "Further Learning" list (videos · papers · blogs · talks · code · docs), debate callouts where there's live disagreement, and a per-chapter resource list.</p>
+
+      <h3>Part I · Architecture — Beyond the Transformer</h3>
+      <div class="grid grid-2">
+        <a class="card card-link" href="chapters/01-post-transformer.html">
+          <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 12h8M12 8v8"/></svg></div>
+          <span class="card-num">Chapter 01</span>
+          <h3>Why We're Looking Past Attention</h3>
+          <p>The transformer's concrete weaknesses at 2026 scale — and the taxonomy of successors.</p>
+        </a>
+        <a class="card card-link" href="chapters/02-mamba-ssm.html">
+          <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h3l3-9 4 18 3-9h5"/></svg></div>
+          <span class="card-num">Chapter 02</span>
+          <h3>State Space Models &amp; Mamba</h3>
+          <p>Selective SSMs, SSD, hybrids (Jamba / Samba / Griffin). When SSMs win and when they don't.</p>
+        </a>
+        <a class="card card-link" href="chapters/03-blt-tokenization.html">
+          <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h4M7 12h10M7 16h8"/></svg></div>
+          <span class="card-num">Chapter 03</span>
+          <h3>Byte Latent Transformer</h3>
+          <p>Meta's attack on tokenization — dynamic patches, byte-level I/O, BPE's possible twilight.</p>
+        </a>
+        <a class="card card-link" href="chapters/04-sparse-revolution.html">
+          <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/><circle cx="12" cy="12" r="2"/></svg></div>
+          <span class="card-num">Chapter 04</span>
+          <h3>The Sparse Revolution</h3>
+          <p>Fine-grained MoE, BitNet b1.58, matmul-free LMs, discrete diffusion for text.</p>
+        </a>
+      </div>
+
+      <h3>Part II · World Models &amp; Embodied Intelligence</h3>
+      <div class="grid grid-2">
+        <a class="card card-link" href="chapters/05-jepa.html">
+          <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="12" r="4"/><circle cx="16" cy="12" r="4"/><path d="M12 12h0"/></svg></div>
+          <span class="card-num">Chapter 05</span>
+          <h3>JEPA — LeCun's Bet</h3>
+          <p>I-JEPA, V-JEPA 2, energy-based models. Prediction in representation space, not pixels.</p>
+        </a>
+        <a class="card card-link" href="chapters/06-generative-world-models.html">
+          <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M10 9l5 3-5 3z"/></svg></div>
+          <span class="card-num">Chapter 06</span>
+          <h3>Generative World Models</h3>
+          <p>Sora · Veo · Genie 2/3. Does pixel-perfect generation imply understanding?</p>
+        </a>
+        <a class="card card-link" href="chapters/07-embodied-foundation.html">
+          <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7" r="3"/><path d="M9 10v4a3 3 0 003 3 3 3 0 003-3v-4M8 21h8M12 17v4"/></svg></div>
+          <span class="card-num">Chapter 07</span>
+          <h3>Embodied Foundation Models</h3>
+          <p>RT-2, π0 / π2, NVIDIA GR00T — robotics' GPT moment.</p>
+        </a>
+        <a class="card card-link" href="chapters/08-model-based-rl.html">
+          <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4.5v9L12 20l-8-4.5v-9zM12 2v9M12 11l8 4.5M12 11L4 15.5"/></svg></div>
+          <span class="card-num">Chapter 08</span>
+          <h3>Model-Based RL &amp; Planning</h3>
+          <p>Dreamer, MuZero, LLM-agent tree search as descendants.</p>
+        </a>
+      </div>
+
+      <h3>Part III · Reasoning &amp; Training</h3>
+      <div class="grid grid-2">
+        <a class="card card-link" href="chapters/09-rlvr.html">
+          <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div>
+          <span class="card-num">Chapter 09</span>
+          <h3>RL on Verifiable Rewards</h3>
+          <p>The R1 / o-series recipe. PRMs vs. ORMs. GRPO demystified.</p>
+        </a>
+        <a class="card card-link" href="chapters/10-inference-compute.html">
+          <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+          <span class="card-num">Chapter 10</span>
+          <h3>Inference-Time Compute</h3>
+          <p>Is "think longer" a new scaling law? Best-of-N, tree search, PRMs as guides.</p>
+        </a>
+        <a class="card card-link" href="chapters/11-memory-titans.html">
+          <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0018 0V5"/></svg></div>
+          <span class="card-num">Chapter 11</span>
+          <h3>Memory &amp; Titans</h3>
+          <p>Test-time training. Short + long + persistent memory. Continual learning.</p>
+        </a>
+        <a class="card card-link" href="chapters/12-faithfulness.html">
+          <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg></div>
+          <span class="card-num">Chapter 12</span>
+          <h3>The Faithfulness Crisis</h3>
+          <p>GSM-Symbolic, Anthropic's CoT studies. Is the reasoning real?</p>
+        </a>
+      </div>
+
+      <h3>Part IV · Systems &amp; Control <span class="pill pill-yellow">new</span></h3>
+      <div class="grid grid-3">
+        <a class="card card-link" href="chapters/13-meta-prompting.html">
+          <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/><path d="M9 8l2 2 4-4"/></svg></div>
+          <span class="card-num">Chapter 13</span>
+          <h3>Meta-Prompting &amp; DSPy</h3>
+          <p>Prompts as source code, compiled. DSPy, APE, OPRO, TextGrad.</p>
+        </a>
+        <a class="card card-link" href="chapters/14-agentic-orchestration.html">
+          <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="6" r="2"/><circle cx="12" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="5" cy="18" r="2"/><circle cx="19" cy="18" r="2"/><path d="M7 6h3M14 6h3M6 8v8M18 8v8M7 18h10"/></svg></div>
+          <span class="card-num">Chapter 14</span>
+          <h3>Agentic Orchestration</h3>
+          <p>LangGraph state machines, Temporal durable execution, Compound AI Systems.</p>
+        </a>
+        <a class="card card-link" href="chapters/15-deterministic-gates.html">
+          <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
+          <span class="card-num">Chapter 15</span>
+          <h3>Deterministic Gates</h3>
+          <p>Constrained decoding, JSON/grammar masking, contracts, formal gates on LLMs.</p>
+        </a>
+      </div>
+
+      <h3>Part V · Open Problems</h3>
+      <div class="grid grid-3">
+        <a class="card card-link" href="chapters/16-interp-frontier.html">
+          <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></div>
+          <span class="card-num">Chapter 16</span>
+          <h3>Interpretability at the Frontier</h3>
+          <p>Crosscoders, circuits in 70B+, Sleeper Agents, Alignment Faking.</p>
+        </a>
+        <a class="card card-link" href="chapters/17-alignment-beyond-rlhf.html">
+          <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 6 6 1-4.5 4 1 6.5L12 17l-5.5 2.5 1-6.5L3 9l6-1z"/></svg></div>
+          <span class="card-num">Chapter 17</span>
+          <h3>Alignment Beyond RLHF</h3>
+          <p>Weak-to-strong, debate, RSP / FSF / Preparedness — what each commits to.</p>
+        </a>
+        <a class="card card-link" href="chapters/18-benchmark-crisis.html">
+          <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18M7 14l4-4 4 4 5-6"/></svg></div>
+          <span class="card-num">Chapter 18</span>
+          <h3>The Benchmark Crisis</h3>
+          <p>ARC-AGI-2, FrontierMath, METR task-horizon. Everything's saturated.</p>
+        </a>
+      </div>
+
+      <h3>Part VI · Big Picture</h3>
+      <div class="grid grid-3">
+        <a class="card card-link" href="chapters/19-ai-for-science.html">
+          <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3h6l-1 3h-4l-1-3zM9 6h6v4a3 3 0 006 0m-15 0a3 3 0 006 0"/></svg></div>
+          <span class="card-num">Chapter 19</span>
+          <h3>AI for Science</h3>
+          <p>AlphaFold descendants, AI-for-math, weather, materials.</p>
+        </a>
+        <a class="card card-link" href="chapters/20-scaling-debates.html">
+          <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l6-6 4 4 8-8"/></svg></div>
+          <span class="card-num">Chapter 20</span>
+          <h3>Scaling Debates</h3>
+          <p>Is scaling dead? The data wall, synthetic data, new scaling axes.</p>
+        </a>
+        <a class="card card-link" href="chapters/21-compute-geopolitics-agi.html">
+          <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 010 20M12 2a15 15 0 000 20"/></svg></div>
+          <span class="card-num">Chapter 21</span>
+          <h3>Compute · Geopolitics · AGI</h3>
+          <p>Chip stacks, energy, regulation, and the actual disagreements about timelines.</p>
+        </a>
+      </div>
+
+      <h2>What's new in Volume III</h2>
+      <div class="grid grid-3">
+        <div class="card">
+          <h3>🧒 Collapsible ELI5</h3>
+          <p>Every chapter ships with a click-to-expand plain-English explanation. Read the deep dive, expand the ELI5 only when you need grounding.</p>
+        </div>
+        <div class="card">
+          <h3>📚 Curated "Further learning"</h3>
+          <p>Videos, papers, blog posts, conference talks, reference code — collapsible per chapter, tagged by kind.</p>
+        </div>
+        <div class="card">
+          <h3>⚖️ Live-debate callouts</h3>
+          <p>Where the field disagrees, both sides appear side-by-side with named proponents and their strongest argument.</p>
+        </div>
+        <div class="card">
+          <h3>🧪 Reference implementations</h3>
+          <p>~150-line PyTorch sketches for Mamba, BLT, JEPA, Titans, GRPO, DSPy, LangGraph, constrained decoding.</p>
+        </div>
+        <div class="card">
+          <h3>📅 Timeline ribbons</h3>
+          <p>A dated mini-timeline atop each chapter — when was this paper released, what followed.</p>
+        </div>
+        <div class="card">
+          <h3>❓ Open-questions box</h3>
+          <p>Every chapter ends with what it <em>couldn't</em> settle — the reader's map of unknowns.</p>
+        </div>
+      </div>
+
+      <div class="callout note">
+        <svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        <div class="callout-body">
+          <div class="callout-title">Assumes Volumes I &amp; II</div>
+          <p>We don't re-derive transformers, RLHF, or basic agent loops. If something is unfamiliar, jump back to <a href="../index.html">Volume I</a> or <a href="../AI-Wiki-II/index.html">Volume II</a>.</p>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="assets/js/main.js"></script>
+<footer class="site-footer">
+  <p>Created by <strong>Duy Dao</strong><span class="sep">·</span><a href="https://github.com/xD4O" target="_blank" rel="noopener">GitHub @xD4O</a><span class="sep">·</span><a href="https://x.com/_cyr4x" target="_blank" rel="noopener">X @_cyr4x</a><span class="sep">·</span>AI Wiki · 2026</p>
+  <p class="star-cta">Found this useful? <a href="https://github.com/xD4O/AI-Wiki" target="_blank" rel="noopener">⭐ Star it on GitHub</a></p>
+</footer>
+</body>
+</html>

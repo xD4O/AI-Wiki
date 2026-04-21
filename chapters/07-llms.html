@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 7 · Large Language Models — AI Wiki</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+
+<button id="sidebar-toggle" class="sidebar-toggle" aria-label="Toggle navigation">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+</button>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <svg class="brand-logo" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="brand-g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7c5cff"/><stop offset="1" stop-color="#22d3ee"/></linearGradient></defs>
+        <rect x="4" y="4" width="56" height="56" rx="14" fill="url(#brand-g)"/>
+        <circle cx="22" cy="26" r="3" fill="white"/><circle cx="42" cy="26" r="3" fill="white"/><circle cx="32" cy="42" r="3" fill="white"/>
+        <path d="M22 26 L32 42 L42 26 M22 26 L42 26" stroke="white" stroke-width="1.5" fill="none" opacity="0.8"/>
+      </svg>
+      <div><p class="brand-title">AI Wiki</p><p class="brand-sub">Foundations → Mastery</p></div>
+    </div>
+    <nav class="nav-section"><p class="nav-title">Getting Started</p><ul class="nav-list">
+      <li class="nav-item"><a href="../index.html"><span class="nav-num">◆</span> Vol I · Foundations</a></li>
+      <li class="nav-item"><a href="../AI-Wiki-II/index.html"><span class="nav-num">II</span> Vol II · Agentic Frontier</a></li>
+      <li class="nav-item"><a href="../AI-Wiki-III/index.html"><span class="nav-num">III</span> Vol III · Research Frontier</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part I · Foundations</p><ul class="nav-list">
+      <li class="nav-item"><a href="01-introduction.html"><span class="nav-num">01</span> Introduction to AI</a></li>
+      <li class="nav-item"><a href="02-math-foundations.html"><span class="nav-num">02</span> Math Foundations</a></li>
+      <li class="nav-item"><a href="03-machine-learning.html"><span class="nav-num">03</span> Machine Learning</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part II · Deep Learning</p><ul class="nav-list">
+      <li class="nav-item"><a href="04-neural-networks.html"><span class="nav-num">04</span> Neural Networks</a></li>
+      <li class="nav-item"><a href="05-deep-learning.html"><span class="nav-num">05</span> Deep Learning</a></li>
+      <li class="nav-item"><a href="06-nlp-transformers.html"><span class="nav-num">06</span> NLP &amp; Transformers</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part III · Modern AI</p><ul class="nav-list">
+      <li class="nav-item"><a href="07-llms.html"><span class="nav-num">07</span> Large Language Models</a></li>
+      <li class="nav-item"><a href="08-training-finetuning.html"><span class="nav-num">08</span> Training &amp; Fine-tuning</a></li>
+      <li class="nav-item"><a href="09-alignment-rlhf.html"><span class="nav-num">09</span> Alignment &amp; RLHF</a></li>
+      <li class="nav-item"><a href="10-agents-modern.html"><span class="nav-num">10</span> Agents &amp; Frontier</a></li>
+    </ul></nav>
+  <nav class="nav-section"><p class="nav-title">Appendix</p><ul class="nav-list">
+      <li class="nav-item"><a href="../resources.html"><span class="nav-num">§</span> Resources</a></li>
+      <li class="nav-item"><a href="../vocabulary.html"><span class="nav-num">A</span> Vocabulary</a></li>
+    </ul></nav>
+  </aside>
+
+  <main class="main"><div class="content">
+
+    <header class="chapter-header">
+      <div class="chapter-meta">
+        <span class="chapter-num">CHAPTER 07</span>
+        <span class="pill pill-accent">Modern AI</span>
+      </div>
+      <h1>Large Language Models</h1>
+      <p class="chapter-lede">What pretraining really is, the scaling laws that predict model quality, and the tricks used to decode text at inference.</p>
+    </header>
+
+    <div class="toc">
+      <h4>In this chapter</h4>
+      <ul>
+        <li><a href="#pretrain">7.1 Pretraining: Predict the Next Token</a></li>
+        <li><a href="#scaling">7.2 Scaling Laws</a></li>
+        <li><a href="#moe">7.3 Mixture of Experts</a></li>
+        <li><a href="#context">7.4 Context Windows &amp; KV Cache</a></li>
+        <li><a href="#decoding">7.5 Decoding Strategies</a></li>
+        <li><a href="#landscape">7.6 The Current Landscape</a></li>
+      </ul>
+    </div>
+
+    <h2 id="pretrain">7.1 Pretraining: Predict the Next Token</h2>
+    <p>A large language model is, at its core, a transformer trained on one objective: <strong>given the previous tokens, predict the next one</strong>. That's it. No labels, no human supervision — the data supplies its own.</p>
+
+    $$ L = -\sum_{t=1}^{T} \log P_\theta(x_t \mid x_{<t}) $$
+
+    <p>This single objective, applied to trillions of tokens of text, produces a model that can translate, summarize, code, explain jokes, and reason — because all of those behaviors appear implicitly in the training data.</p>
+
+    <div class="diagram">
+      <svg viewBox="0 0 900 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Next token prediction">
+        <g font-family="sans-serif">
+          <!-- tokens -->
+          <g>
+            <rect x="40"  y="80" width="70" height="40" rx="6" fill="#161b24" stroke="#22d3ee"/>
+            <text x="75" y="105" text-anchor="middle" fill="#e6edf3" font-size="13">The</text>
+            <rect x="120" y="80" width="70" height="40" rx="6" fill="#161b24" stroke="#22d3ee"/>
+            <text x="155" y="105" text-anchor="middle" fill="#e6edf3" font-size="13">Eiffel</text>
+            <rect x="200" y="80" width="70" height="40" rx="6" fill="#161b24" stroke="#22d3ee"/>
+            <text x="235" y="105" text-anchor="middle" fill="#e6edf3" font-size="13">Tower</text>
+            <rect x="280" y="80" width="70" height="40" rx="6" fill="#161b24" stroke="#22d3ee"/>
+            <text x="315" y="105" text-anchor="middle" fill="#e6edf3" font-size="13">is</text>
+            <rect x="360" y="80" width="70" height="40" rx="6" fill="#161b24" stroke="#22d3ee"/>
+            <text x="395" y="105" text-anchor="middle" fill="#e6edf3" font-size="13">in</text>
+          </g>
+
+          <!-- arrow into LLM -->
+          <path d="M 440 100 L 495 100" stroke="#7c5cff" stroke-width="2" marker-end="url(#llm-a)"/>
+          <defs><marker id="llm-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7c5cff"/></marker></defs>
+
+          <!-- LLM box -->
+          <rect x="500" y="60" width="140" height="80" rx="12" fill="rgba(124,92,255,0.18)" stroke="#7c5cff" stroke-width="2"/>
+          <text x="570" y="92" text-anchor="middle" fill="#7c5cff" font-size="14" font-weight="700">Transformer</text>
+          <text x="570" y="112" text-anchor="middle" fill="#e6edf3" font-size="11">softmax over vocab</text>
+
+          <!-- arrow out -->
+          <path d="M 640 100 L 695 100" stroke="#7c5cff" stroke-width="2" marker-end="url(#llm-a)"/>
+
+          <!-- distribution over next token -->
+          <g transform="translate(700 40)">
+            <rect x="0" y="0" width="180" height="155" rx="10" fill="#161b24" stroke="#ff5ca8"/>
+            <text x="90" y="22" text-anchor="middle" fill="#ff5ca8" font-size="12" font-weight="700">P(next token | context)</text>
+            <g font-family="'JetBrains Mono', monospace" font-size="11" fill="#e6edf3">
+              <text x="14" y="48">"Paris"</text>
+              <rect x="70" y="40" width="88" height="10" fill="rgba(124,92,255,0.9)" rx="2"/>
+              <text x="164" y="49" text-anchor="end" fill="#9aa6b2" font-size="10">.78</text>
+
+              <text x="14" y="72">"France"</text>
+              <rect x="70" y="64" width="22" height="10" fill="rgba(124,92,255,0.5)" rx="2"/>
+              <text x="164" y="73" text-anchor="end" fill="#9aa6b2" font-size="10">.09</text>
+
+              <text x="14" y="96">"Europe"</text>
+              <rect x="70" y="88" width="12" height="10" fill="rgba(124,92,255,0.4)" rx="2"/>
+              <text x="164" y="97" text-anchor="end" fill="#9aa6b2" font-size="10">.05</text>
+
+              <text x="14" y="120">"the"</text>
+              <rect x="70" y="112" width="6" height="10" fill="rgba(124,92,255,0.3)" rx="2"/>
+              <text x="164" y="121" text-anchor="end" fill="#9aa6b2" font-size="10">.02</text>
+
+              <text x="14" y="144">…</text>
+              <text x="164" y="144" text-anchor="end" fill="#9aa6b2" font-size="10">.06</text>
+            </g>
+          </g>
+
+          <text x="450" y="210" text-anchor="middle" fill="#9aa6b2" font-size="12" font-style="italic">Training signal: "Paris" was the actual next token — nudge weights to make it more likely.</text>
+        </g>
+      </svg>
+      <span class="diagram-caption">Next-token prediction. Trained at planetary scale, this trivial objective produces emergent capability.</span>
+    </div>
+
+    <h2 id="scaling">7.2 Scaling Laws</h2>
+    <p>In 2020 OpenAI (Kaplan et al.) and later DeepMind (Chinchilla, 2022) showed that model loss follows smooth <strong>power-law</strong> relationships with compute, parameters, and data. Bigger and more data ⇒ predictably lower loss.</p>
+
+    <div class="diagram">
+      <svg viewBox="0 0 900 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Scaling law">
+        <g font-family="sans-serif">
+          <!-- axes -->
+          <line x1="80" y1="260" x2="850" y2="260" stroke="#2e3746" stroke-width="2"/>
+          <line x1="80" y1="30"  x2="80"  y2="260" stroke="#2e3746" stroke-width="2"/>
+
+          <!-- axis labels -->
+          <text x="465" y="288" text-anchor="middle" fill="#9aa6b2" font-size="12">compute (log)</text>
+          <text x="30" y="150" text-anchor="middle" fill="#9aa6b2" font-size="12" transform="rotate(-90 30 150)">test loss (log)</text>
+
+          <!-- grid -->
+          <g stroke="#1a2230" stroke-dasharray="2 3">
+            <line x1="230" y1="30" x2="230" y2="260"/>
+            <line x1="380" y1="30" x2="380" y2="260"/>
+            <line x1="530" y1="30" x2="530" y2="260"/>
+            <line x1="680" y1="30" x2="680" y2="260"/>
+            <line x1="830" y1="30" x2="830" y2="260"/>
+
+            <line x1="80" y1="80"  x2="850" y2="80"/>
+            <line x1="80" y1="130" x2="850" y2="130"/>
+            <line x1="80" y1="180" x2="850" y2="180"/>
+            <line x1="80" y1="230" x2="850" y2="230"/>
+          </g>
+
+          <!-- scaling curve: roughly y = a * x^-α -->
+          <path d="M 100 80 Q 220 110 380 145 Q 530 175 680 205 Q 760 220 830 235" fill="none" stroke="#7c5cff" stroke-width="3"/>
+
+          <!-- data points -->
+          <g fill="#ff5ca8" stroke="white" stroke-width="1.5">
+            <circle cx="140" cy="95"  r="5"/>
+            <circle cx="250" cy="120" r="5"/>
+            <circle cx="380" cy="145" r="5"/>
+            <circle cx="530" cy="175" r="5"/>
+            <circle cx="680" cy="205" r="5"/>
+            <circle cx="810" cy="232" r="5"/>
+          </g>
+
+          <!-- labels next to points -->
+          <g font-family="sans-serif" font-size="10" fill="#9aa6b2">
+            <text x="150" y="88">GPT-1 (110M)</text>
+            <text x="260" y="113">GPT-2 (1.5B)</text>
+            <text x="390" y="138">GPT-3 (175B)</text>
+            <text x="540" y="168">PaLM / Llama-2</text>
+            <text x="690" y="197">GPT-4 class</text>
+            <text x="690" y="225">Gemini / Claude · 2024+</text>
+          </g>
+
+          <!-- formula box -->
+          <g transform="translate(500 40)">
+            <rect x="0" y="0" width="310" height="58" rx="10" fill="#161b24" stroke="#fbbf24" stroke-width="1"/>
+            <text x="155" y="24" text-anchor="middle" fill="#fbbf24" font-size="12" font-weight="700">Power-law scaling</text>
+            <text x="155" y="46" text-anchor="middle" fill="#e6edf3" font-size="14" font-family="'JetBrains Mono', monospace">Loss(C) ≈ (C_c / C)^α</text>
+          </g>
+        </g>
+      </svg>
+      <span class="diagram-caption">As you multiply compute by 10×, loss drops by a predictable fraction. Scaling laws are the reason labs spend billions on GPUs.</span>
+    </div>
+
+    <p><strong>Chinchilla insight:</strong> for a fixed compute budget, you should roughly balance parameters and training tokens — about 20 tokens per parameter. Earlier models were over-parameterized and under-trained.</p>
+
+    <h2 id="moe">7.3 Mixture of Experts</h2>
+    <p>A <strong>Mixture of Experts</strong> (MoE) layer replaces a single giant FFN with many smaller "expert" FFNs and a lightweight <strong>router</strong> that picks a small subset (typically 2 of 8 or 2 of 64) per token.</p>
+
+    <div class="diagram">
+      <svg viewBox="0 0 900 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Mixture of experts">
+        <defs><marker id="moe-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7c5cff"/></marker></defs>
+        <g font-family="sans-serif">
+          <!-- input -->
+          <rect x="40" y="120" width="100" height="40" rx="8" fill="#161b24" stroke="#22d3ee"/>
+          <text x="90" y="145" text-anchor="middle" fill="#e6edf3" font-size="13">Input token</text>
+
+          <!-- router -->
+          <line x1="140" y1="140" x2="190" y2="140" stroke="#7c5cff" stroke-width="2" marker-end="url(#moe-a)"/>
+          <rect x="195" y="105" width="120" height="70" rx="10" fill="rgba(124,92,255,0.18)" stroke="#7c5cff" stroke-width="2"/>
+          <text x="255" y="135" text-anchor="middle" fill="#7c5cff" font-size="13" font-weight="700">Router</text>
+          <text x="255" y="155" text-anchor="middle" fill="#9aa6b2" font-size="10">softmax → top-k</text>
+
+          <!-- experts -->
+          <g>
+            <rect x="390" y="30" width="130" height="42" rx="8" fill="#161b24" stroke="#34d399"/>
+            <text x="455" y="56" text-anchor="middle" fill="#e6edf3" font-size="12">Expert 1</text>
+            <rect x="390" y="82" width="130" height="42" rx="8" fill="#161b24" stroke="#34d399"/>
+            <text x="455" y="108" text-anchor="middle" fill="#e6edf3" font-size="12">Expert 2</text>
+            <rect x="390" y="134" width="130" height="42" rx="8" fill="#161b24" stroke="#ff5ca8" stroke-width="2.5"/>
+            <text x="455" y="160" text-anchor="middle" fill="#ff5ca8" font-size="12" font-weight="700">Expert 3 ★</text>
+            <rect x="390" y="186" width="130" height="42" rx="8" fill="#161b24" stroke="#34d399"/>
+            <text x="455" y="212" text-anchor="middle" fill="#e6edf3" font-size="12">Expert 4</text>
+            <rect x="390" y="238" width="130" height="30" rx="8" fill="#161b24" stroke="#34d399"/>
+            <text x="455" y="258" text-anchor="middle" fill="#9aa6b2" font-size="11">…</text>
+          </g>
+
+          <!-- Active paths -->
+          <line x1="315" y1="135" x2="385" y2="115" stroke="#ff5ca8" stroke-width="2" marker-end="url(#moe-a)"/>
+          <line x1="315" y1="145" x2="385" y2="155" stroke="#ff5ca8" stroke-width="2" marker-end="url(#moe-a)"/>
+          <!-- inactive paths (faded) -->
+          <line x1="315" y1="135" x2="385" y2="60"  stroke="#3a4657" stroke-width="1" stroke-dasharray="3 3"/>
+          <line x1="315" y1="145" x2="385" y2="207" stroke="#3a4657" stroke-width="1" stroke-dasharray="3 3"/>
+
+          <!-- weighted sum -->
+          <line x1="525" y1="105" x2="600" y2="130" stroke="#ff5ca8" stroke-width="2" marker-end="url(#moe-a)"/>
+          <line x1="525" y1="155" x2="600" y2="140" stroke="#ff5ca8" stroke-width="2" marker-end="url(#moe-a)"/>
+          <circle cx="620" cy="135" r="18" fill="#161b24" stroke="#ff5ca8" stroke-width="2"/>
+          <text x="620" y="140" text-anchor="middle" fill="#e6edf3" font-size="16">Σ</text>
+
+          <!-- output -->
+          <line x1="638" y1="135" x2="700" y2="135" stroke="#7c5cff" stroke-width="2" marker-end="url(#moe-a)"/>
+          <rect x="705" y="115" width="140" height="40" rx="8" fill="#161b24" stroke="#22d3ee"/>
+          <text x="775" y="140" text-anchor="middle" fill="#e6edf3" font-size="13">Output token</text>
+
+          <!-- caption -->
+          <text x="450" y="296" text-anchor="middle" fill="#9aa6b2" font-size="12" font-style="italic">Trillion-parameter models activate only ~10% of weights per token → much cheaper inference.</text>
+        </g>
+      </svg>
+      <span class="diagram-caption">MoE: sparse activation. Only a few experts fire per token, so you can have huge models without linear cost.</span>
+    </div>
+
+    <h2 id="context">7.4 Context Windows &amp; KV Cache</h2>
+    <p>The <strong>context window</strong> is how many tokens the model can "see" at once. It grew from 2K (GPT-2) → 8K (GPT-3.5) → 200K (Claude) → 1M+ (Gemini, Claude) in just a few years.</p>
+
+    <p>Self-attention cost is $O(T^2)$ in sequence length $T$, which is why long contexts are expensive. The <strong>KV cache</strong> makes inference efficient: for each token you generate, you only need to compute <em>new</em> queries, keys, and values — the previous K and V vectors are stored and reused.</p>
+
+    <table>
+      <thead><tr><th>Technique</th><th>Reduces</th><th>Used in</th></tr></thead>
+      <tbody>
+        <tr><td>KV cache</td><td>Recomputation at generation time</td><td>Every production LLM</td></tr>
+        <tr><td>Flash Attention</td><td>Memory (no materialized $T \times T$ matrix)</td><td>All modern stacks</td></tr>
+        <tr><td>Sliding window</td><td>Attention to local context only</td><td>Mistral, Longformer</td></tr>
+        <tr><td>Grouped-query attention</td><td>KV heads (reuse across Q heads)</td><td>Llama-3, most modern models</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="decoding">7.5 Decoding Strategies</h2>
+    <p>Given a probability distribution over the next token, how do you pick one? The choice shapes the output's character.</p>
+
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>Greedy</h3>
+        <p>Always pick the most likely token. Deterministic, boring, sometimes locally optimal but globally weird.</p>
+      </div>
+      <div class="card">
+        <h3>Temperature sampling</h3>
+        <p>Divide logits by $T$. $T < 1$ sharpens toward greedy; $T > 1$ flattens toward uniform. Default in most chat APIs.</p>
+      </div>
+      <div class="card">
+        <h3>Top-k / Top-p (nucleus)</h3>
+        <p>Truncate the distribution to only the top-k tokens, or to the smallest set whose probs sum to p. Kills rare-but-bad tokens.</p>
+      </div>
+      <div class="card">
+        <h3>Beam search</h3>
+        <p>Keep multiple candidate prefixes, extend all of them. Great for translation; bad for open-ended generation (repetitive).</p>
+      </div>
+    </div>
+
+    <pre><code class="language-python">import torch, torch.nn.functional as F
+
+@torch.no_grad()
+def generate(model, input_ids, max_new_tokens=50, temperature=0.7, top_p=0.9):
+    for _ in range(max_new_tokens):
+        logits = model(input_ids)[:, -1]                 # last-token logits
+        logits = logits / temperature
+
+        # nucleus (top-p) filtering
+        probs  = F.softmax(logits, dim=-1)
+        sorted_probs, sorted_ix = probs.sort(descending=True)
+        cum = sorted_probs.cumsum(dim=-1)
+        mask = cum - sorted_probs > top_p
+        sorted_probs[mask] = 0
+        sorted_probs /= sorted_probs.sum(dim=-1, keepdim=True)
+
+        next_tok = sorted_ix[0, torch.multinomial(sorted_probs[0], 1)]
+        input_ids = torch.cat([input_ids, next_tok.view(1, 1)], dim=1)
+    return input_ids</code></pre>
+
+    <h2 id="landscape">7.6 The Current Landscape</h2>
+    <p>As of 2026, frontier models cluster into a few families, each pushing different capabilities.</p>
+
+    <table>
+      <thead><tr><th>Family</th><th>Maker</th><th>Notable models</th><th>Distinct strength</th></tr></thead>
+      <tbody>
+        <tr><td>Claude</td><td>Anthropic</td><td>Claude 4 Opus · Sonnet · Haiku</td><td>Long context, code, agent behavior, safety</td></tr>
+        <tr><td>GPT</td><td>OpenAI</td><td>GPT-4 · GPT-5</td><td>Reasoning, multimodality, ecosystem</td></tr>
+        <tr><td>Gemini</td><td>Google</td><td>Gemini 2.x Pro · Ultra</td><td>Huge context (1M+), native multimodal</td></tr>
+        <tr><td>Llama</td><td>Meta</td><td>Llama 3 · 4</td><td>Open weights, massive community</td></tr>
+        <tr><td>Mistral / Mixtral</td><td>Mistral AI</td><td>Mixtral 8x7B, Mistral Large</td><td>MoE, efficient open models</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout note">
+      <svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+      <div class="callout-body">
+        <div class="callout-title">Pretraining isn't the end of the story</div>
+        <p>A raw pretrained model is impressive but useless for chat. It talks like the average internet text. Chapters 8 and 9 cover the fine-tuning and alignment steps that turn a base model into something you'd actually want to talk to.</p>
+      </div>
+    </div>
+
+    <nav class="pager">
+      <a class="pager-link" href="06-nlp-transformers.html"><span class="pager-label">← Previous</span><span class="pager-title">NLP &amp; Transformers</span></a>
+      <a class="pager-link pager-next" href="08-training-finetuning.html"><span class="pager-label">Next →</span><span class="pager-title">Training &amp; Fine-tuning</span></a>
+    </nav>
+
+  </div></main>
+</div>
+
+<button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="../assets/js/main.js"></script>
+<footer class="site-footer">
+  <p>Created by <strong>Duy Dao</strong><span class="sep">·</span><a href="https://github.com/xD4O" target="_blank" rel="noopener">GitHub @xD4O</a><span class="sep">·</span><a href="https://x.com/_cyr4x" target="_blank" rel="noopener">X @_cyr4x</a><span class="sep">·</span>AI Wiki · 2026</p>
+  <p class="star-cta">Found this useful? <a href="https://github.com/xD4O/AI-Wiki" target="_blank" rel="noopener">⭐ Star it on GitHub</a></p>
+</footer>
+</body>
+</html>

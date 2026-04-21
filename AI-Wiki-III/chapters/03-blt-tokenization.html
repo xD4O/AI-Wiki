@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 03 · Byte Latent Transformer — AI Wiki Vol III</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+
+<button id="sidebar-toggle" class="sidebar-toggle" aria-label="Toggle navigation"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg></button>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <svg class="brand-logo" viewBox="0 0 64 64"><defs><linearGradient id="bg3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff5ca8"/><stop offset="1" stop-color="#7c5cff"/></linearGradient></defs><rect x="2" y="2" width="60" height="60" rx="14" fill="url(#bg3)"/><text x="32" y="42" text-anchor="middle" fill="white" font-size="26" font-weight="800">III</text></svg>
+      <div><p class="brand-title">AI Wiki · Vol III</p><p class="brand-sub">The Research Frontier</p></div>
+    </div>
+    <nav class="nav-section"><p class="nav-title">Getting Started</p><ul class="nav-list">
+      <li class="nav-item"><a href="../../index.html"><span class="nav-num">I</span> Vol I · Foundations</a></li>
+      <li class="nav-item"><a href="../../AI-Wiki-II/index.html"><span class="nav-num">II</span> Vol II · Agentic Frontier</a></li>
+      <li class="nav-item"><a href="../index.html"><span class="nav-num">◆</span> Vol III · Research Frontier</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part I · Architecture</p><ul class="nav-list"><li class="nav-item"><a href="01-post-transformer.html"><span class="nav-num">01</span> Past Attention</a></li><li class="nav-item"><a href="02-mamba-ssm.html"><span class="nav-num">02</span> Mamba &amp; SSMs</a></li><li class="nav-item"><a href="03-blt-tokenization.html"><span class="nav-num">03</span> BLT</a></li><li class="nav-item"><a href="04-sparse-revolution.html"><span class="nav-num">04</span> Sparse Revolution</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part II · World Models</p><ul class="nav-list"><li class="nav-item"><a href="05-jepa.html"><span class="nav-num">05</span> JEPA</a></li><li class="nav-item"><a href="06-generative-world-models.html"><span class="nav-num">06</span> Sora · Veo · Genie</a></li><li class="nav-item"><a href="07-embodied-foundation.html"><span class="nav-num">07</span> Embodied</a></li><li class="nav-item"><a href="08-model-based-rl.html"><span class="nav-num">08</span> MB-RL</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part III · Reasoning</p><ul class="nav-list"><li class="nav-item"><a href="09-rlvr.html"><span class="nav-num">09</span> RL Verifiable</a></li><li class="nav-item"><a href="10-inference-compute.html"><span class="nav-num">10</span> Inference Compute</a></li><li class="nav-item"><a href="11-memory-titans.html"><span class="nav-num">11</span> Memory · Titans</a></li><li class="nav-item"><a href="12-faithfulness.html"><span class="nav-num">12</span> Faithfulness</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part IV · Systems &amp; Control</p><ul class="nav-list"><li class="nav-item"><a href="13-meta-prompting.html"><span class="nav-num">13</span> Meta-Prompting</a></li><li class="nav-item"><a href="14-agentic-orchestration.html"><span class="nav-num">14</span> Orchestration</a></li><li class="nav-item"><a href="15-deterministic-gates.html"><span class="nav-num">15</span> Deterministic Gates</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part V · Open Problems</p><ul class="nav-list"><li class="nav-item"><a href="16-interp-frontier.html"><span class="nav-num">16</span> Interp Frontier</a></li><li class="nav-item"><a href="17-alignment-beyond-rlhf.html"><span class="nav-num">17</span> Alignment</a></li><li class="nav-item"><a href="18-benchmark-crisis.html"><span class="nav-num">18</span> Benchmarks</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part VI · Big Picture</p><ul class="nav-list"><li class="nav-item"><a href="19-ai-for-science.html"><span class="nav-num">19</span> AI for Science</a></li><li class="nav-item"><a href="20-scaling-debates.html"><span class="nav-num">20</span> Scaling</a></li><li class="nav-item"><a href="21-compute-geopolitics-agi.html"><span class="nav-num">21</span> Compute · AGI</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Appendix</p><ul class="nav-list">
+      <li class="nav-item"><a href="../resources.html"><span class="nav-num">§</span> Resources</a></li>
+      <li class="nav-item"><a href="../vocabulary.html"><span class="nav-num">A</span> Vocabulary</a></li>
+    </ul></nav>
+  </aside>
+
+  <main class="main"><div class="content">
+
+    <header class="chapter-header">
+      <div class="chapter-meta"><span class="chapter-num">CHAPTER 03</span><span class="pill pill-accent">Part I · Architecture</span></div>
+      <h1>Byte Latent Transformer &amp; the End of Tokenization</h1>
+      <p class="chapter-lede">Meta FAIR's BLT is the most credible 2024-2026 attempt to kill the BPE tokenizer. Dynamic byte patches, a local encoder/decoder, and a latent transformer that matches Llama 3 on equal compute.</p>
+    </header>
+
+    <div class="timeline-ribbon">
+      <span class="timeline-event"><strong>2015</strong> BPE adopted by NMT</span>
+      <span class="timeline-event"><strong>2023-05</strong> MegaByte (Meta)</span>
+      <span class="timeline-event"><strong>2024-04</strong> SpaceByte</span>
+      <span class="timeline-event"><strong>2024-12</strong> BLT (Meta FAIR)</span>
+      <span class="timeline-event"><strong>2025</strong> BLT follow-ups at 8B+ scale</span>
+    </div>
+
+    <details class="eli5">
+      <summary><span class="eli5-icon">🧒</span> ELI5 — explain like I'm five</summary>
+      <div class="eli5-body">
+        <p>Normally, before a language model reads text, we chop it into pieces called <strong>tokens</strong>. A token is usually 3-4 letters, sometimes a whole word. This chopper was decided <em>before</em> the model was trained and it never changes. That's weird: it's like handing a reader a book where some words have been pre-glued together at random.</p>
+        <p>The <strong>Byte Latent Transformer</strong> (BLT) gets rid of the chopper. It reads raw bytes — the actual letters and emoji and symbols — and uses a tiny helper network to decide where <em>natural</em> chunks start and stop. If the text is predictable ("the next word is probably 'cat'"), the chunks are long. If the text is surprising (a name, a code snippet, rare language), the chunks get shorter so the main model can pay more attention.</p>
+        <p>Result: the model <em>does</em> see individual letters, so it can count the Rs in "strawberry." And chunks are chosen per-sentence, not per-vocabulary, so minority languages and code don't pay the BPE tax.</p>
+      </div>
+    </details>
+
+    <div class="toc">
+      <h4>In this chapter</h4>
+      <ul>
+        <li><a href="#why">3.1 Why Kill Tokenization?</a></li>
+        <li><a href="#arch">3.2 The BLT Architecture</a></li>
+        <li><a href="#entropy">3.3 Entropy-Based Dynamic Patches</a></li>
+        <li><a href="#results">3.4 Results &amp; What BLT Proves</a></li>
+        <li><a href="#prior">3.5 Prior Art — MegaByte, SpaceByte, Charformer</a></li>
+        <li><a href="#code">3.6 Reference — A Boundary Detector</a></li>
+        <li><a href="#resources">3.7 Further Reading</a></li>
+      </ul>
+    </div>
+
+    <h2 id="why">3.1 Why Kill Tokenization?</h2>
+    <p>We covered the failure modes in Ch 01. Restated: BPE is a <em>compression</em>, not a <em>representation</em>. It was chosen to make sequence lengths manageable in 2015. Every problem downstream (character-level reasoning, non-English tax, spelling drift) is a symptom of that compression leaking into semantics.</p>
+    <p>BLT's thesis: <em>letting the model allocate compute per-byte, with patch boundaries chosen by entropy rather than frequency, fixes all five symptoms without losing efficiency.</em></p>
+
+    <h2 id="arch">3.2 The BLT Architecture</h2>
+
+    <div class="diagram">
+      <svg viewBox="0 0 960 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="BLT architecture">
+        <defs>
+          <filter id="blt-sh"><feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#000" flood-opacity="0.35"/></filter>
+          <linearGradient id="blt-enc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#22d3ee" stop-opacity="0.3"/><stop offset="1" stop-color="#22d3ee" stop-opacity="0.08"/></linearGradient>
+          <linearGradient id="blt-lat" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7c5cff" stop-opacity="0.3"/><stop offset="1" stop-color="#7c5cff" stop-opacity="0.08"/></linearGradient>
+          <linearGradient id="blt-dec" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff5ca8" stop-opacity="0.3"/><stop offset="1" stop-color="#ff5ca8" stop-opacity="0.08"/></linearGradient>
+          <marker id="blt-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7c5cff"/></marker>
+        </defs>
+        <g font-family="-apple-system, Inter, sans-serif">
+          <!-- Input bytes -->
+          <text x="60" y="30" fill="#9aa6b2" font-size="12" font-weight="600">raw bytes</text>
+          <g font-size="10" font-family="monospace">
+            <rect x="60" y="40" width="22" height="22" fill="#11151c" stroke="#22d3ee"/><text x="71" y="56" text-anchor="middle" fill="#e6edf3">T</text>
+            <rect x="82" y="40" width="22" height="22" fill="#11151c" stroke="#22d3ee"/><text x="93" y="56" text-anchor="middle" fill="#e6edf3">h</text>
+            <rect x="104" y="40" width="22" height="22" fill="#11151c" stroke="#22d3ee"/><text x="115" y="56" text-anchor="middle" fill="#e6edf3">e</text>
+            <rect x="126" y="40" width="22" height="22" fill="#11151c" stroke="#22d3ee"/><text x="137" y="56" text-anchor="middle" fill="#e6edf3"> </text>
+            <rect x="148" y="40" width="22" height="22" fill="#11151c" stroke="#22d3ee"/><text x="159" y="56" text-anchor="middle" fill="#e6edf3">c</text>
+            <rect x="170" y="40" width="22" height="22" fill="#11151c" stroke="#22d3ee"/><text x="181" y="56" text-anchor="middle" fill="#e6edf3">a</text>
+            <rect x="192" y="40" width="22" height="22" fill="#11151c" stroke="#22d3ee"/><text x="203" y="56" text-anchor="middle" fill="#e6edf3">t</text>
+          </g>
+
+          <!-- Patch boundaries -->
+          <g stroke="#fbbf24" stroke-width="2" fill="none" stroke-dasharray="3 3">
+            <line x1="126" y1="35" x2="126" y2="68"/>
+            <line x1="214" y1="35" x2="214" y2="68"/>
+          </g>
+          <text x="220" y="52" fill="#fbbf24" font-size="10">entropy boundaries</text>
+
+          <!-- Local encoder -->
+          <g filter="url(#blt-sh)">
+            <rect x="60" y="110" width="820" height="60" rx="10" fill="url(#blt-enc)" stroke="#22d3ee" stroke-width="1.5"/>
+          </g>
+          <text x="470" y="135" text-anchor="middle" fill="#22d3ee" font-size="14" font-weight="700">Local byte encoder (small transformer)</text>
+          <text x="470" y="155" text-anchor="middle" fill="#9aa6b2" font-size="11">bytes within a patch → one patch embedding; cheap, parallel per-patch</text>
+
+          <!-- arrow down -->
+          <line x1="470" y1="173" x2="470" y2="200" stroke="#7c5cff" stroke-width="1.5" marker-end="url(#blt-arr)"/>
+
+          <!-- Latent transformer -->
+          <g filter="url(#blt-sh)">
+            <rect x="60" y="210" width="820" height="90" rx="14" fill="url(#blt-lat)" stroke="#7c5cff" stroke-width="2"/>
+          </g>
+          <text x="470" y="240" text-anchor="middle" fill="#e6edf3" font-size="15" font-weight="700">Latent transformer (the main model)</text>
+          <text x="470" y="262" text-anchor="middle" fill="#9aa6b2" font-size="12">operates over patches, not tokens — sequence ~4× shorter than byte sequence</text>
+          <text x="470" y="282" text-anchor="middle" fill="#9aa6b2" font-size="12">same FLOPs budget as a transformer; longer effective byte-window</text>
+
+          <line x1="470" y1="303" x2="470" y2="330" stroke="#7c5cff" stroke-width="1.5" marker-end="url(#blt-arr)"/>
+
+          <!-- Local decoder -->
+          <g filter="url(#blt-sh)">
+            <rect x="60" y="340" width="820" height="50" rx="10" fill="url(#blt-dec)" stroke="#ff5ca8" stroke-width="1.5"/>
+          </g>
+          <text x="470" y="362" text-anchor="middle" fill="#ff5ca8" font-size="14" font-weight="700">Local byte decoder → next-byte distribution</text>
+          <text x="470" y="380" text-anchor="middle" fill="#9aa6b2" font-size="11">autoregressive within each patch; stops at the entropy-predicted boundary</text>
+        </g>
+      </svg>
+      <span class="diagram-caption">BLT's three pieces. Two small local networks at the edges, one large latent transformer in the middle. All three trained end-to-end.</span>
+    </div>
+
+    <h2 id="entropy">3.3 Entropy-Based Dynamic Patches</h2>
+    <p>The <em>how</em> that makes BLT work: patches aren't fixed-width and aren't chosen by a pre-trained tokenizer. A small auxiliary model predicts the entropy of the next byte; wherever entropy crosses a threshold, that's a patch boundary.</p>
+    <p>Effect: in predictable regions ("..th<strong>e c</strong>at sa<strong>t on</strong>") patches are long, saving latent-transformer compute. In surprising regions (rare names, URLs, code) patches are short, spending more compute where the hard decisions are.</p>
+    <p>This is a quiet revolution: <strong>inference-time compute is now per-input</strong>, not per-token, for free.</p>
+
+    <h2 id="results">3.4 Results &amp; What BLT Proves</h2>
+    <table>
+      <thead><tr><th>Axis</th><th>BLT vs. Llama 3 (equal FLOPs)</th></tr></thead>
+      <tbody>
+        <tr><td>Perplexity (English)</td><td>Matches at 8B scale.</td></tr>
+        <tr><td>Character-level tasks</td><td>Clearly better — counting letters, reversal, arithmetic structure.</td></tr>
+        <tr><td>Non-English</td><td>Better throughput (no token-inflation tax); comparable or better quality.</td></tr>
+        <tr><td>Noisy inputs (typos, Unicode)</td><td>More robust — the model sees the bytes, not a mangled BPE fallback.</td></tr>
+        <tr><td>Throughput</td><td>Competitive; patches keep sequence length manageable.</td></tr>
+      </tbody>
+    </table>
+    <p>The paper's central claim isn't "BLT is strictly better." It's "at equal compute, ditching BPE doesn't cost you anything and buys you character-level competence and multilingual fairness." If that holds through 70B, BPE becomes optional.</p>
+
+    <h2 id="prior">3.5 Prior Art</h2>
+    <ul>
+      <li><strong>MegaByte</strong> (Meta, 2023) — fixed-width byte patches, a global latent transformer and local byte transformer. BLT's direct ancestor; the novelty of BLT is the <em>dynamic</em> entropy-based patching.</li>
+      <li><strong>SpaceByte</strong> (2024) — patch boundaries at whitespace; simpler heuristic, still competitive.</li>
+      <li><strong>Charformer / CANINE</strong> — older approaches that tried to learn tokenization end-to-end.</li>
+      <li><strong>tokenizer-free research</strong> more broadly — ByT5 (2022), Perceiver IO, HourGlass, etc.</li>
+    </ul>
+
+    <h2 id="code">3.6 Reference — A Boundary Detector</h2>
+<pre><code class="language-python">import torch, torch.nn as nn
+
+class EntropyBoundary(nn.Module):
+    """Predict per-byte entropy; cut when it exceeds a threshold."""
+    def __init__(self, d=128, vocab=256, threshold=2.5):
+        super().__init__()
+        self.embed = nn.Embedding(vocab, d)
+        self.lstm  = nn.LSTM(d, d, batch_first=True)
+        self.head  = nn.Linear(d, vocab)
+        self.thresh = threshold
+
+    def entropy(self, bytes_):                    # bytes_: (L,) int64
+        x, _ = self.lstm(self.embed(bytes_).unsqueeze(0))
+        p = self.head(x).softmax(-1)              # (1, L, 256)
+        return -(p * (p + 1e-9).log()).sum(-1).squeeze(0)   # (L,)
+
+    def patches(self, bytes_):
+        H = self.entropy(bytes_)
+        cuts = (H &gt; self.thresh).nonzero().flatten().tolist()
+        # return list of (start, end) byte ranges
+        spans, prev = [], 0
+        for c in cuts + [len(bytes_)]:
+            if c &gt; prev: spans.append((prev, c))
+            prev = c
+        return spans</code></pre>
+
+    <p>The real BLT paper uses a jointly-trained entropy model; this is the same idea with an LSTM stand-in.</p>
+
+    <div class="debate-grid">
+      <div class="debate-side pro">
+        <h5>Case for BLT</h5>
+        <p>Tokenization is a structural wart. BLT solves character-level tasks, multilingual fairness, and robustness to noise without sacrificing perplexity. Every new model after 8B should be byte-level.</p>
+        <p class="who">— Meta FAIR (Pagnoni et al.), Karpathy (sympathetic)</p>
+      </div>
+      <div class="debate-side con">
+        <h5>Case against</h5>
+        <p>BLT is slower per wall-clock step; the entropy model adds complexity; most of the world's production deployments already work around BPE with special tokens. The juice is not worth the squeeze unless BLT ships at 70B+ with matching quality.</p>
+        <p class="who">— most production frontier labs (April 2026)</p>
+      </div>
+    </div>
+
+    <div class="open-questions">
+      <h4>❓ Open questions</h4>
+      <ul>
+        <li>Does BLT scale past 8B with the same quality gains, or does the entropy boundary model become the bottleneck?</li>
+        <li>Can we combine BLT patches with Mamba-style SSMs (cheap per-byte + cheap per-patch)?</li>
+        <li>Is there an analogous "kill tokenization" move for <em>multimodal</em> tokenizers (VQ codebooks, image patches)?</li>
+      </ul>
+    </div>
+
+    <h2 id="resources">3.7 Further Reading</h2>
+    <details class="further">
+      <summary><span class="eli5-icon" style="background:rgba(251,191,36,0.14)">📚</span> Further learning — videos, papers, code</summary>
+      <div class="further-body">
+        <ul>
+          <li><span class="kind paper">paper</span><a href="https://arxiv.org/abs/2412.09871">Pagnoni et al. — BLT (Meta FAIR, Dec 2024)</a></li>
+          <li><span class="kind paper">paper</span><a href="https://arxiv.org/abs/2305.07185">MegaByte (Meta, 2023)</a></li>
+          <li><span class="kind paper">paper</span><a href="https://arxiv.org/abs/2404.14408">SpaceByte (2024)</a></li>
+          <li><span class="kind video">video</span><a href="https://www.youtube.com/watch?v=zduSFxRajkE">Karpathy — GPT tokenizer (why BPE is weird)</a></li>
+          <li><span class="kind blog">blog</span>Meta blog — announcing BLT</li>
+          <li><span class="kind code">code</span><a href="https://github.com/facebookresearch/blt">github.com/facebookresearch/blt</a></li>
+          <li><span class="kind talk">talk</span><a href="https://www.latent.space/">Latent Space interviews with BLT authors</a></li>
+        </ul>
+      </div>
+    </details>
+
+    <nav class="pager">
+      <a class="pager-link" href="02-mamba-ssm.html"><span class="pager-label">← Previous</span><span class="pager-title">State Space Models &amp; Mamba</span></a>
+      <a class="pager-link pager-next" href="04-sparse-revolution.html"><span class="pager-label">Next →</span><span class="pager-title">The Sparse Revolution</span></a>
+    </nav>
+
+  </div></main>
+</div>
+
+<button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="../assets/js/main.js"></script>
+<footer class="site-footer">
+  <p>Created by <strong>Duy Dao</strong><span class="sep">·</span><a href="https://github.com/xD4O" target="_blank" rel="noopener">GitHub @xD4O</a><span class="sep">·</span><a href="https://x.com/_cyr4x" target="_blank" rel="noopener">X @_cyr4x</a><span class="sep">·</span>AI Wiki · 2026</p>
+  <p class="star-cta">Found this useful? <a href="https://github.com/xD4O/AI-Wiki" target="_blank" rel="noopener">⭐ Star it on GitHub</a></p>
+</footer>
+</body>
+</html>

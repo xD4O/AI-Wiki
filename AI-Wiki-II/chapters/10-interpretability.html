@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 10 · Interpretability &amp; Explainability — AI Wiki Vol II</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+
+<button id="sidebar-toggle" class="sidebar-toggle" aria-label="Toggle navigation">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+</button>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <svg class="brand-logo" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="brand-g2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#22d3ee"/><stop offset="1" stop-color="#7c5cff"/></linearGradient></defs>
+        <rect x="4" y="4" width="56" height="56" rx="14" fill="url(#brand-g2)"/>
+        <text x="32" y="42" text-anchor="middle" fill="white" font-size="28" font-family="sans-serif" font-weight="700">II</text>
+      </svg>
+      <div><p class="brand-title">AI Wiki · Vol II</p><p class="brand-sub">The Agentic Frontier</p></div>
+    </div>
+    <nav class="nav-section"><p class="nav-title">Getting Started</p><ul class="nav-list">
+      <li class="nav-item"><a href="../../index.html"><span class="nav-num">I</span> Vol I · Foundations</a></li>
+      <li class="nav-item"><a href="../index.html"><span class="nav-num">◆</span> Vol II · Agentic Frontier</a></li>
+      <li class="nav-item"><a href="../../AI-Wiki-III/index.html"><span class="nav-num">III</span> Vol III · Research Frontier</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part I · Using Models</p><ul class="nav-list">
+      <li class="nav-item"><a href="01-chatbot-to-agent.html"><span class="nav-num">01</span> Chatbot → Agent</a></li>
+      <li class="nav-item"><a href="02-ollama-lmstudio.html"><span class="nav-num">02</span> Local Models</a></li>
+      <li class="nav-item"><a href="03-prompting.html"><span class="nav-num">03</span> The Art of Prompting</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part II · Context &amp; Memory</p><ul class="nav-list">
+      <li class="nav-item"><a href="04-context-engineering.html"><span class="nav-num">04</span> Context Engineering</a></li>
+      <li class="nav-item"><a href="05-rag.html"><span class="nav-num">05</span> RAG</a></li>
+      <li class="nav-item"><a href="06-skills.html"><span class="nav-num">06</span> Skills</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part III · Agents</p><ul class="nav-list">
+      <li class="nav-item"><a href="07-mcp.html"><span class="nav-num">07</span> MCP Protocol</a></li>
+      <li class="nav-item"><a href="08-agent-architectures.html"><span class="nav-num">08</span> Agent Architectures</a></li>
+      <li class="nav-item"><a href="09-multi-agent.html"><span class="nav-num">09</span> Multi-Agent</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part IV · Production</p><ul class="nav-list">
+      <li class="nav-item"><a href="10-interpretability.html"><span class="nav-num">10</span> Interpretability</a></li>
+      <li class="nav-item"><a href="11-evals-safety-ops.html"><span class="nav-num">11</span> Evals &amp; Ops</a></li>
+      <li class="nav-item"><a href="12-frontier-capstone.html"><span class="nav-num">12</span> Frontier &amp; Capstone</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Appendix</p><ul class="nav-list">
+      <li class="nav-item"><a href="../resources.html"><span class="nav-num">§</span> Resources</a></li>
+      <li class="nav-item"><a href="../vocabulary.html"><span class="nav-num">A</span> Vocabulary</a></li>
+      <li class="nav-item"><a href="../use-cases.html"><span class="nav-num">★</span> Use Cases 2026</a></li>
+    </ul></nav>
+  </aside>
+
+  <main class="main"><div class="content">
+
+    <header class="chapter-header">
+      <div class="chapter-meta">
+        <span class="chapter-num">CHAPTER 10</span>
+        <span class="pill pill-green">Part IV · Production</span>
+      </div>
+      <h1>Interpretability &amp; Explainability</h1>
+      <p class="chapter-lede">What's actually going on inside a transformer? Features, circuits, sparse autoencoders, steering. A practitioner-level tour of mechanistic interpretability.</p>
+    </header>
+
+    <div class="toc">
+      <h4>In this chapter</h4>
+      <ul>
+        <li><a href="#why">10.1 Why Interpretability Matters</a></li>
+        <li><a href="#attn">10.2 Attention Visualizations</a></li>
+        <li><a href="#probe">10.3 Probing &amp; the Linear Representation Hypothesis</a></li>
+        <li><a href="#sae">10.4 Sparse Autoencoders &amp; Features</a></li>
+        <li><a href="#circuits">10.5 Circuits</a></li>
+        <li><a href="#steering">10.6 Activation Steering &amp; Model Surgery</a></li>
+        <li><a href="#faith">10.7 Chain-of-Thought Faithfulness</a></li>
+        <li><a href="#tools">10.8 Tools of the Trade</a></li>
+        <li><a href="#resources">10.9 Further Reading</a></li>
+      </ul>
+    </div>
+
+    <h2 id="why">10.1 Why Interpretability Matters</h2>
+    <p>If a model confidently claims a drug is safe, or a contract clause is standard, or a system log shows no attack — we would like to know <em>why</em>. Interpretability aims at three audiences:</p>
+    <ul>
+      <li><strong>Safety.</strong> Detect deception, hidden goals, jailbreak activation before deployment.</li>
+      <li><strong>Debugging.</strong> When the model is wrong, what's firing? Can we turn the bug off?</li>
+      <li><strong>Trust.</strong> Regulators, doctors, auditors want mechanistic explanations, not vibes.</li>
+    </ul>
+
+    <h2 id="attn">10.2 Attention Visualizations</h2>
+    <p>Attention heatmaps — "this word attends to that word" — were the first interpretability tool and are still the most common. They are useful but <em>controversial</em>: high attention weight does not cleanly mean "this token caused the output." Treat attention as a <em>hint</em>, not a proof.</p>
+
+    <h2 id="probe">10.3 Probing &amp; the Linear Representation Hypothesis</h2>
+    <p>Train a small linear classifier to read a concept off intermediate activations. If it works — "this layer encodes sentiment," "this layer knows factuality" — you have evidence the concept is represented linearly. This is the <strong>linear representation hypothesis</strong>: the model packs human-meaningful concepts as directions in activation space.</p>
+
+    <h2 id="sae">10.4 Sparse Autoencoders &amp; Features</h2>
+    <p>Internal activations are <em>polysemantic</em> — a single neuron often participates in many concepts. The 2023–2024 breakthrough was using <strong>sparse autoencoders (SAEs)</strong> to decompose activations into a larger dictionary of <em>features</em> that each fire rarely but monosemantically.</p>
+
+    <p>An SAE is trained to reconstruct activations \(a \in \mathbb{R}^d\) as a sparse combination of \(n \gg d\) features:</p>
+    <p style="text-align:center">$$a \approx \sum_i z_i(a) \, v_i \qquad \text{with } z_i(a) \geq 0, \text{ sparse}$$</p>
+
+    <div class="diagram">
+      <svg viewBox="0 0 900 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="SAE feature panel">
+        <g font-family="sans-serif">
+          <text x="450" y="28" text-anchor="middle" fill="#e6edf3" font-size="14" font-weight="700">SAE features are the "monosemantic atoms" of a dense layer</text>
+          <!-- dense -->
+          <g transform="translate(60 70)">
+            <rect x="0" y="0" width="80" height="140" rx="8" fill="rgba(255,92,168,0.15)" stroke="#ff5ca8"/>
+            <text x="40" y="-8" text-anchor="middle" fill="#ff5ca8" font-size="12" font-weight="700">Dense activation</text>
+            <g fill="#ff5ca8">
+              <rect x="12" y="10" width="14" height="120"/>
+              <rect x="32" y="30" width="14" height="100"/>
+              <rect x="52" y="20" width="14" height="110"/>
+            </g>
+            <text x="40" y="155" text-anchor="middle" fill="#9aa6b2" font-size="10">d ≈ 4096 dims</text>
+          </g>
+          <!-- arrow -->
+          <g transform="translate(160 140)">
+            <line x1="0" y1="0" x2="80" y2="0" stroke="#7c5cff" stroke-width="2" marker-end="url(#sae-a)"/>
+            <text x="40" y="-6" text-anchor="middle" fill="#7c5cff" font-size="10">SAE encode</text>
+          </g>
+          <defs><marker id="sae-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7c5cff"/></marker></defs>
+
+          <!-- sparse -->
+          <g transform="translate(270 60)">
+            <rect x="0" y="0" width="400" height="180" rx="8" fill="rgba(34,211,238,0.08)" stroke="#22d3ee"/>
+            <text x="200" y="-8" text-anchor="middle" fill="#22d3ee" font-size="12" font-weight="700">Sparse feature activations</text>
+            <!-- bars: mostly zero, 4-5 high -->
+            <g>
+              <rect x="14" y="120" width="8" height="50" fill="#22d3ee"/>
+              <rect x="28" y="150" width="8" height="20" fill="#22d3ee" opacity="0.3"/>
+              <rect x="42" y="155" width="8" height="15" fill="#22d3ee" opacity="0.2"/>
+              <rect x="56" y="168" width="8" height="2" fill="#22d3ee" opacity="0.2"/>
+              <rect x="70" y="60" width="8" height="110" fill="#22d3ee"/>
+              <rect x="84" y="168" width="8" height="2" fill="#22d3ee" opacity="0.2"/>
+              <rect x="98" y="160" width="8" height="10" fill="#22d3ee" opacity="0.3"/>
+              <rect x="112" y="168" width="8" height="2" fill="#22d3ee" opacity="0.2"/>
+              <rect x="126" y="145" width="8" height="25" fill="#22d3ee" opacity="0.3"/>
+              <rect x="140" y="95" width="8" height="75" fill="#22d3ee"/>
+              <rect x="154" y="168" width="8" height="2" fill="#22d3ee" opacity="0.2"/>
+              <rect x="168" y="168" width="8" height="2" fill="#22d3ee" opacity="0.2"/>
+              <rect x="182" y="130" width="8" height="40" fill="#22d3ee" opacity="0.5"/>
+              <rect x="196" y="168" width="8" height="2" fill="#22d3ee" opacity="0.2"/>
+              <rect x="210" y="80" width="8" height="90" fill="#22d3ee"/>
+              <rect x="224" y="168" width="8" height="2" fill="#22d3ee" opacity="0.2"/>
+              <rect x="238" y="168" width="8" height="2" fill="#22d3ee" opacity="0.2"/>
+              <rect x="252" y="155" width="8" height="15" fill="#22d3ee" opacity="0.2"/>
+              <rect x="266" y="168" width="8" height="2" fill="#22d3ee" opacity="0.2"/>
+              <rect x="280" y="115" width="8" height="55" fill="#22d3ee" opacity="0.6"/>
+              <rect x="294" y="168" width="8" height="2" fill="#22d3ee" opacity="0.2"/>
+              <rect x="308" y="168" width="8" height="2" fill="#22d3ee" opacity="0.2"/>
+              <rect x="322" y="168" width="8" height="2" fill="#22d3ee" opacity="0.2"/>
+              <rect x="336" y="140" width="8" height="30" fill="#22d3ee" opacity="0.3"/>
+              <rect x="350" y="168" width="8" height="2" fill="#22d3ee" opacity="0.2"/>
+              <rect x="364" y="168" width="8" height="2" fill="#22d3ee" opacity="0.2"/>
+              <rect x="378" y="168" width="8" height="2" fill="#22d3ee" opacity="0.2"/>
+            </g>
+            <text x="200" y="200" text-anchor="middle" fill="#9aa6b2" font-size="10">n = 131 072 features, only ~40 active</text>
+          </g>
+
+          <!-- legend for top features -->
+          <g transform="translate(700 80)">
+            <text x="0" y="0" fill="#e6edf3" font-size="12" font-weight="700">Top firing features</text>
+            <g font-size="11" fill="#9aa6b2">
+              <text x="0" y="22">• "Python code"</text>
+              <text x="0" y="40">• "variable being assigned"</text>
+              <text x="0" y="58">• "comma-separated list"</text>
+              <text x="0" y="76">• "error-handling branch"</text>
+              <text x="0" y="94">• "numeric literal"</text>
+            </g>
+          </g>
+        </g>
+      </svg>
+      <span class="diagram-caption">Anthropic's Scaling Monosemanticity work showed millions of interpretable features in Claude 3 Sonnet.</span>
+    </div>
+
+    <h2 id="circuits">10.5 Circuits</h2>
+    <p>A <strong>circuit</strong> is a minimal subgraph of components (attention heads, MLP neurons, SAE features) that together implement a behavior. The classic example is the "IOI" (Indirect Object Identification) circuit in GPT-2, which uses a small set of heads to track subject and object across a sentence.</p>
+    <p>Tools: <strong>TransformerLens</strong> for the model, <strong>nnsight</strong> for activation patching at arbitrary depths, <strong>SAELens</strong> for working with pretrained SAEs. The workflow: ablate a component, measure the performance drop, find the minimal set.</p>
+
+    <h2 id="steering">10.6 Activation Steering &amp; Model Surgery</h2>
+    <p>Once you have a feature vector \(v\), you can <em>add</em> it to the residual stream at inference time to bias the model toward that feature. No retraining — just an intervention.</p>
+
+<pre><code class="language-python">import nnsight
+
+model = nnsight.LanguageModel("meta-llama/Llama-3.1-8B")
+
+with model.trace("The weather today is") as tracer:
+    # at layer 15, add a "happy" steering vector scaled by 3.0
+    model.model.layers[15].output[0][:, -1, :] += 3.0 * happy_vector
+    out = model.lm_head.output.save()
+print(model.tokenizer.decode(out.argmax(-1)[0]))</code></pre>
+
+    <h2 id="faith">10.7 Chain-of-Thought Faithfulness</h2>
+    <div class="callout warn">
+      <svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.7L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.7a2 2 0 00-3.4 0z"/></svg>
+      <div class="callout-body">
+        <div class="callout-title">Models don't always say what they're thinking</div>
+        <p>A growing body of work (Turpin 2023, Anthropic 2024, 2025) shows that a model's chain-of-thought is often <em>not</em> the real cause of its answer. The model may be post-hoc rationalizing a decision already determined by earlier layers. Don't equate CoT with interpretability — it's a hint at best.</p>
+      </div>
+    </div>
+
+    <h2 id="tools">10.8 Tools of the Trade</h2>
+    <table>
+      <thead><tr><th>Tool</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><a href="https://transformerlensorg.github.io/TransformerLens/">TransformerLens</a></td><td>Python library for poking attention heads and MLPs in decoder models</td></tr>
+        <tr><td><a href="https://nnsight.net/">nnsight</a> (NDIF)</td><td>Interventions on remote hosted models, including 405B+ targets</td></tr>
+        <tr><td><a href="https://github.com/jbloomAus/SAELens">SAELens</a></td><td>Train + load SAEs on open-weight models</td></tr>
+        <tr><td><a href="https://huggingface.co/google/gemma-scope">Gemma Scope</a></td><td>Google's open SAE release on Gemma 2 — a ready-made SAE suite to play with</td></tr>
+        <tr><td>Inspect / Clio</td><td>High-level tooling for evals and population-level behavior analysis (Anthropic internal, open-sourced in parts)</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="resources">10.9 Further Reading</h2>
+    <ul>
+      <li><strong>Anthropic — Scaling Monosemanticity</strong> (Claude 3 Sonnet SAE): <a href="https://transformer-circuits.pub/2024/scaling-monosemanticity/">transformer-circuits.pub</a></li>
+      <li><strong>Transformer Circuits thread</strong>: <a href="https://transformer-circuits.pub/">transformer-circuits.pub</a></li>
+      <li><strong>Open Problems in Mechanistic Interpretability</strong>: <a href="https://arxiv.org/abs/2501.16496">arXiv:2501.16496</a></li>
+      <li><strong>SAEs find interpretable features</strong>: <a href="https://arxiv.org/abs/2309.08600">arXiv:2309.08600</a></li>
+      <li><strong>TransformerLens docs</strong>: <a href="https://transformerlensorg.github.io/TransformerLens/">transformerlensorg.github.io</a></li>
+      <li><strong>nnsight</strong>: <a href="https://nnsight.net/">nnsight.net</a></li>
+      <li><strong>SAELens</strong>: <a href="https://github.com/jbloomAus/SAELens">github.com/jbloomAus/SAELens</a></li>
+      <li><strong>Gemma Scope</strong>: <a href="https://huggingface.co/google/gemma-scope">huggingface.co/google/gemma-scope</a></li>
+      <li><strong>Neuronpedia</strong> — browse SAE features: <a href="https://www.neuronpedia.org/">neuronpedia.org</a></li>
+    </ul>
+
+    <h3>People to follow</h3>
+    <ul>
+      <li><strong>Neel Nanda</strong> — <a href="https://www.neelnanda.io/">neelnanda.io</a> (best on-ramp material)</li>
+      <li><strong>Chris Olah</strong> — <a href="https://twitter.com/ch402">@ch402</a></li>
+      <li><strong>Trenton Bricken</strong> — <a href="https://x.com/trentonbricken">@trentonbricken</a></li>
+      <li><strong>Sholto Douglas</strong> — <a href="https://x.com/_sholtodouglas">@_sholtodouglas</a></li>
+      <li><strong>Anthropic interpretability team</strong> — <a href="https://www.anthropic.com/research#interpretability">anthropic.com/research</a></li>
+    </ul>
+
+    <nav class="pager">
+      <a class="pager-link" href="09-multi-agent.html"><span class="pager-label">← Previous</span><span class="pager-title">Multi-Agent Systems</span></a>
+      <a class="pager-link pager-next" href="11-evals-safety-ops.html"><span class="pager-label">Next →</span><span class="pager-title">Evals, Safety &amp; Ops</span></a>
+    </nav>
+
+  </div></main>
+</div>
+
+<button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="../assets/js/main.js"></script>
+<footer class="site-footer">
+  <p>Created by <strong>Duy Dao</strong><span class="sep">·</span><a href="https://github.com/xD4O" target="_blank" rel="noopener">GitHub @xD4O</a><span class="sep">·</span><a href="https://x.com/_cyr4x" target="_blank" rel="noopener">X @_cyr4x</a><span class="sep">·</span>AI Wiki · 2026</p>
+  <p class="star-cta">Found this useful? <a href="https://github.com/xD4O/AI-Wiki" target="_blank" rel="noopener">⭐ Star it on GitHub</a></p>
+</footer>
+</body>
+</html>

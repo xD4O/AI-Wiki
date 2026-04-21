@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 06 · Skills &amp; Reusable Prompts — AI Wiki Vol II</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+
+<button id="sidebar-toggle" class="sidebar-toggle" aria-label="Toggle navigation">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+</button>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <svg class="brand-logo" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="brand-g2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#22d3ee"/><stop offset="1" stop-color="#7c5cff"/></linearGradient></defs>
+        <rect x="4" y="4" width="56" height="56" rx="14" fill="url(#brand-g2)"/>
+        <text x="32" y="42" text-anchor="middle" fill="white" font-size="28" font-family="sans-serif" font-weight="700">II</text>
+      </svg>
+      <div><p class="brand-title">AI Wiki · Vol II</p><p class="brand-sub">The Agentic Frontier</p></div>
+    </div>
+    <nav class="nav-section"><p class="nav-title">Getting Started</p><ul class="nav-list">
+      <li class="nav-item"><a href="../../index.html"><span class="nav-num">I</span> Vol I · Foundations</a></li>
+      <li class="nav-item"><a href="../index.html"><span class="nav-num">◆</span> Vol II · Agentic Frontier</a></li>
+      <li class="nav-item"><a href="../../AI-Wiki-III/index.html"><span class="nav-num">III</span> Vol III · Research Frontier</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part I · Using Models</p><ul class="nav-list">
+      <li class="nav-item"><a href="01-chatbot-to-agent.html"><span class="nav-num">01</span> Chatbot → Agent</a></li>
+      <li class="nav-item"><a href="02-ollama-lmstudio.html"><span class="nav-num">02</span> Local Models</a></li>
+      <li class="nav-item"><a href="03-prompting.html"><span class="nav-num">03</span> The Art of Prompting</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part II · Context &amp; Memory</p><ul class="nav-list">
+      <li class="nav-item"><a href="04-context-engineering.html"><span class="nav-num">04</span> Context Engineering</a></li>
+      <li class="nav-item"><a href="05-rag.html"><span class="nav-num">05</span> RAG</a></li>
+      <li class="nav-item"><a href="06-skills.html"><span class="nav-num">06</span> Skills</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part III · Agents</p><ul class="nav-list">
+      <li class="nav-item"><a href="07-mcp.html"><span class="nav-num">07</span> MCP Protocol</a></li>
+      <li class="nav-item"><a href="08-agent-architectures.html"><span class="nav-num">08</span> Agent Architectures</a></li>
+      <li class="nav-item"><a href="09-multi-agent.html"><span class="nav-num">09</span> Multi-Agent</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part IV · Production</p><ul class="nav-list">
+      <li class="nav-item"><a href="10-interpretability.html"><span class="nav-num">10</span> Interpretability</a></li>
+      <li class="nav-item"><a href="11-evals-safety-ops.html"><span class="nav-num">11</span> Evals &amp; Ops</a></li>
+      <li class="nav-item"><a href="12-frontier-capstone.html"><span class="nav-num">12</span> Frontier &amp; Capstone</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Appendix</p><ul class="nav-list">
+      <li class="nav-item"><a href="../resources.html"><span class="nav-num">§</span> Resources</a></li>
+      <li class="nav-item"><a href="../vocabulary.html"><span class="nav-num">A</span> Vocabulary</a></li>
+      <li class="nav-item"><a href="../use-cases.html"><span class="nav-num">★</span> Use Cases 2026</a></li>
+    </ul></nav>
+  </aside>
+
+  <main class="main"><div class="content">
+
+    <header class="chapter-header">
+      <div class="chapter-meta">
+        <span class="chapter-num">CHAPTER 06</span>
+        <span class="pill pill-cyan">Part II · Context &amp; Memory</span>
+      </div>
+      <h1>Skills &amp; Reusable Prompts</h1>
+      <p class="chapter-lede">Turning a working prompt into a named, versioned capability that a model can load on demand. The SKILL.md convention, composition, and why it beats sub-agents for many tasks.</p>
+    </header>
+
+    <div class="toc">
+      <h4>In this chapter</h4>
+      <ul>
+        <li><a href="#from">6.1 From Ad-hoc Prompts to Skills</a></li>
+        <li><a href="#format">6.2 The SKILL.md Format</a></li>
+        <li><a href="#compose">6.3 Composition — Skills That Call Skills</a></li>
+        <li><a href="#pick">6.4 Skill vs. Tool vs. Sub-Agent</a></li>
+        <li><a href="#author">6.5 Authoring a Skill From Scratch</a></li>
+        <li><a href="#org">6.6 Org-Level Skill Libraries</a></li>
+        <li><a href="#resources">6.7 Further Reading</a></li>
+      </ul>
+    </div>
+
+    <h2 id="from">6.1 From Ad-hoc Prompts to Skills</h2>
+    <p>You write a prompt that works. You reuse it. You paste it into a Notion doc. Six months later, two teams are using slightly-different copies and nobody remembers who owns it.</p>
+    <p>A <strong>skill</strong> is the cure: a named, versioned, self-describing capability. The model loads it only when the triggering condition matches, so it doesn't pollute the context until it's needed. Anthropic's Agent Skills, Claude Code skills, and the Hugging Face smolagents "tool" pattern all converge on the same idea.</p>
+
+    <h2 id="format">6.2 The SKILL.md Format</h2>
+    <p>A skill is a directory. At minimum, a <code>SKILL.md</code> with YAML frontmatter — optionally scripts, examples, sub-skills, references.</p>
+
+<pre><code class="language-bash">my-skill/
+├── SKILL.md          # trigger + instructions
+├── scripts/
+│   └── run_tests.py  # optional helper the model can invoke
+├── examples/
+│   └── sample.json
+└── references/
+    └── api-spec.md</code></pre>
+
+<pre><code class="language-yaml">---
+name: code-reviewer
+description: |
+  Review a diff for security issues, style problems, and missing tests.
+  Use when the user asks to "review", "audit", or "check" code changes.
+version: 1.3.0
+tools: [bash, read_file]
+---
+
+# Code Reviewer
+
+You are a senior engineer doing a careful code review.
+
+## Steps
+1. Read the diff with `bash: git diff HEAD~1`.
+2. Flag 🚨 security issues, 🎨 style issues, and ❓ unclear intent.
+3. For each finding, cite the file:line and suggest a fix.
+4. If tests are missing for new code paths, say so explicitly.
+
+## Output format
+Reply in markdown, sections in this order: Summary, Security, Style, Tests, Suggestions.
+</code></pre>
+
+    <div class="diagram">
+      <svg viewBox="0 0 900 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Skill lifecycle">
+        <defs><marker id="sk-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7c5cff"/></marker></defs>
+        <g font-family="sans-serif">
+          <g>
+            <rect x="40" y="110" width="130" height="60" rx="10" fill="#161b24" stroke="#22d3ee" stroke-width="1.5"/>
+            <text x="105" y="135" text-anchor="middle" fill="#22d3ee" font-size="13" font-weight="700">1. Author</text>
+            <text x="105" y="153" text-anchor="middle" fill="#9aa6b2" font-size="11">write SKILL.md</text>
+
+            <rect x="210" y="110" width="130" height="60" rx="10" fill="#161b24" stroke="#7c5cff" stroke-width="1.5"/>
+            <text x="275" y="135" text-anchor="middle" fill="#7c5cff" font-size="13" font-weight="700">2. Register</text>
+            <text x="275" y="153" text-anchor="middle" fill="#9aa6b2" font-size="11">put in ~/.claude/skills/</text>
+
+            <rect x="380" y="110" width="130" height="60" rx="10" fill="#161b24" stroke="#34d399" stroke-width="1.5"/>
+            <text x="445" y="135" text-anchor="middle" fill="#34d399" font-size="13" font-weight="700">3. Discover</text>
+            <text x="445" y="153" text-anchor="middle" fill="#9aa6b2" font-size="11">listed on startup</text>
+
+            <rect x="550" y="110" width="130" height="60" rx="10" fill="#161b24" stroke="#fbbf24" stroke-width="1.5"/>
+            <text x="615" y="135" text-anchor="middle" fill="#fbbf24" font-size="13" font-weight="700">4. Match</text>
+            <text x="615" y="153" text-anchor="middle" fill="#9aa6b2" font-size="11">description triggers</text>
+
+            <rect x="720" y="110" width="130" height="60" rx="10" fill="#161b24" stroke="#ff5ca8" stroke-width="1.5"/>
+            <text x="785" y="135" text-anchor="middle" fill="#ff5ca8" font-size="13" font-weight="700">5. Load</text>
+            <text x="785" y="153" text-anchor="middle" fill="#9aa6b2" font-size="11">body into context</text>
+          </g>
+          <g stroke="#7c5cff" stroke-width="1.5" fill="none">
+            <path d="M 170 140 L 208 140" marker-end="url(#sk-a)"/>
+            <path d="M 340 140 L 378 140" marker-end="url(#sk-a)"/>
+            <path d="M 510 140 L 548 140" marker-end="url(#sk-a)"/>
+            <path d="M 680 140 L 718 140" marker-end="url(#sk-a)"/>
+          </g>
+          <text x="445" y="230" text-anchor="middle" fill="#9aa6b2" font-size="12">Skills stay dormant until their <em>description</em> matches the user's task — no context pollution.</text>
+        </g>
+      </svg>
+      <span class="diagram-caption">The skill lifecycle. The <em>description</em> in the frontmatter is what gates loading.</span>
+    </div>
+
+    <h2 id="compose">6.3 Composition — Skills That Call Skills</h2>
+    <p>A skill body can reference other skills by name. When the model decides to follow a reference, the target skill is loaded into context. This turns your skill library into a directed graph of capabilities.</p>
+
+<pre><code class="language-markdown"># Code Reviewer
+
+Before writing comments, invoke `run-tests` to confirm the diff builds.
+If tests fail, invoke `fix-failing-tests` instead of reviewing.</code></pre>
+
+    <h2 id="pick">6.4 Skill vs. Tool vs. Sub-Agent</h2>
+    <table>
+      <thead><tr><th>Choice</th><th>Use when…</th><th>Lifecycle</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Tool</strong></td><td>A deterministic function: read_file, run_bash, http_get</td><td>Always available; the model calls it by name</td></tr>
+        <tr><td><strong>Skill</strong></td><td>A repeatable procedure — a "how-to" recipe the model should follow</td><td>Loaded on demand when description matches</td></tr>
+        <tr><td><strong>Sub-agent</strong></td><td>A task needs its own context window, different tools, or isolation</td><td>Spawned for one task; receives a fresh context</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout tip">
+      <svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/></svg>
+      <div class="callout-body">
+        <div class="callout-title">Picking one</div>
+        <p>If the procedure is the same every time: <strong>tool</strong>. If the procedure is stable but needs prose-level judgment: <strong>skill</strong>. If the procedure wants its own context that doesn't pollute the main loop: <strong>sub-agent</strong>.</p>
+      </div>
+    </div>
+
+    <h2 id="author">6.5 Authoring a Skill From Scratch</h2>
+    <p>Anthropic ships a <strong>skill-creator</strong> skill that helps you bootstrap new skills. The rough process:</p>
+    <ol>
+      <li>Write the <em>working prompt</em> in a chat first. Iterate until it works.</li>
+      <li>Factor out the stable procedure. Replace instance-specific inputs with <code>{placeholders}</code>.</li>
+      <li>Write the <code>description</code> — this is the trigger. Be specific about when to use it AND when <em>not</em> to.</li>
+      <li>Add scripts only when a deterministic step is worth automating (e.g., running a linter).</li>
+      <li>Test with an eval set of 5–10 real inputs.</li>
+    </ol>
+
+<pre><code class="language-python"># Programmatic invocation via the SDK
+from anthropic import Anthropic
+client = Anthropic()
+
+r = client.messages.create(
+    model="claude-opus-4-7",
+    max_tokens=4000,
+    system=open("skills/code-reviewer/SKILL.md").read(),
+    messages=[{"role": "user", "content": f"Review this diff:\n\n{diff_text}"}],
+)
+print(r.content[0].text)</code></pre>
+
+    <h2 id="org">6.6 Org-Level Skill Libraries</h2>
+    <p>The payoff of the skill convention is not at the individual level but at the <em>team</em> level. A well-curated skill library is your institutional prompt memory:</p>
+    <ul>
+      <li><em>runbooks/incident-response</em> — mirrors your SRE playbook exactly.</li>
+      <li><em>analytics/cohort-query</em> — how your data team writes SQL against the warehouse.</li>
+      <li><em>hiring/phone-screen-summary</em> — the template every recruiter uses.</li>
+    </ul>
+    <p>Store them in git. Review changes in PRs. Keep per-skill eval sets. This is where "prompt engineering" becomes "prompt ops."</p>
+
+    <h2 id="resources">6.7 Further Reading</h2>
+    <ul>
+      <li><strong>Claude Code — Extend with skills</strong>: <a href="https://code.claude.com/docs/en/skills">code.claude.com/docs/en/skills</a></li>
+      <li><strong>Claude API — Agent Skills overview</strong>: <a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview">platform.claude.com</a></li>
+      <li><strong>anthropics/skills (official repo)</strong>: <a href="https://github.com/anthropics/skills">github.com/anthropics/skills</a></li>
+      <li><strong>Anthropic — Equipping Agents with Agent Skills</strong>: <a href="https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills">anthropic.com/engineering</a></li>
+      <li><strong>Hugging Face Agents Course · smolagents</strong>: <a href="https://huggingface.co/learn/agents-course/unit2/smolagents/introduction">huggingface.co/learn/agents-course</a></li>
+      <li><strong>smol-course</strong>: <a href="https://huggingface.co/smol-course">huggingface.co/smol-course</a></li>
+      <li><strong>Simon Willison on skills</strong>: <a href="https://simonwillison.net/tags/claude/">simonwillison.net/tags/claude-skills</a></li>
+    </ul>
+
+    <nav class="pager">
+      <a class="pager-link" href="05-rag.html"><span class="pager-label">← Previous</span><span class="pager-title">RAG</span></a>
+      <a class="pager-link pager-next" href="07-mcp.html"><span class="pager-label">Next →</span><span class="pager-title">MCP — Model Context Protocol</span></a>
+    </nav>
+
+  </div></main>
+</div>
+
+<button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="../assets/js/main.js"></script>
+<footer class="site-footer">
+  <p>Created by <strong>Duy Dao</strong><span class="sep">·</span><a href="https://github.com/xD4O" target="_blank" rel="noopener">GitHub @xD4O</a><span class="sep">·</span><a href="https://x.com/_cyr4x" target="_blank" rel="noopener">X @_cyr4x</a><span class="sep">·</span>AI Wiki · 2026</p>
+  <p class="star-cta">Found this useful? <a href="https://github.com/xD4O/AI-Wiki" target="_blank" rel="noopener">⭐ Star it on GitHub</a></p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 8 · Training &amp; Fine-tuning — AI Wiki</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+
+<button id="sidebar-toggle" class="sidebar-toggle" aria-label="Toggle navigation">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+</button>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <svg class="brand-logo" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="brand-g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7c5cff"/><stop offset="1" stop-color="#22d3ee"/></linearGradient></defs>
+        <rect x="4" y="4" width="56" height="56" rx="14" fill="url(#brand-g)"/>
+        <circle cx="22" cy="26" r="3" fill="white"/><circle cx="42" cy="26" r="3" fill="white"/><circle cx="32" cy="42" r="3" fill="white"/>
+        <path d="M22 26 L32 42 L42 26 M22 26 L42 26" stroke="white" stroke-width="1.5" fill="none" opacity="0.8"/>
+      </svg>
+      <div><p class="brand-title">AI Wiki</p><p class="brand-sub">Foundations → Mastery</p></div>
+    </div>
+    <nav class="nav-section"><p class="nav-title">Getting Started</p><ul class="nav-list">
+      <li class="nav-item"><a href="../index.html"><span class="nav-num">◆</span> Vol I · Foundations</a></li>
+      <li class="nav-item"><a href="../AI-Wiki-II/index.html"><span class="nav-num">II</span> Vol II · Agentic Frontier</a></li>
+      <li class="nav-item"><a href="../AI-Wiki-III/index.html"><span class="nav-num">III</span> Vol III · Research Frontier</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part I · Foundations</p><ul class="nav-list">
+      <li class="nav-item"><a href="01-introduction.html"><span class="nav-num">01</span> Introduction to AI</a></li>
+      <li class="nav-item"><a href="02-math-foundations.html"><span class="nav-num">02</span> Math Foundations</a></li>
+      <li class="nav-item"><a href="03-machine-learning.html"><span class="nav-num">03</span> Machine Learning</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part II · Deep Learning</p><ul class="nav-list">
+      <li class="nav-item"><a href="04-neural-networks.html"><span class="nav-num">04</span> Neural Networks</a></li>
+      <li class="nav-item"><a href="05-deep-learning.html"><span class="nav-num">05</span> Deep Learning</a></li>
+      <li class="nav-item"><a href="06-nlp-transformers.html"><span class="nav-num">06</span> NLP &amp; Transformers</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part III · Modern AI</p><ul class="nav-list">
+      <li class="nav-item"><a href="07-llms.html"><span class="nav-num">07</span> Large Language Models</a></li>
+      <li class="nav-item"><a href="08-training-finetuning.html"><span class="nav-num">08</span> Training &amp; Fine-tuning</a></li>
+      <li class="nav-item"><a href="09-alignment-rlhf.html"><span class="nav-num">09</span> Alignment &amp; RLHF</a></li>
+      <li class="nav-item"><a href="10-agents-modern.html"><span class="nav-num">10</span> Agents &amp; Frontier</a></li>
+    </ul></nav>
+  <nav class="nav-section"><p class="nav-title">Appendix</p><ul class="nav-list">
+      <li class="nav-item"><a href="../resources.html"><span class="nav-num">§</span> Resources</a></li>
+      <li class="nav-item"><a href="../vocabulary.html"><span class="nav-num">A</span> Vocabulary</a></li>
+    </ul></nav>
+  </aside>
+
+  <main class="main"><div class="content">
+
+    <header class="chapter-header">
+      <div class="chapter-meta">
+        <span class="chapter-num">CHAPTER 08</span>
+        <span class="pill pill-accent">Modern AI</span>
+      </div>
+      <h1>Training &amp; Fine-tuning</h1>
+      <p class="chapter-lede">The full lifecycle of a modern model: from pretrained base to production-ready specialist. SFT, LoRA, quantization, and distillation.</p>
+    </header>
+
+    <div class="toc">
+      <h4>In this chapter</h4>
+      <ul>
+        <li><a href="#pipeline">8.1 The Modern Training Pipeline</a></li>
+        <li><a href="#sft">8.2 Supervised Fine-Tuning (SFT)</a></li>
+        <li><a href="#peft">8.3 Parameter-Efficient Fine-Tuning</a></li>
+        <li><a href="#lora">8.4 LoRA in Depth</a></li>
+        <li><a href="#quant">8.5 Quantization</a></li>
+        <li><a href="#distill">8.6 Distillation</a></li>
+        <li><a href="#recipe">8.7 A Practical Recipe</a></li>
+      </ul>
+    </div>
+
+    <h2 id="pipeline">8.1 The Modern Training Pipeline</h2>
+    <p>A production-quality model today passes through four stages. Each uses different data, different objectives, and different compute budgets.</p>
+
+    <div class="diagram">
+      <svg viewBox="0 0 900 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Training pipeline">
+        <defs><marker id="pl-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7c5cff"/></marker></defs>
+        <g font-family="sans-serif">
+          <!-- Stage 1 -->
+          <rect x="30" y="60" width="190" height="140" rx="12" fill="rgba(124,92,255,0.12)" stroke="#7c5cff" stroke-width="1.5"/>
+          <text x="125" y="88" text-anchor="middle" fill="#7c5cff" font-size="13" font-weight="700">1 · Pretraining</text>
+          <text x="125" y="115" text-anchor="middle" fill="#e6edf3" font-size="11">Next-token prediction</text>
+          <text x="125" y="132" text-anchor="middle" fill="#e6edf3" font-size="11">trillions of tokens</text>
+          <text x="125" y="162" text-anchor="middle" fill="#9aa6b2" font-size="10">compute: $$$$</text>
+          <text x="125" y="178" text-anchor="middle" fill="#9aa6b2" font-size="10">weeks · thousands of GPUs</text>
+
+          <line x1="220" y1="130" x2="255" y2="130" stroke="#7c5cff" stroke-width="2" marker-end="url(#pl-a)"/>
+
+          <!-- Stage 2 -->
+          <rect x="260" y="60" width="190" height="140" rx="12" fill="rgba(34,211,238,0.12)" stroke="#22d3ee" stroke-width="1.5"/>
+          <text x="355" y="88" text-anchor="middle" fill="#22d3ee" font-size="13" font-weight="700">2 · SFT</text>
+          <text x="355" y="115" text-anchor="middle" fill="#e6edf3" font-size="11">Instruction following</text>
+          <text x="355" y="132" text-anchor="middle" fill="#e6edf3" font-size="11">10k – 100k examples</text>
+          <text x="355" y="162" text-anchor="middle" fill="#9aa6b2" font-size="10">compute: $$</text>
+          <text x="355" y="178" text-anchor="middle" fill="#9aa6b2" font-size="10">hours · dozens of GPUs</text>
+
+          <line x1="450" y1="130" x2="485" y2="130" stroke="#7c5cff" stroke-width="2" marker-end="url(#pl-a)"/>
+
+          <!-- Stage 3 -->
+          <rect x="490" y="60" width="190" height="140" rx="12" fill="rgba(255,92,168,0.12)" stroke="#ff5ca8" stroke-width="1.5"/>
+          <text x="585" y="88" text-anchor="middle" fill="#ff5ca8" font-size="13" font-weight="700">3 · RLHF / DPO</text>
+          <text x="585" y="115" text-anchor="middle" fill="#e6edf3" font-size="11">Preference alignment</text>
+          <text x="585" y="132" text-anchor="middle" fill="#e6edf3" font-size="11">human + AI feedback</text>
+          <text x="585" y="162" text-anchor="middle" fill="#9aa6b2" font-size="10">compute: $$</text>
+          <text x="585" y="178" text-anchor="middle" fill="#9aa6b2" font-size="10">see Chapter 9</text>
+
+          <line x1="680" y1="130" x2="715" y2="130" stroke="#7c5cff" stroke-width="2" marker-end="url(#pl-a)"/>
+
+          <!-- Stage 4 -->
+          <rect x="720" y="60" width="150" height="140" rx="12" fill="rgba(52,211,153,0.12)" stroke="#34d399" stroke-width="1.5"/>
+          <text x="795" y="88" text-anchor="middle" fill="#34d399" font-size="13" font-weight="700">4 · Deploy</text>
+          <text x="795" y="115" text-anchor="middle" fill="#e6edf3" font-size="11">Quantize</text>
+          <text x="795" y="132" text-anchor="middle" fill="#e6edf3" font-size="11">Distill</text>
+          <text x="795" y="149" text-anchor="middle" fill="#e6edf3" font-size="11">Serve</text>
+          <text x="795" y="178" text-anchor="middle" fill="#9aa6b2" font-size="10">compute: $</text>
+
+          <!-- scale labels -->
+          <text x="450" y="240" text-anchor="middle" fill="#9aa6b2" font-size="11" font-style="italic">Compute decreases by ~100× at each stage. Quality of data increases.</text>
+        </g>
+      </svg>
+      <span class="diagram-caption">Four stages — each smaller, more curated, and more targeted than the last.</span>
+    </div>
+
+    <h2 id="sft">8.2 Supervised Fine-Tuning (SFT)</h2>
+    <p>SFT teaches the base model to follow instructions. The data is a set of <code>(prompt, response)</code> pairs written or filtered by humans. The training objective is <em>still</em> next-token prediction — only on the response part.</p>
+
+    <pre><code class="language-python">from transformers import AutoTokenizer, AutoModelForCausalLM, Trainer, TrainingArguments
+from datasets import load_dataset
+
+model_id = "meta-llama/Llama-3-8B"
+tok = AutoTokenizer.from_pretrained(model_id)
+model = AutoModelForCausalLM.from_pretrained(model_id, torch_dtype="auto")
+
+ds = load_dataset("tatsu-lab/alpaca")                 # classic SFT dataset
+
+def format_example(ex):
+    prompt = f"### Instruction:\n{ex['instruction']}\n\n### Response:\n"
+    full   = prompt + ex["output"]
+    ids    = tok(full, truncation=True, max_length=1024, padding="max_length")
+    # Mask loss on the prompt (only train on response)
+    prompt_len = len(tok(prompt)["input_ids"])
+    labels = ids["input_ids"].copy()
+    labels[:prompt_len] = [-100] * prompt_len
+    ids["labels"] = labels
+    return ids
+
+ds = ds.map(format_example)
+trainer = Trainer(
+    model=model,
+    train_dataset=ds["train"],
+    args=TrainingArguments(
+        output_dir="sft-llama",
+        per_device_train_batch_size=1,
+        gradient_accumulation_steps=16,
+        learning_rate=2e-5,
+        num_train_epochs=3,
+        bf16=True,
+    ),
+)
+trainer.train()</code></pre>
+
+    <h2 id="peft">8.3 Parameter-Efficient Fine-Tuning (PEFT)</h2>
+    <p>Full fine-tuning of a 70B model requires ~1 TB of GPU memory — out of reach for most people. <strong>PEFT</strong> methods freeze the base model and only train a tiny set of new parameters (often &lt;1%). Quality matches full FT; cost is 100×+ lower.</p>
+
+    <div class="grid grid-3">
+      <div class="card">
+        <h3>LoRA</h3>
+        <p>Add low-rank "delta" matrices to attention weights. Train only those. Standard for instruction tuning open models.</p>
+      </div>
+      <div class="card">
+        <h3>QLoRA</h3>
+        <p>LoRA applied on top of a 4-bit quantized base model. Fine-tune a 70B on a single 48 GB GPU.</p>
+      </div>
+      <div class="card">
+        <h3>Prefix / Prompt tuning</h3>
+        <p>Prepend trainable "virtual tokens" to the input. Cheapest of all, but less expressive than LoRA.</p>
+      </div>
+    </div>
+
+    <h2 id="lora">8.4 LoRA in Depth</h2>
+    <p>For a weight matrix $W \in \mathbb{R}^{d \times k}$, LoRA learns $W' = W + \Delta W$ where $\Delta W = B A$ with $A \in \mathbb{R}^{r \times k}$, $B \in \mathbb{R}^{d \times r}$ and $r \ll \min(d, k)$.</p>
+
+    <div class="diagram">
+      <svg viewBox="0 0 900 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="LoRA decomposition">
+        <defs><marker id="lora-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7c5cff"/></marker></defs>
+        <g font-family="sans-serif">
+          <!-- Input -->
+          <rect x="40" y="130" width="80" height="40" rx="6" fill="#161b24" stroke="#22d3ee"/>
+          <text x="80" y="155" text-anchor="middle" fill="#e6edf3" font-size="13" font-family="'JetBrains Mono', monospace">x</text>
+
+          <line x1="120" y1="150" x2="175" y2="80" stroke="#7c5cff" stroke-width="1.5" marker-end="url(#lora-a)"/>
+          <line x1="120" y1="150" x2="175" y2="220" stroke="#7c5cff" stroke-width="1.5" marker-end="url(#lora-a)"/>
+
+          <!-- Frozen W (top path) -->
+          <rect x="180" y="50" width="120" height="60" rx="8" fill="#1a2230" stroke="#6b7687" stroke-width="1.5" stroke-dasharray="4 3"/>
+          <text x="240" y="76" text-anchor="middle" fill="#9aa6b2" font-size="13" font-weight="700">W (frozen)</text>
+          <text x="240" y="96" text-anchor="middle" fill="#6b7687" font-size="10">d × k</text>
+
+          <line x1="300" y1="80" x2="430" y2="135" stroke="#7c5cff" stroke-width="1.5" marker-end="url(#lora-a)"/>
+
+          <!-- LoRA path (bottom) -->
+          <rect x="180" y="195" width="60" height="50" rx="8" fill="rgba(255,92,168,0.2)" stroke="#ff5ca8" stroke-width="2"/>
+          <text x="210" y="218" text-anchor="middle" fill="#e6edf3" font-size="14" font-weight="700" font-family="'JetBrains Mono', monospace">A</text>
+          <text x="210" y="235" text-anchor="middle" fill="#9aa6b2" font-size="10">r × k</text>
+
+          <line x1="240" y1="220" x2="270" y2="220" stroke="#ff5ca8" stroke-width="1.5" marker-end="url(#lora-a)"/>
+
+          <!-- r is small -->
+          <rect x="270" y="200" width="40" height="40" rx="8" fill="rgba(255,92,168,0.3)" stroke="#ff5ca8" stroke-width="2"/>
+          <text x="290" y="224" text-anchor="middle" fill="#e6edf3" font-size="12" font-family="'JetBrains Mono', monospace">r·x</text>
+
+          <line x1="310" y1="220" x2="340" y2="220" stroke="#ff5ca8" stroke-width="1.5" marker-end="url(#lora-a)"/>
+
+          <rect x="340" y="195" width="60" height="50" rx="8" fill="rgba(255,92,168,0.2)" stroke="#ff5ca8" stroke-width="2"/>
+          <text x="370" y="218" text-anchor="middle" fill="#e6edf3" font-size="14" font-weight="700" font-family="'JetBrains Mono', monospace">B</text>
+          <text x="370" y="235" text-anchor="middle" fill="#9aa6b2" font-size="10">d × r</text>
+
+          <line x1="400" y1="220" x2="430" y2="170" stroke="#ff5ca8" stroke-width="1.5" marker-end="url(#lora-a)"/>
+
+          <!-- Sum -->
+          <circle cx="450" cy="150" r="22" fill="#161b24" stroke="#7c5cff" stroke-width="2"/>
+          <text x="450" y="156" text-anchor="middle" fill="#e6edf3" font-size="18">+</text>
+
+          <!-- Output -->
+          <line x1="472" y1="150" x2="530" y2="150" stroke="#7c5cff" stroke-width="2" marker-end="url(#lora-a)"/>
+          <rect x="534" y="130" width="80" height="40" rx="6" fill="#161b24" stroke="#34d399"/>
+          <text x="574" y="155" text-anchor="middle" fill="#e6edf3" font-size="13" font-family="'JetBrains Mono', monospace">y</text>
+
+          <!-- right: annotation -->
+          <g transform="translate(640 50)">
+            <rect x="0" y="0" width="230" height="210" rx="10" fill="#161b24" stroke="#fbbf24" stroke-width="1"/>
+            <text x="115" y="24" text-anchor="middle" fill="#fbbf24" font-size="12" font-weight="700">LoRA math</text>
+            <g fill="#e6edf3" font-size="12" font-family="'JetBrains Mono', monospace">
+              <text x="15" y="54">W' = W + BA</text>
+              <text x="15" y="82">r ≪ min(d, k)</text>
+              <text x="15" y="110">Example: d = 4096,</text>
+              <text x="15" y="128">          k = 4096, r = 8</text>
+              <text x="15" y="156" fill="#34d399">Full FT: ~17M params</text>
+              <text x="15" y="180" fill="#ff5ca8">LoRA:     ~66K params</text>
+              <text x="15" y="200" fill="#9aa6b2">  (260× fewer)</text>
+            </g>
+          </g>
+        </g>
+      </svg>
+      <span class="diagram-caption">LoRA — only the two small matrices A and B are trained. The huge W is frozen.</span>
+    </div>
+
+    <pre><code class="language-python">from peft import LoraConfig, get_peft_model, TaskType
+from transformers import AutoModelForCausalLM
+
+base = AutoModelForCausalLM.from_pretrained("meta-llama/Llama-3-8B", load_in_4bit=True)
+
+lora_config = LoraConfig(
+    task_type=TaskType.CAUSAL_LM,
+    r=16,
+    lora_alpha=32,
+    lora_dropout=0.05,
+    target_modules=["q_proj", "k_proj", "v_proj", "o_proj"],  # which weights to adapt
+)
+
+model = get_peft_model(base, lora_config)
+model.print_trainable_parameters()
+# trainable params: 41M || all params: 8.0B || trainable%: 0.5%</code></pre>
+
+    <h2 id="quant">8.5 Quantization</h2>
+    <p>Models are trained in 16- or 32-bit floats. For inference, we can compress to 8-bit (int8), 4-bit (NF4), or even lower — with minimal quality loss.</p>
+
+    <table>
+      <thead><tr><th>Precision</th><th>Memory for Llama-3 8B</th><th>Quality loss</th><th>Use case</th></tr></thead>
+      <tbody>
+        <tr><td>FP32</td><td>32 GB</td><td>none (baseline)</td><td>Training</td></tr>
+        <tr><td>BF16 / FP16</td><td>16 GB</td><td>negligible</td><td>Training &amp; inference</td></tr>
+        <tr><td>INT8</td><td>8 GB</td><td>&lt;1 % on most benchmarks</td><td>Serving</td></tr>
+        <tr><td>NF4 / INT4</td><td>4 GB</td><td>1–3 %</td><td>Local devices, QLoRA</td></tr>
+        <tr><td>GGUF Q4_K_M</td><td>~4.5 GB</td><td>small</td><td>llama.cpp, on-device</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="distill">8.6 Distillation</h2>
+    <p><strong>Knowledge distillation</strong> trains a small "student" model to match the output distribution of a larger "teacher." The student learns not just "the right answer" but the teacher's full probability distribution — which encodes uncertainty and similar-but-wrong alternatives.</p>
+
+    $$ L_{\text{distill}} = (1 - \alpha) \cdot L_{\text{CE}}(y, \hat{y}_{\text{student}}) + \alpha \cdot T^2 \cdot D_{\text{KL}}\!\left(p_{\text{teacher}}^T \,\|\, p_{\text{student}}^T\right) $$
+
+    <p>Distillation is why Claude Haiku, GPT-4 Turbo, and Gemini Flash exist: most of the capability of their bigger siblings, at a fraction of the cost.</p>
+
+    <h2 id="recipe">8.7 A Practical Recipe</h2>
+    <p>If you want to adapt an open LLM to your domain (customer support, medical coding, code review, whatever), this is the 2026 default recipe:</p>
+
+    <ol>
+      <li>Pick a base model (Llama-3-8B, Mistral-7B, or similar).</li>
+      <li>Collect ~1k – 10k high-quality <code>(prompt, ideal_response)</code> pairs for your task.</li>
+      <li>Load the base in 4-bit (<code>bitsandbytes</code>), apply QLoRA with r=16, α=32.</li>
+      <li>Train 3 epochs at lr=2e-4 on a single 24-80 GB GPU.</li>
+      <li>Evaluate on held-out prompts; compare with automated metrics + human ratings.</li>
+      <li>If needed, add DPO with preference pairs for safety &amp; style (Chapter 9).</li>
+      <li>Merge LoRA weights back into the base and quantize to GGUF/AWQ for serving.</li>
+    </ol>
+
+    <div class="callout tip">
+      <svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/></svg>
+      <div class="callout-body">
+        <div class="callout-title">Data quality beats quantity</div>
+        <p>1k carefully curated examples almost always beat 100k scraped ones. Instruction fine-tuning data quality is the single biggest knob on final model quality. Spend time on your dataset.</p>
+      </div>
+    </div>
+
+    <nav class="pager">
+      <a class="pager-link" href="07-llms.html"><span class="pager-label">← Previous</span><span class="pager-title">Large Language Models</span></a>
+      <a class="pager-link pager-next" href="09-alignment-rlhf.html"><span class="pager-label">Next →</span><span class="pager-title">Alignment &amp; RLHF</span></a>
+    </nav>
+
+  </div></main>
+</div>
+
+<button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="../assets/js/main.js"></script>
+<footer class="site-footer">
+  <p>Created by <strong>Duy Dao</strong><span class="sep">·</span><a href="https://github.com/xD4O" target="_blank" rel="noopener">GitHub @xD4O</a><span class="sep">·</span><a href="https://x.com/_cyr4x" target="_blank" rel="noopener">X @_cyr4x</a><span class="sep">·</span>AI Wiki · 2026</p>
+  <p class="star-cta">Found this useful? <a href="https://github.com/xD4O/AI-Wiki" target="_blank" rel="noopener">⭐ Star it on GitHub</a></p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 05 · JEPA — LeCun's Non-Generative Bet — AI Wiki Vol III</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+
+<button id="sidebar-toggle" class="sidebar-toggle"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg></button>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <svg class="brand-logo" viewBox="0 0 64 64"><defs><linearGradient id="bg3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff5ca8"/><stop offset="1" stop-color="#7c5cff"/></linearGradient></defs><rect x="2" y="2" width="60" height="60" rx="14" fill="url(#bg3)"/><text x="32" y="42" text-anchor="middle" fill="white" font-size="26" font-weight="800">III</text></svg>
+      <div><p class="brand-title">AI Wiki · Vol III</p><p class="brand-sub">The Research Frontier</p></div>
+    </div>
+    <nav class="nav-section"><p class="nav-title">Getting Started</p><ul class="nav-list">
+      <li class="nav-item"><a href="../../index.html"><span class="nav-num">I</span> Vol I · Foundations</a></li>
+      <li class="nav-item"><a href="../../AI-Wiki-II/index.html"><span class="nav-num">II</span> Vol II · Agentic Frontier</a></li>
+      <li class="nav-item"><a href="../index.html"><span class="nav-num">◆</span> Vol III · Research Frontier</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part I · Architecture</p><ul class="nav-list"><li class="nav-item"><a href="01-post-transformer.html"><span class="nav-num">01</span> Past Attention</a></li><li class="nav-item"><a href="02-mamba-ssm.html"><span class="nav-num">02</span> Mamba &amp; SSMs</a></li><li class="nav-item"><a href="03-blt-tokenization.html"><span class="nav-num">03</span> BLT</a></li><li class="nav-item"><a href="04-sparse-revolution.html"><span class="nav-num">04</span> Sparse Revolution</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part II · World Models</p><ul class="nav-list"><li class="nav-item"><a href="05-jepa.html"><span class="nav-num">05</span> JEPA</a></li><li class="nav-item"><a href="06-generative-world-models.html"><span class="nav-num">06</span> Sora · Veo · Genie</a></li><li class="nav-item"><a href="07-embodied-foundation.html"><span class="nav-num">07</span> Embodied</a></li><li class="nav-item"><a href="08-model-based-rl.html"><span class="nav-num">08</span> MB-RL</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part III · Reasoning</p><ul class="nav-list"><li class="nav-item"><a href="09-rlvr.html"><span class="nav-num">09</span> RL Verifiable</a></li><li class="nav-item"><a href="10-inference-compute.html"><span class="nav-num">10</span> Inference Compute</a></li><li class="nav-item"><a href="11-memory-titans.html"><span class="nav-num">11</span> Memory · Titans</a></li><li class="nav-item"><a href="12-faithfulness.html"><span class="nav-num">12</span> Faithfulness</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part IV · Systems &amp; Control</p><ul class="nav-list"><li class="nav-item"><a href="13-meta-prompting.html"><span class="nav-num">13</span> Meta-Prompting</a></li><li class="nav-item"><a href="14-agentic-orchestration.html"><span class="nav-num">14</span> Orchestration</a></li><li class="nav-item"><a href="15-deterministic-gates.html"><span class="nav-num">15</span> Deterministic Gates</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part V · Open Problems</p><ul class="nav-list"><li class="nav-item"><a href="16-interp-frontier.html"><span class="nav-num">16</span> Interp Frontier</a></li><li class="nav-item"><a href="17-alignment-beyond-rlhf.html"><span class="nav-num">17</span> Alignment</a></li><li class="nav-item"><a href="18-benchmark-crisis.html"><span class="nav-num">18</span> Benchmarks</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part VI · Big Picture</p><ul class="nav-list"><li class="nav-item"><a href="19-ai-for-science.html"><span class="nav-num">19</span> AI for Science</a></li><li class="nav-item"><a href="20-scaling-debates.html"><span class="nav-num">20</span> Scaling</a></li><li class="nav-item"><a href="21-compute-geopolitics-agi.html"><span class="nav-num">21</span> Compute · AGI</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Appendix</p><ul class="nav-list">
+      <li class="nav-item"><a href="../resources.html"><span class="nav-num">§</span> Resources</a></li>
+      <li class="nav-item"><a href="../vocabulary.html"><span class="nav-num">A</span> Vocabulary</a></li>
+    </ul></nav>
+  </aside>
+
+  <main class="main"><div class="content">
+
+    <header class="chapter-header">
+      <div class="chapter-meta"><span class="chapter-num">CHAPTER 05</span><span class="pill pill-cyan">Part II · World Models</span></div>
+      <h1>JEPA — LeCun's Non-Generative Bet</h1>
+      <p class="chapter-lede">Yann LeCun has argued for five years that autoregressive LLMs are a dead end. His alternative, the Joint-Embedding Predictive Architecture, predicts representations — not pixels, not tokens. By 2025 V-JEPA 2 is producing results worth arguing about.</p>
+    </header>
+
+    <div class="timeline-ribbon">
+      <span class="timeline-event"><strong>2022</strong> LeCun "Path" paper</span>
+      <span class="timeline-event"><strong>2023</strong> I-JEPA (images)</span>
+      <span class="timeline-event"><strong>2024-04</strong> V-JEPA (video)</span>
+      <span class="timeline-event"><strong>2025</strong> V-JEPA 2 (video + planning)</span>
+      <span class="timeline-event"><strong>2025-12</strong> LeCun's departure from Meta AI widely reported</span>
+    </div>
+
+    <details class="eli5">
+      <summary><span class="eli5-icon">🧒</span> ELI5 — explain like I'm five</summary>
+      <div class="eli5-body">
+        <p>When you toss a ball, your brain predicts where it will land — but not by imagining every pixel of the ball mid-flight. It predicts an <em>abstract idea</em> of the landing spot.</p>
+        <p>Most AI video models today are like an artist who paints every frame of the ball's flight in full detail — called <strong>generative</strong>. JEPA is like the brain: it predicts a small summary ("ball will be here-ish"), saving effort on the details that don't matter.</p>
+        <p>LeCun thinks this is how intelligence will actually work, and that "paint every pixel" is a wasteful dead end. JEPA is his bet.</p>
+      </div>
+    </div>
+    </details>
+
+    <div class="toc">
+      <h4>In this chapter</h4>
+      <ul>
+        <li><a href="#why">5.1 Why LeCun Dismisses Generative LLMs</a></li>
+        <li><a href="#ebm">5.2 Energy-Based Models — the Frame</a></li>
+        <li><a href="#arch">5.3 The JEPA Architecture</a></li>
+        <li><a href="#vjepa2">5.4 V-JEPA 2 — Evidence It's Working</a></li>
+        <li><a href="#open">5.5 Can JEPA Do Language?</a></li>
+        <li><a href="#resources">5.6 Further Reading</a></li>
+      </ul>
+    </div>
+
+    <h2 id="why">5.1 Why LeCun Dismisses Generative LLMs</h2>
+    <p>LeCun's argument, stated compactly: an autoregressive model makes one probabilistic choice per token. If each choice has even a tiny chance of leading off-distribution, the compounded probability of a coherent 1000-token answer goes to zero. <em>Ergo</em>, scaling LLMs cannot reach robust reasoning — the math is against it.</p>
+    <p>Critics respond: empirically, scaling <em>has</em> worked, so the argument is wrong somewhere. LeCun responds: it's worked on <em>shallow</em> tasks; on deep reasoning it manifestly hasn't (see Ch 12, the Faithfulness Crisis). The debate is live and the evidence is still being collected.</p>
+
+    <h2 id="ebm">5.2 Energy-Based Models</h2>
+    <p>JEPA sits in the framework of <strong>energy-based models</strong> (EBMs). An EBM assigns low energy \(E(x, y)\) to compatible (x, y) pairs and high energy to incompatible ones. No explicit probability distribution; no requirement to generate samples. To "use" the model, minimise energy with respect to what you care about.</p>
+    <p>This matters because a generative model must model the <em>full</em> distribution of y given x — including all the irrelevant details. An EBM only has to distinguish good from bad. On high-dimensional signals (video, images), that's much cheaper.</p>
+
+    <h2 id="arch">5.3 The JEPA Architecture</h2>
+
+    <div class="diagram">
+      <svg viewBox="0 0 900 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="JEPA architecture">
+        <defs>
+          <filter id="je-sh"><feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#000" flood-opacity="0.35"/></filter>
+          <marker id="je-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#22d3ee"/></marker>
+        </defs>
+        <g font-family="-apple-system, Inter, sans-serif">
+          <!-- context (x) -->
+          <text x="120" y="40" text-anchor="middle" fill="#22d3ee" font-size="13" font-weight="700">Context x</text>
+          <g filter="url(#je-sh)"><rect x="50" y="55" width="140" height="70" rx="10" fill="#161b24" stroke="#22d3ee"/></g>
+          <rect x="65" y="70" width="110" height="40" fill="#1e242e"/>
+          <rect x="75" y="78" width="20" height="24" fill="#334155" opacity="0.6"/>
+          <rect x="100" y="78" width="20" height="24" fill="#334155" opacity="0.6"/>
+          <rect x="125" y="85" width="15" height="18" fill="#334155" opacity="0.3"/>
+
+          <!-- target (y) -->
+          <text x="760" y="40" text-anchor="middle" fill="#ff5ca8" font-size="13" font-weight="700">Target y</text>
+          <g filter="url(#je-sh)"><rect x="700" y="55" width="140" height="70" rx="10" fill="#161b24" stroke="#ff5ca8"/></g>
+          <rect x="715" y="70" width="110" height="40" fill="#1e242e"/>
+          <rect x="735" y="78" width="20" height="24" fill="#ff5ca8" opacity="0.5"/>
+          <rect x="770" y="78" width="20" height="24" fill="#ff5ca8" opacity="0.5"/>
+
+          <!-- Encoders -->
+          <g filter="url(#je-sh)"><rect x="50" y="170" width="140" height="50" rx="10" fill="rgba(34,211,238,0.15)" stroke="#22d3ee"/></g>
+          <text x="120" y="200" text-anchor="middle" fill="#22d3ee" font-size="13" font-weight="700">Encoder_θ</text>
+
+          <g filter="url(#je-sh)"><rect x="700" y="170" width="140" height="50" rx="10" fill="rgba(255,92,168,0.12)" stroke="#ff5ca8"/></g>
+          <text x="770" y="195" text-anchor="middle" fill="#ff5ca8" font-size="13" font-weight="700">Encoder_teacher</text>
+          <text x="770" y="211" text-anchor="middle" fill="#9aa6b2" font-size="10">EMA · stop-grad</text>
+
+          <!-- representations -->
+          <text x="120" y="245" text-anchor="middle" fill="#e6edf3" font-size="11" font-style="italic">s_x</text>
+          <text x="770" y="245" text-anchor="middle" fill="#e6edf3" font-size="11" font-style="italic">s_y</text>
+
+          <!-- predictor -->
+          <g filter="url(#je-sh)"><rect x="340" y="260" width="220" height="70" rx="12" fill="rgba(124,92,255,0.18)" stroke="#7c5cff" stroke-width="2"/></g>
+          <text x="450" y="289" text-anchor="middle" fill="#e6edf3" font-size="14" font-weight="700">Predictor_φ</text>
+          <text x="450" y="310" text-anchor="middle" fill="#9aa6b2" font-size="11">predicts s_y from s_x + position</text>
+
+          <!-- arrows -->
+          <g stroke="#22d3ee" stroke-width="1.4" fill="none" marker-end="url(#je-arr)">
+            <path d="M 120 125 L 120 165"/>
+            <path d="M 770 125 L 770 165"/>
+            <path d="M 120 220 L 120 250"/>
+            <path d="M 770 220 L 770 250"/>
+            <path d="M 120 250 Q 200 290 335 295"/>
+            <path d="M 560 295 L 755 255" stroke="#fbbf24" stroke-dasharray="4 3"/>
+          </g>
+
+          <text x="450" y="260" text-anchor="middle" fill="#fbbf24" font-size="11">predicted s_y</text>
+          <text x="650" y="265" text-anchor="middle" fill="#fbbf24" font-size="10" font-style="italic">minimise ||predicted − s_y||</text>
+
+          <text x="450" y="345" text-anchor="middle" fill="#9aa6b2" font-size="11">Loss is in representation space, not pixel space.</text>
+        </g>
+      </svg>
+      <span class="diagram-caption">JEPA: a student encodes the context, a teacher (EMA of student, frozen gradient) encodes the target, and a predictor learns to bridge them. The loss is representation-space L2, not pixel reconstruction.</span>
+    </div>
+
+    <h2 id="vjepa2">5.4 V-JEPA 2 — Evidence It's Working</h2>
+    <p><strong>V-JEPA 2</strong> (Meta FAIR 2025) scaled the idea to video. The headline results:</p>
+    <ul>
+      <li>Matches or beats previous best on video classification &amp; action recognition with <em>fewer</em> labelled data points (representation learning wins when labels are scarce).</li>
+      <li>Zero-shot action anticipation — predicting what a person will do next — on real video.</li>
+      <li>Down-stream robotic manipulation: feed V-JEPA 2 a plan prompt, the learned world model rolls out imagined futures, and a low-level controller picks the best.</li>
+    </ul>
+    <p>The last result is the most important, because it closes the loop on LeCun's original claim: <em>a model that predicts usefully in representation space can be a planning primitive</em>.</p>
+
+    <h2 id="open">5.5 Can JEPA Do Language?</h2>
+    <p>The open question everyone asks: if JEPA is so great, why isn't there a JEPA chatbot? Two honest answers:</p>
+    <ul>
+      <li>Language tokens are already discrete and low-dimensional. The pixel-prediction problem that makes JEPA shine on video doesn't hurt LLMs the same way.</li>
+      <li>JEPA-style training may still be the right representation for *input* to a language model (grounding via video); it is not obviously a better language-generation primitive.</li>
+    </ul>
+    <p>LeCun's framing: language intelligence is a tiny corner of real intelligence; the rest of the problem is representation learning on sensory data. By that framing, JEPA is complementary, not competitive, with LLMs. It's one of the reasons the debate won't settle cleanly.</p>
+
+    <div class="debate-grid">
+      <div class="debate-side pro">
+        <h5>The JEPA case</h5>
+        <p>Generative LLMs compound errors token-by-token; representation-space prediction doesn't. Humans don't imagine pixels when they plan. Every major advance in perception has come from self-supervised representation learning, not from generation. V-JEPA 2's robotic results vindicate the thesis.</p>
+        <p class="who">— Yann LeCun, Mahmoud Assran, Meta FAIR</p>
+      </div>
+      <div class="debate-side con">
+        <h5>The generative case</h5>
+        <p>LeCun's compounding-error argument is a theoretical claim that empirics have undermined: frontier LLMs routinely produce coherent 10K-token answers. Scaling solved it. JEPA is a principled research program, but no JEPA-native language model has shipped. Until that changes, LLMs are the default.</p>
+        <p class="who">— Ilya Sutskever, Dario Amodei, most OpenAI/Anthropic senior research</p>
+      </div>
+    </div>
+
+    <div class="open-questions">
+      <h4>❓ Open questions</h4>
+      <ul>
+        <li>Can JEPA's planning primitive be scaled to hours-of-video horizons without falling into fuzzy-representation collapse?</li>
+        <li>What's the right architecture for a JEPA × transformer hybrid that handles both perception (JEPA) and language (LLM)?</li>
+        <li>If JEPA representations are so useful, why haven't they replaced CLIP-style encoders in multimodal LLMs yet?</li>
+      </ul>
+    </div>
+
+    <h2 id="resources">5.6 Further Reading</h2>
+    <details class="further">
+      <summary><span class="eli5-icon" style="background:rgba(251,191,36,0.14)">📚</span> Further learning</summary>
+      <div class="further-body">
+        <ul>
+          <li><span class="kind paper">paper</span><a href="https://arxiv.org/abs/2301.08243">I-JEPA (Assran et al., 2023)</a></li>
+          <li><span class="kind paper">paper</span><a href="https://arxiv.org/abs/2404.08471">V-JEPA (Bardes et al., 2024)</a></li>
+          <li><span class="kind paper">paper</span>V-JEPA 2 (Meta FAIR 2025)</li>
+          <li><span class="kind paper">paper</span><a href="https://openreview.net/forum?id=BZ5a1r-kVsf">LeCun — Path Towards Autonomous Machine Intelligence (2022)</a></li>
+          <li><span class="kind video">video</span><a href="https://www.youtube.com/watch?v=SGzMElJ11Cc">Yann LeCun — Lex Fridman interview on JEPA</a></li>
+          <li><span class="kind talk">talk</span><a href="https://www.youtube.com/@MachineLearningStreetTalk">MLST — LeCun on why LLMs are a dead end</a></li>
+          <li><span class="kind code">code</span><a href="https://github.com/facebookresearch/jepa">github.com/facebookresearch/jepa</a></li>
+          <li><span class="kind blog">blog</span>Meta AI blog — V-JEPA 2 announcements</li>
+        </ul>
+      </div>
+    </details>
+
+    <nav class="pager">
+      <a class="pager-link" href="04-sparse-revolution.html"><span class="pager-label">← Previous</span><span class="pager-title">The Sparse Revolution</span></a>
+      <a class="pager-link pager-next" href="06-generative-world-models.html"><span class="pager-label">Next →</span><span class="pager-title">Generative World Models</span></a>
+    </nav>
+
+  </div></main>
+</div>
+
+<button id="theme-toggle" class="theme-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="../assets/js/main.js"></script>
+<footer class="site-footer">
+  <p>Created by <strong>Duy Dao</strong><span class="sep">·</span><a href="https://github.com/xD4O" target="_blank" rel="noopener">GitHub @xD4O</a><span class="sep">·</span><a href="https://x.com/_cyr4x" target="_blank" rel="noopener">X @_cyr4x</a><span class="sep">·</span>AI Wiki · 2026</p>
+  <p class="star-cta">Found this useful? <a href="https://github.com/xD4O/AI-Wiki" target="_blank" rel="noopener">⭐ Star it on GitHub</a></p>
+</footer>
+</body>
+</html>

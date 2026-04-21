@@ -1,0 +1,36 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Python (for the url validator etc.)
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Node (if ever added)
+node_modules/
+
+# Build artifacts / zips (regenerated on demand; not checked in)
+*.zip
+dist/
+build/
+
+# Logs
+*.log
+/tmp_*
+
+# Local env files
+.env
+.env.local
+
+# Historical planning docs — kept locally, not published
+docs/

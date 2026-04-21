@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 09 · Multi-Agent Systems — AI Wiki Vol II</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+
+<button id="sidebar-toggle" class="sidebar-toggle" aria-label="Toggle navigation">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+</button>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <svg class="brand-logo" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="brand-g2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#22d3ee"/><stop offset="1" stop-color="#7c5cff"/></linearGradient></defs>
+        <rect x="4" y="4" width="56" height="56" rx="14" fill="url(#brand-g2)"/>
+        <text x="32" y="42" text-anchor="middle" fill="white" font-size="28" font-family="sans-serif" font-weight="700">II</text>
+      </svg>
+      <div><p class="brand-title">AI Wiki · Vol II</p><p class="brand-sub">The Agentic Frontier</p></div>
+    </div>
+    <nav class="nav-section"><p class="nav-title">Getting Started</p><ul class="nav-list">
+      <li class="nav-item"><a href="../../index.html"><span class="nav-num">I</span> Vol I · Foundations</a></li>
+      <li class="nav-item"><a href="../index.html"><span class="nav-num">◆</span> Vol II · Agentic Frontier</a></li>
+      <li class="nav-item"><a href="../../AI-Wiki-III/index.html"><span class="nav-num">III</span> Vol III · Research Frontier</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part I · Using Models</p><ul class="nav-list">
+      <li class="nav-item"><a href="01-chatbot-to-agent.html"><span class="nav-num">01</span> Chatbot → Agent</a></li>
+      <li class="nav-item"><a href="02-ollama-lmstudio.html"><span class="nav-num">02</span> Local Models</a></li>
+      <li class="nav-item"><a href="03-prompting.html"><span class="nav-num">03</span> The Art of Prompting</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part II · Context &amp; Memory</p><ul class="nav-list">
+      <li class="nav-item"><a href="04-context-engineering.html"><span class="nav-num">04</span> Context Engineering</a></li>
+      <li class="nav-item"><a href="05-rag.html"><span class="nav-num">05</span> RAG</a></li>
+      <li class="nav-item"><a href="06-skills.html"><span class="nav-num">06</span> Skills</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part III · Agents</p><ul class="nav-list">
+      <li class="nav-item"><a href="07-mcp.html"><span class="nav-num">07</span> MCP Protocol</a></li>
+      <li class="nav-item"><a href="08-agent-architectures.html"><span class="nav-num">08</span> Agent Architectures</a></li>
+      <li class="nav-item"><a href="09-multi-agent.html"><span class="nav-num">09</span> Multi-Agent</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part IV · Production</p><ul class="nav-list">
+      <li class="nav-item"><a href="10-interpretability.html"><span class="nav-num">10</span> Interpretability</a></li>
+      <li class="nav-item"><a href="11-evals-safety-ops.html"><span class="nav-num">11</span> Evals &amp; Ops</a></li>
+      <li class="nav-item"><a href="12-frontier-capstone.html"><span class="nav-num">12</span> Frontier &amp; Capstone</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Appendix</p><ul class="nav-list">
+      <li class="nav-item"><a href="../resources.html"><span class="nav-num">§</span> Resources</a></li>
+      <li class="nav-item"><a href="../vocabulary.html"><span class="nav-num">A</span> Vocabulary</a></li>
+      <li class="nav-item"><a href="../use-cases.html"><span class="nav-num">★</span> Use Cases 2026</a></li>
+    </ul></nav>
+  </aside>
+
+  <main class="main"><div class="content">
+
+    <header class="chapter-header">
+      <div class="chapter-meta">
+        <span class="chapter-num">CHAPTER 09</span>
+        <span class="pill pill-warm">Part III · Agents</span>
+      </div>
+      <h1>Multi-Agent Systems</h1>
+      <p class="chapter-lede">When (and when not) to let a team of specialized agents beat one big model. Orchestrator-worker, debate, failure modes, and the frameworks that matter in 2026.</p>
+    </header>
+
+    <div class="toc">
+      <h4>In this chapter</h4>
+      <ul>
+        <li><a href="#why">9.1 Why Multi-Agent</a></li>
+        <li><a href="#ow">9.2 Orchestrator + Workers</a></li>
+        <li><a href="#debate">9.3 Debate, Critique, Ensemble</a></li>
+        <li><a href="#swarm">9.4 Swarms — Caveat Emptor</a></li>
+        <li><a href="#comm">9.5 Communication Protocols</a></li>
+        <li><a href="#fail">9.6 Failure Modes</a></li>
+        <li><a href="#frameworks">9.7 Frameworks (2026)</a></li>
+        <li><a href="#code">9.8 Code — a 3-Agent Code Review</a></li>
+        <li><a href="#resources">9.9 Further Reading</a></li>
+      </ul>
+    </div>
+
+    <h2 id="why">9.1 Why Multi-Agent</h2>
+    <p>A single long agent loop can do almost anything. But four forces push toward multi-agent:</p>
+    <ul>
+      <li><strong>Specialization.</strong> A "planner" model tuned for planning and an "executor" tuned for execution both do better than one jack-of-all-trades.</li>
+      <li><strong>Parallelism.</strong> Independent subtasks can run concurrently.</li>
+      <li><strong>Isolation.</strong> Each sub-agent has its own context window — no pollution of the main loop.</li>
+      <li><strong>Oversight.</strong> An explicit "critic" agent is easier to reason about than a single self-reflecting loop.</li>
+    </ul>
+
+    <div class="callout warn">
+      <svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.7L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.7a2 2 0 00-3.4 0z"/></svg>
+      <div class="callout-body">
+        <div class="callout-title">Multi-agent is often worse than single-agent</div>
+        <p>Anthropic, OpenAI, and Cognition have all published on this: for most tasks, one capable model in a tight ReAct loop beats an ensemble. Communication overhead, cascading errors, and unbounded cost eat the specialization gains. Reach for multi-agent only when you can name the <em>specific</em> force it unlocks.</p>
+      </div>
+    </div>
+
+    <h2 id="ow">9.2 Orchestrator + Workers</h2>
+    <p>The most reliable pattern. A single <strong>orchestrator</strong> holds the overall goal and state. It dispatches subtasks to <strong>workers</strong> — each a focused sub-agent with its own context, tools, and success criterion. Workers return structured results; the orchestrator aggregates.</p>
+
+    <div class="diagram">
+      <svg viewBox="0 0 900 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Orchestrator-worker pattern">
+        <defs><marker id="ma-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7c5cff"/></marker></defs>
+        <g font-family="sans-serif">
+          <!-- orchestrator -->
+          <rect x="360" y="40" width="180" height="70" rx="12" fill="rgba(124,92,255,0.18)" stroke="#7c5cff" stroke-width="2"/>
+          <text x="450" y="70" text-anchor="middle" fill="#e6edf3" font-size="14" font-weight="700">Orchestrator</text>
+          <text x="450" y="90" text-anchor="middle" fill="#9aa6b2" font-size="11">owns goal, state, aggregation</text>
+
+          <!-- workers -->
+          <rect x="60" y="200" width="160" height="70" rx="12" fill="rgba(34,211,238,0.15)" stroke="#22d3ee" stroke-width="2"/>
+          <text x="140" y="228" text-anchor="middle" fill="#22d3ee" font-size="13" font-weight="700">Researcher</text>
+          <text x="140" y="248" text-anchor="middle" fill="#9aa6b2" font-size="11">search tool</text>
+          <text x="140" y="263" text-anchor="middle" fill="#9aa6b2" font-size="11">cheap model</text>
+
+          <rect x="260" y="200" width="160" height="70" rx="12" fill="rgba(52,211,153,0.15)" stroke="#34d399" stroke-width="2"/>
+          <text x="340" y="228" text-anchor="middle" fill="#34d399" font-size="13" font-weight="700">Coder</text>
+          <text x="340" y="248" text-anchor="middle" fill="#9aa6b2" font-size="11">bash + edit</text>
+          <text x="340" y="263" text-anchor="middle" fill="#9aa6b2" font-size="11">frontier model</text>
+
+          <rect x="460" y="200" width="160" height="70" rx="12" fill="rgba(251,191,36,0.15)" stroke="#fbbf24" stroke-width="2"/>
+          <text x="540" y="228" text-anchor="middle" fill="#fbbf24" font-size="13" font-weight="700">Tester</text>
+          <text x="540" y="248" text-anchor="middle" fill="#9aa6b2" font-size="11">pytest tool</text>
+          <text x="540" y="263" text-anchor="middle" fill="#9aa6b2" font-size="11">mid model</text>
+
+          <rect x="660" y="200" width="160" height="70" rx="12" fill="rgba(255,92,168,0.15)" stroke="#ff5ca8" stroke-width="2"/>
+          <text x="740" y="228" text-anchor="middle" fill="#ff5ca8" font-size="13" font-weight="700">Critic</text>
+          <text x="740" y="248" text-anchor="middle" fill="#9aa6b2" font-size="11">no tools</text>
+          <text x="740" y="263" text-anchor="middle" fill="#9aa6b2" font-size="11">frontier model</text>
+
+          <g stroke="#7c5cff" stroke-width="1.5" fill="none">
+            <path d="M 400 110 L 180 198" marker-end="url(#ma-a)"/>
+            <path d="M 430 110 L 330 198" marker-end="url(#ma-a)"/>
+            <path d="M 470 110 L 530 198" marker-end="url(#ma-a)"/>
+            <path d="M 500 110 L 720 198" marker-end="url(#ma-a)"/>
+          </g>
+          <g stroke="#34d399" stroke-width="1" stroke-dasharray="3 3" fill="none">
+            <path d="M 180 200 L 400 112" marker-end="url(#ma-a)"/>
+          </g>
+          <text x="450" y="155" text-anchor="middle" fill="#9aa6b2" font-size="11">dispatch task · receive structured result</text>
+        </g>
+      </svg>
+      <span class="diagram-caption">Orchestrator-worker: specialists, each with a scoped context, reporting to one head.</span>
+    </div>
+
+    <h2 id="debate">9.3 Debate, Critique, Ensemble</h2>
+    <ul>
+      <li><strong>Debate.</strong> Two agents argue opposing positions; a judge decides. Useful for ambiguous calls (content moderation, research synthesis).</li>
+      <li><strong>Critique.</strong> One agent produces, another audits. When the auditor is stricter than the producer, quality goes up monotonically.</li>
+      <li><strong>Ensemble.</strong> Run N agents independently on the same task; vote. Gains diminish quickly past ~3.</li>
+    </ul>
+
+    <h2 id="swarm">9.4 Swarms — Caveat Emptor</h2>
+    <p>"Let N agents emerge a solution together" makes for good demos and bad production. Without a strict orchestrator, swarms drift, deadlock, or converge on mediocre consensus. If you reach for a swarm, at least pin a coordinator.</p>
+
+    <h2 id="comm">9.5 Communication Protocols</h2>
+    <ul>
+      <li><strong>Shared memory</strong>. A key-value store all agents can read/write. Simple; race-prone.</li>
+      <li><strong>Message passing</strong>. Typed messages between named agents. Easier to observe and trace.</li>
+      <li><strong>Filesystem rendezvous</strong>. Each agent writes to a scratch dir; orchestrator reads. This is what Claude Code's sub-agents do — simple, debuggable, every exchange persists.</li>
+    </ul>
+
+    <h2 id="fail">9.6 Failure Modes</h2>
+    <ul>
+      <li><strong>Cascading hallucinations.</strong> One agent's fabricated fact becomes another's "retrieved context."</li>
+      <li><strong>Deadlocks.</strong> Agent A waits on B; B waits on A.</li>
+      <li><strong>Unbounded cost.</strong> Loops with no termination condition burn thousands of dollars.</li>
+      <li><strong>Lost goal.</strong> After many hops, nobody remembers the original ask.</li>
+      <li><strong>Prompt-injection amplification.</strong> A compromised worker can manipulate the orchestrator.</li>
+    </ul>
+
+    <p>Mitigations: budget caps (hard max on calls / tokens / wall-clock), typed results, distinct "goal owner" role, orchestrator checks after every N workers.</p>
+
+    <h2 id="frameworks">9.7 Frameworks (2026)</h2>
+    <table>
+      <thead><tr><th>Framework</th><th>Shape</th><th>Good for</th></tr></thead>
+      <tbody>
+        <tr><td><strong>LangGraph</strong></td><td>Stateful graph of nodes</td><td>Explicit flows, checkpoints, enterprise. Passed CrewAI in stars in early 2026.</td></tr>
+        <tr><td><strong>CrewAI</strong></td><td>Role-based crews</td><td>Rapid prototyping; intuitive mental model</td></tr>
+        <tr><td><strong>AutoGen</strong></td><td>Conversational agents</td><td>Microsoft's framework; pivoted toward chat patterns</td></tr>
+        <tr><td><strong>OpenAI Agents SDK</strong></td><td>Thin Python layer</td><td>Straight to tool-use + handoffs, no extra abstraction</td></tr>
+        <tr><td><strong>smolagents</strong></td><td>Minimal HF library</td><td>Reading the source, teaching, small agents</td></tr>
+        <tr><td><strong>Claude Code sub-agents</strong></td><td>Filesystem-rendezvous sub-agents</td><td>Inside Claude Code — natural pattern for coding tasks</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="code">9.8 Code — a 3-Agent Code Review</h2>
+<pre><code class="language-python"># A toy orchestrator that runs planner → coder → critic.
+# Uses one shared conversation list and distinct system prompts.
+
+def subagent(system, user, model="claude-opus-4-7"):
+    r = client.messages.create(model=model, system=system, max_tokens=2000,
+                               messages=[{"role": "user", "content": user}])
+    return r.content[0].text
+
+def review(diff):
+    plan   = subagent("You are a code-review planner. List 3-5 things to check.", diff)
+    review = subagent("You are a senior reviewer. Do the review following this plan:\n" + plan, diff)
+    critic = subagent("You are a staff engineer. Reject vacuous or wrong claims in this review.",
+                      f"DIFF:\n{diff}\n\nREVIEW:\n{review}")
+    return critic</code></pre>
+
+    <p>Run the same diff through single-agent ReAct and you'll often find one-shot is faster and comparable. Multi-agent earns its keep on <em>long, heterogeneous</em> tasks — not short ones.</p>
+
+    <h2 id="resources">9.9 Further Reading</h2>
+    <ul>
+      <li><strong>LangGraph</strong>: <a href="https://langchain-ai.github.io/langgraph/">langchain-ai.github.io/langgraph</a></li>
+      <li><strong>CrewAI</strong>: <a href="https://docs.crewai.com/">docs.crewai.com</a></li>
+      <li><strong>Microsoft AutoGen</strong>: <a href="https://microsoft.github.io/autogen/">microsoft.github.io/autogen</a></li>
+      <li><strong>Anthropic — multi-agent research system</strong>: <a href="https://www.anthropic.com/engineering/built-multi-agent-research-system">anthropic.com/engineering</a></li>
+      <li><strong>Claude Code sub-agents</strong>: <a href="https://code.claude.com/docs/en/sub-agents">code.claude.com/docs/en/sub-agents</a></li>
+      <li><strong>OpenAI Agents SDK</strong>: <a href="https://github.com/openai/openai-agents-python">github.com/openai/openai-agents-python</a></li>
+      <li><strong>smolagents</strong>: <a href="https://huggingface.co/docs/smolagents/index">huggingface.co/docs/smolagents</a></li>
+    </ul>
+
+    <h3>Benchmarks &amp; people</h3>
+    <ul>
+      <li><a href="https://github.com/sierra-research/tau2-bench">τ2-bench</a> · <a href="https://hal.cs.princeton.edu/gaia">GAIA</a> · <a href="https://awesomeagents.ai/leaderboards/agentic-ai-benchmarks-leaderboard/">Agentic AI benchmarks</a></li>
+      <li><strong>Harrison Chase</strong> (LangChain): <a href="https://twitter.com/hwchase17">@hwchase17</a></li>
+      <li><strong>João Moura</strong> (CrewAI): <a href="https://twitter.com/joaomdmoura">@joaomdmoura</a></li>
+      <li><strong>Chi Wang</strong> (AutoGen lead): <a href="https://twitter.com/ChiWang12">@ChiWang12</a></li>
+    </ul>
+
+    <nav class="pager">
+      <a class="pager-link" href="08-agent-architectures.html"><span class="pager-label">← Previous</span><span class="pager-title">Agent Architectures</span></a>
+      <a class="pager-link pager-next" href="10-interpretability.html"><span class="pager-label">Next →</span><span class="pager-title">Interpretability</span></a>
+    </nav>
+
+  </div></main>
+</div>
+
+<button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="../assets/js/main.js"></script>
+<footer class="site-footer">
+  <p>Created by <strong>Duy Dao</strong><span class="sep">·</span><a href="https://github.com/xD4O" target="_blank" rel="noopener">GitHub @xD4O</a><span class="sep">·</span><a href="https://x.com/_cyr4x" target="_blank" rel="noopener">X @_cyr4x</a><span class="sep">·</span>AI Wiki · 2026</p>
+  <p class="star-cta">Found this useful? <a href="https://github.com/xD4O/AI-Wiki" target="_blank" rel="noopener">⭐ Star it on GitHub</a></p>
+</footer>
+</body>
+</html>

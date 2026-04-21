@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vocabulary &amp; Definitions — AI Wiki Vol II</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="stylesheet" href="assets/css/styles.css">
+<style>
+  .vocab-toc { display: flex; flex-wrap: wrap; gap: 6px; margin: 18px 0 28px; }
+  .vocab-toc a { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 8px; background: var(--bg-card); border: 1px solid var(--border); color: var(--text-dim); font-weight: 700; font-family: var(--font-mono); font-size: 12px; text-decoration: none; transition: all 0.15s; }
+  .vocab-toc a:hover { background: rgba(34,211,238,0.15); color: var(--accent-2); border-color: var(--accent-2); transform: translateY(-1px); }
+  .vocab-section { margin: 36px 0 24px; }
+  .vocab-section h2 { display: inline-block; margin: 0 0 10px; font-size: 28px; padding: 2px 18px; border-radius: 10px; background: linear-gradient(135deg, rgba(34,211,238,0.12), rgba(124,92,255,0.08)); border: 1px solid var(--border); color: var(--accent-2); font-family: var(--font-mono); }
+  .vocab-list { display: grid; grid-template-columns: 200px 1fr; gap: 12px 24px; margin: 0; }
+  .vocab-list dt { font-weight: 700; color: var(--text); padding-top: 2px; }
+  .vocab-list dd { margin: 0; color: var(--text-dim); font-size: 14.5px; line-height: 1.65; border-left: 2px solid var(--border); padding-left: 16px; }
+  .vocab-list dd .ref { display: inline-block; font-size: 11px; color: var(--accent-2); margin-left: 8px; background: rgba(34,211,238,0.1); padding: 1px 8px; border-radius: 5px; font-family: var(--font-mono); letter-spacing: 0.04em; }
+  @media (max-width: 800px) { .vocab-list { grid-template-columns: 1fr; } .vocab-list dd { border-left: none; padding-left: 0; margin-top: -6px; } }
+</style></head>
+<body>
+
+<button id="sidebar-toggle" class="sidebar-toggle"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg></button>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <svg class="brand-logo" viewBox="0 0 64 64"><defs><linearGradient id="brand-g2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#22d3ee"/><stop offset="1" stop-color="#7c5cff"/></linearGradient></defs><rect x="4" y="4" width="56" height="56" rx="14" fill="url(#brand-g2)"/><text x="32" y="42" text-anchor="middle" fill="white" font-size="28" font-weight="700">II</text></svg>
+      <div><p class="brand-title">AI Wiki · Vol II</p><p class="brand-sub">The Agentic Frontier</p></div>
+    </div>
+    <nav class="nav-section"><p class="nav-title">Getting Started</p><ul class="nav-list">
+      <li class="nav-item"><a href="../index.html"><span class="nav-num">I</span> Vol I · Foundations</a></li>
+      <li class="nav-item"><a href="index.html"><span class="nav-num">◆</span> Vol II · Agentic Frontier</a></li>
+      <li class="nav-item"><a href="../AI-Wiki-III/index.html"><span class="nav-num">III</span> Vol III · Research Frontier</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part I · Using Models</p><ul class="nav-list"><li class="nav-item"><a href="chapters/01-chatbot-to-agent.html"><span class="nav-num">01</span> Chatbot → Agent</a></li><li class="nav-item"><a href="chapters/02-ollama-lmstudio.html"><span class="nav-num">02</span> Local Models</a></li><li class="nav-item"><a href="chapters/03-prompting.html"><span class="nav-num">03</span> Prompting</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part II · Context &amp; Memory</p><ul class="nav-list"><li class="nav-item"><a href="chapters/04-context-engineering.html"><span class="nav-num">04</span> Context</a></li><li class="nav-item"><a href="chapters/05-rag.html"><span class="nav-num">05</span> RAG</a></li><li class="nav-item"><a href="chapters/06-skills.html"><span class="nav-num">06</span> Skills</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part III · Agents</p><ul class="nav-list"><li class="nav-item"><a href="chapters/07-mcp.html"><span class="nav-num">07</span> MCP</a></li><li class="nav-item"><a href="chapters/08-agent-architectures.html"><span class="nav-num">08</span> Agent Arch</a></li><li class="nav-item"><a href="chapters/09-multi-agent.html"><span class="nav-num">09</span> Multi-Agent</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part IV · Production</p><ul class="nav-list"><li class="nav-item"><a href="chapters/10-interpretability.html"><span class="nav-num">10</span> Interpretability</a></li><li class="nav-item"><a href="chapters/11-evals-safety-ops.html"><span class="nav-num">11</span> Evals &amp; Ops</a></li><li class="nav-item"><a href="chapters/12-frontier-capstone.html"><span class="nav-num">12</span> Capstone</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Appendix</p><ul class="nav-list">
+      <li class="nav-item"><a href="resources.html"><span class="nav-num">§</span> Resources</a></li>
+      <li class="nav-item"><a href="vocabulary.html"><span class="nav-num">A</span> Vocabulary</a></li>
+      <li class="nav-item"><a href="use-cases.html"><span class="nav-num">★</span> Use Cases 2026</a></li>
+    </ul></nav>
+  </aside>
+
+  <main class="main"><div class="content">
+
+    <header class="chapter-header">
+      <div class="chapter-meta"><span class="chapter-num">APPENDIX</span><span class="pill pill-cyan">A · Vocabulary</span></div>
+      <h1>Vocabulary &amp; Definitions</h1>
+      <p class="chapter-lede">Every practitioner term used in Volume II, defined compactly with a pointer to the chapter where it appears.</p>
+    </header>
+
+    <div class="vocab-toc">
+      <a href="#a">A</a><a href="#b">B</a><a href="#c">C</a><a href="#d">D</a><a href="#e">E</a>
+      <a href="#f">F</a><a href="#g">G</a><a href="#h">H</a><a href="#i">I</a><a href="#j">J</a>
+      <a href="#k">K</a><a href="#l">L</a><a href="#m">M</a><a href="#n">N</a><a href="#o">O</a>
+      <a href="#p">P</a><a href="#q">Q</a><a href="#r">R</a><a href="#s">S</a><a href="#t">T</a>
+      <a href="#u">U</a><a href="#v">V</a>
+    </div>
+
+    <section class="vocab-section" id="a">
+      <h2>A</h2>
+      <dl class="vocab-list">
+        <dt>Agent</dt><dd>An LLM that takes actions in a loop — not just returns text. Spectrum from chatbot to autonomous worker. <span class="ref">Ch 01</span></dd>
+        <dt>Agent loop</dt><dd>think → act → observe → repeat. The canonical pattern every agent framework implements. <span class="ref">Ch 01, 08</span></dd>
+        <dt>Agentic retrieval</dt><dd>Letting the agent call a search tool mid-loop rather than doing a single retrieve-then-generate. <span class="ref">Ch 05</span></dd>
+        <dt>ANN</dt><dd>Approximate Nearest Neighbor search — the algorithmic backbone of vector stores. <span class="ref">Ch 05</span></dd>
+        <dt>AWQ</dt><dd>Activation-aware Weight Quantization. Fast 4-bit format for GPU inference (vLLM, TGI). <span class="ref">Ch 02</span></dd>
+      </dl>
+    </section>
+
+    <section class="vocab-section" id="b">
+      <h2>B</h2>
+      <dl class="vocab-list">
+        <dt>BM25</dt><dd>Classical sparse lexical ranker. Still the non-dense half of hybrid search. <span class="ref">Ch 05</span></dd>
+      </dl>
+    </section>
+
+    <section class="vocab-section" id="c">
+      <h2>C</h2>
+      <dl class="vocab-list">
+        <dt>Chain-of-Thought (CoT)</dt><dd>Prompting a model to explain its reasoning before answering. Often helps, sometimes not faithful. <span class="ref">Ch 03</span></dd>
+        <dt>Chunking</dt><dd>Splitting documents into passages for RAG indexing. Fixed, sentence, semantic, or hierarchical. <span class="ref">Ch 05</span></dd>
+        <dt>Constitutional AI</dt><dd>Anthropic's CAI — replace human preference labels with a written constitution the model self-critiques against. <span class="ref">Vol I Ch 9</span></dd>
+        <dt>Context engineering</dt><dd>Treating the context window as a resource to design — caching, compaction, placement. <span class="ref">Ch 04</span></dd>
+        <dt>Cross-encoder</dt><dd>A reranker architecture: query and passage concatenated into one model forward pass. More accurate, slower. <span class="ref">Ch 05</span></dd>
+      </dl>
+    </section>
+
+    <section class="vocab-section" id="d">
+      <h2>D</h2>
+      <dl class="vocab-list">
+        <dt>DPO</dt><dd>Direct Preference Optimization. Alternative to RLHF/PPO. <span class="ref">Vol I Ch 9</span></dd>
+      </dl>
+    </section>
+
+    <section class="vocab-section" id="e">
+      <h2>E</h2>
+      <dl class="vocab-list">
+        <dt>Embedding</dt><dd>A dense vector representation of text used for similarity search. <span class="ref">Ch 05</span></dd>
+        <dt>Eval</dt><dd>Automated test of an LLM's output. Unit, integration, task, system levels. <span class="ref">Ch 11</span></dd>
+      </dl>
+    </section>
+
+    <section class="vocab-section" id="f">
+      <h2>F</h2>
+      <dl class="vocab-list">
+        <dt>Few-shot</dt><dd>Prompting with a handful of examples before the real query. <span class="ref">Ch 03</span></dd>
+      </dl>
+    </section>
+
+    <section class="vocab-section" id="g">
+      <h2>G</h2>
+      <dl class="vocab-list">
+        <dt>GGUF</dt><dd>File format from llama.cpp. The default for Ollama / LM Studio. <span class="ref">Ch 02</span></dd>
+        <dt>GraphRAG</dt><dd>Build a knowledge graph from a corpus; retrieve subgraph summaries for global questions. <span class="ref">Ch 05</span></dd>
+        <dt>Guardrails</dt><dd>Input filters + output validators + content classifiers wrapped around a model. <span class="ref">Ch 11</span></dd>
+      </dl>
+    </section>
+
+    <section class="vocab-section" id="h">
+      <h2>H</h2>
+      <dl class="vocab-list">
+        <dt>Hybrid search</dt><dd>Combining dense (embedding) and sparse (BM25) retrieval via rank fusion. <span class="ref">Ch 05</span></dd>
+        <dt>HyDE</dt><dd>Hypothetical Document Embeddings. Ask the LLM to hallucinate an answer, embed that, search with it. <span class="ref">Ch 05</span></dd>
+      </dl>
+    </section>
+
+    <section class="vocab-section" id="i">
+      <h2>I</h2>
+      <dl class="vocab-list">
+        <dt>In-context learning</dt><dd>A model's ability to learn a task from examples in the prompt without weight updates. <span class="ref">Ch 03</span></dd>
+      </dl>
+    </section>
+
+    <section class="vocab-section" id="j">
+      <h2>J</h2>
+      <dl class="vocab-list">
+        <dt>JSON mode</dt><dd>Model-side guarantee that output will parse as valid JSON. <span class="ref">Ch 03</span></dd>
+      </dl>
+    </section>
+
+    <section class="vocab-section" id="k">
+      <h2>K</h2>
+      <dl class="vocab-list">
+        <dt>KV cache</dt><dd>Cached keys/values per past token so generation doesn't recompute attention. Dominates VRAM at long contexts. <span class="ref">Ch 02</span></dd>
+      </dl>
+    </section>
+
+    <section class="vocab-section" id="l">
+      <h2>L</h2>
+      <dl class="vocab-list">
+        <dt>LanceDB / LangChain / LangGraph</dt><dd>Vector store · framework · state-machine orchestrator, respectively. <span class="ref">Ch 05 · Ch 08</span></dd>
+        <dt>llama.cpp</dt><dd>C++ library for local inference. Ollama and LM Studio are wrappers around it. <span class="ref">Ch 02</span></dd>
+        <dt>Lost in the middle</dt><dd>LLMs attend more to the start and end of long contexts than the middle (Liu et al. 2023). <span class="ref">Ch 04</span></dd>
+      </dl>
+    </section>
+
+    <section class="vocab-section" id="m">
+      <h2>M</h2>
+      <dl class="vocab-list">
+        <dt>MCP</dt><dd>Model Context Protocol. Open standard for plugging tools/resources/prompts into any model host. <span class="ref">Ch 07</span></dd>
+        <dt>MLX</dt><dd>Apple's Metal-native ML framework. Fast on M-series; LM Studio uses it by default on Mac. <span class="ref">Ch 02</span></dd>
+        <dt>Modelfile</dt><dd>Ollama's per-model config: system prompt, sampling parameters, template. <span class="ref">Ch 02</span></dd>
+        <dt>Multi-agent</dt><dd>Orchestrator + worker, debate, ensemble patterns. Usually worse than one good ReAct loop. <span class="ref">Ch 09</span></dd>
+      </dl>
+    </section>
+
+    <section class="vocab-section" id="n">
+      <h2>N</h2>
+      <dl class="vocab-list">
+        <dt>NIAH</dt><dd>Needle-in-a-Haystack benchmark. Can the model retrieve an inserted fact from a long context? <span class="ref">Ch 04</span></dd>
+      </dl>
+    </section>
+
+    <section class="vocab-section" id="o">
+      <h2>O</h2>
+      <dl class="vocab-list">
+        <dt>Ollama</dt><dd>The easiest way to run local models. Bundles llama.cpp with an OpenAI-compatible HTTP server. <span class="ref">Ch 02</span></dd>
+        <dt>Orchestrator-worker</dt><dd>Multi-agent pattern. One head holds goal and state; many workers do scoped subtasks. <span class="ref">Ch 09</span></dd>
+      </dl>
+    </section>
+
+    <section class="vocab-section" id="p">
+      <h2>P</h2>
+      <dl class="vocab-list">
+        <dt>Plan-and-Execute</dt><dd>Agent pattern: one planner call produces a JSON plan; cheap executor calls follow it. <span class="ref">Ch 08</span></dd>
+        <dt>Prompt caching</dt><dd>Reuse KV-cache for repeated prompt prefixes; 5-10× cheaper/faster on cache hits. <span class="ref">Ch 04</span></dd>
+      </dl>
+    </section>
+
+    <section class="vocab-section" id="q">
+      <h2>Q</h2>
+      <dl class="vocab-list">
+        <dt>Q4_K_M / Q8</dt><dd>GGUF quantization levels. Q4_K_M is the default sweet spot; Q8 for minimal quality loss. <span class="ref">Ch 02</span></dd>
+      </dl>
+    </section>
+
+    <section class="vocab-section" id="r">
+      <h2>R</h2>
+      <dl class="vocab-list">
+        <dt>RAG</dt><dd>Retrieval-Augmented Generation. Query → embed → search → rerank → compose → generate. <span class="ref">Ch 05</span></dd>
+        <dt>RAGAS</dt><dd>Open-source RAG evaluation framework. Faithfulness, answer relevance, context precision. <span class="ref">Ch 05</span></dd>
+        <dt>ReAct</dt><dd>Reason-Act-Observe loop (Yao 2022). The default agent pattern. <span class="ref">Ch 01, 08</span></dd>
+        <dt>Reflexion</dt><dd>Agent pattern. After failure, write a reflection, store in episodic memory, retry. <span class="ref">Ch 08</span></dd>
+        <dt>Reranker</dt><dd>Second-stage cross-encoder that reorders top-N candidates from first-stage retrieval. <span class="ref">Ch 05</span></dd>
+        <dt>Router agent</dt><dd>A small classifier that dispatches to specialised downstream pipelines. <span class="ref">Ch 08</span></dd>
+      </dl>
+    </section>
+
+    <section class="vocab-section" id="s">
+      <h2>S</h2>
+      <dl class="vocab-list">
+        <dt>SAE</dt><dd>Sparse Autoencoder. Decomposes dense activations into sparse monosemantic features. <span class="ref">Ch 10</span></dd>
+        <dt>Self-consistency</dt><dd>Sample N reasoning traces; majority-vote the answer. <span class="ref">Ch 03</span></dd>
+        <dt>SGLang</dt><dd>Serving framework. Strong at structured generation and prefix caching. <span class="ref">Ch 02</span></dd>
+        <dt>SKILL.md</dt><dd>The file format for a Claude / smolagents skill. YAML frontmatter + instructions + optional scripts. <span class="ref">Ch 06</span></dd>
+        <dt>Structured output</dt><dd>Constraining a model to JSON / XML / a Pydantic schema. <span class="ref">Ch 03</span></dd>
+        <dt>Sub-agent</dt><dd>A spawned agent with its own context window. Isolates concerns from the main loop. <span class="ref">Ch 06, 09</span></dd>
+        <dt>SWE-bench</dt><dd>Benchmark of real GitHub issues. The "Verified" split is the public frontier coding eval. <span class="ref">Ch 11</span></dd>
+      </dl>
+    </section>
+
+    <section class="vocab-section" id="t">
+      <h2>T</h2>
+      <dl class="vocab-list">
+        <dt>τ-bench / τ2-bench</dt><dd>Sierra Research's multi-turn tool-use benchmarks. <span class="ref">Ch 11</span></dd>
+        <dt>Temperature</dt><dd>Sampling parameter controlling randomness. 0 = greedy; 0.7-1.0 = creative. <span class="ref">Ch 02, 03</span></dd>
+        <dt>Tokenization</dt><dd>Splitting text into tokens via BPE. Source of many LLM quirks. <span class="ref">Ch 03 · Vol III Ch 03</span></dd>
+        <dt>Tool use</dt><dd>Model emits a tool-call; runtime executes; result fed back. The agent primitive. <span class="ref">Ch 01, 07</span></dd>
+        <dt>Tree of Thoughts</dt><dd>Search pattern for agents: sample K candidate thoughts, evaluate, expand. <span class="ref">Ch 08</span></dd>
+      </dl>
+    </section>
+
+    <section class="vocab-section" id="u">
+      <h2>U</h2>
+      <dl class="vocab-list">
+        <dt>Usage tokens</dt><dd>Input vs. output tokens. Input is cheaper; output dominates cost at long generations. <span class="ref">Ch 04, 11</span></dd>
+      </dl>
+    </section>
+
+    <section class="vocab-section" id="v">
+      <h2>V</h2>
+      <dl class="vocab-list">
+        <dt>Vector store</dt><dd>Database for embeddings (pgvector, Qdrant, LanceDB, Weaviate, ChromaDB). <span class="ref">Ch 05</span></dd>
+        <dt>vLLM</dt><dd>Production inference engine. PagedAttention, continuous batching, prefix caching. <span class="ref">Ch 02</span></dd>
+        <dt>VRAM</dt><dd>GPU memory. Binding constraint for local model size after quantization. <span class="ref">Ch 02</span></dd>
+      </dl>
+    </section>
+
+    <nav class="pager">
+      <a class="pager-link" href="resources.html"><span class="pager-label">← Resources</span><span class="pager-title">Appendix</span></a>
+      <a class="pager-link pager-next" href="index.html"><span class="pager-label">Home →</span><span class="pager-title">Volume II Overview</span></a>
+    </nav>
+
+  </div></main>
+</div>
+
+<button id="theme-toggle" class="theme-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></button>
+<footer class="site-footer">
+  <p>Created by <strong>Duy Dao</strong><span class="sep">·</span><a href="https://github.com/xD4O" target="_blank" rel="noopener">GitHub @xD4O</a><span class="sep">·</span><a href="https://x.com/_cyr4x" target="_blank" rel="noopener">X @_cyr4x</a><span class="sep">·</span>AI Wiki · 2026</p>
+  <p class="star-cta">Found this useful? <a href="https://github.com/xD4O/AI-Wiki" target="_blank" rel="noopener">⭐ Star it on GitHub</a></p>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="assets/js/main.js"></script>
+</body></html>

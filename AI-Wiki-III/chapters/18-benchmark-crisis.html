@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 18 · The Benchmark Crisis — AI Wiki Vol III</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="stylesheet" href="../assets/css/styles.css"></head>
+<body>
+
+<button id="sidebar-toggle" class="sidebar-toggle"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg></button>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <svg class="brand-logo" viewBox="0 0 64 64"><defs><linearGradient id="bg3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff5ca8"/><stop offset="1" stop-color="#7c5cff"/></linearGradient></defs><rect x="2" y="2" width="60" height="60" rx="14" fill="url(#bg3)"/><text x="32" y="42" text-anchor="middle" fill="white" font-size="26" font-weight="800">III</text></svg>
+      <div><p class="brand-title">AI Wiki · Vol III</p><p class="brand-sub">The Research Frontier</p></div>
+    </div>
+    <nav class="nav-section"><p class="nav-title">Getting Started</p><ul class="nav-list">
+      <li class="nav-item"><a href="../../index.html"><span class="nav-num">I</span> Vol I · Foundations</a></li>
+      <li class="nav-item"><a href="../../AI-Wiki-II/index.html"><span class="nav-num">II</span> Vol II · Agentic Frontier</a></li>
+      <li class="nav-item"><a href="../index.html"><span class="nav-num">◆</span> Vol III · Research Frontier</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part I · Architecture</p><ul class="nav-list"><li class="nav-item"><a href="01-post-transformer.html"><span class="nav-num">01</span> Past Attention</a></li><li class="nav-item"><a href="02-mamba-ssm.html"><span class="nav-num">02</span> Mamba &amp; SSMs</a></li><li class="nav-item"><a href="03-blt-tokenization.html"><span class="nav-num">03</span> BLT</a></li><li class="nav-item"><a href="04-sparse-revolution.html"><span class="nav-num">04</span> Sparse Revolution</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part II · World Models</p><ul class="nav-list"><li class="nav-item"><a href="05-jepa.html"><span class="nav-num">05</span> JEPA</a></li><li class="nav-item"><a href="06-generative-world-models.html"><span class="nav-num">06</span> Sora · Veo · Genie</a></li><li class="nav-item"><a href="07-embodied-foundation.html"><span class="nav-num">07</span> Embodied</a></li><li class="nav-item"><a href="08-model-based-rl.html"><span class="nav-num">08</span> MB-RL</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part III · Reasoning</p><ul class="nav-list"><li class="nav-item"><a href="09-rlvr.html"><span class="nav-num">09</span> RL Verifiable</a></li><li class="nav-item"><a href="10-inference-compute.html"><span class="nav-num">10</span> Inference Compute</a></li><li class="nav-item"><a href="11-memory-titans.html"><span class="nav-num">11</span> Memory · Titans</a></li><li class="nav-item"><a href="12-faithfulness.html"><span class="nav-num">12</span> Faithfulness</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part IV · Systems &amp; Control</p><ul class="nav-list"><li class="nav-item"><a href="13-meta-prompting.html"><span class="nav-num">13</span> Meta-Prompting</a></li><li class="nav-item"><a href="14-agentic-orchestration.html"><span class="nav-num">14</span> Orchestration</a></li><li class="nav-item"><a href="15-deterministic-gates.html"><span class="nav-num">15</span> Deterministic Gates</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part V · Open Problems</p><ul class="nav-list"><li class="nav-item"><a href="16-interp-frontier.html"><span class="nav-num">16</span> Interp Frontier</a></li><li class="nav-item"><a href="17-alignment-beyond-rlhf.html"><span class="nav-num">17</span> Alignment</a></li><li class="nav-item"><a href="18-benchmark-crisis.html"><span class="nav-num">18</span> Benchmarks</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part VI · Big Picture</p><ul class="nav-list"><li class="nav-item"><a href="19-ai-for-science.html"><span class="nav-num">19</span> AI for Science</a></li><li class="nav-item"><a href="20-scaling-debates.html"><span class="nav-num">20</span> Scaling</a></li><li class="nav-item"><a href="21-compute-geopolitics-agi.html"><span class="nav-num">21</span> Compute · AGI</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Appendix</p><ul class="nav-list">
+      <li class="nav-item"><a href="../resources.html"><span class="nav-num">§</span> Resources</a></li>
+      <li class="nav-item"><a href="../vocabulary.html"><span class="nav-num">A</span> Vocabulary</a></li>
+    </ul></nav>
+  </aside>
+
+  <main class="main"><div class="content">
+
+    <header class="chapter-header">
+      <div class="chapter-meta"><span class="chapter-num">CHAPTER 18</span><span class="pill pill-warm">Part V · Open Problems</span></div>
+      <h1>The Benchmark Crisis</h1>
+      <p class="chapter-lede">MMLU, HumanEval, GSM8K, SWE-bench Verified — saturated, contaminated, or both. ARC-AGI-2, FrontierMath, HLE, METR's task-horizon curve are what serious teams now measure against. The meta-problem: every new benchmark is six months from being trained on.</p>
+    </header>
+
+    <div class="timeline-ribbon">
+      <span class="timeline-event"><strong>2018</strong> SQuAD saturates</span>
+      <span class="timeline-event"><strong>2022</strong> MMLU released</span>
+      <span class="timeline-event"><strong>2024-09</strong> FrontierMath</span>
+      <span class="timeline-event"><strong>2024</strong> Humanity's Last Exam</span>
+      <span class="timeline-event"><strong>2025-03</strong> METR task-horizon</span>
+      <span class="timeline-event"><strong>2025</strong> ARC-AGI-2 prize</span>
+      <span class="timeline-event"><strong>2026</strong> SWE-bench Pro replaces Verified</span>
+    </div>
+
+    <details class="eli5">
+      <summary><span class="eli5-icon">🧒</span> ELI5 — explain like I'm five</summary>
+      <div class="eli5-body">
+        <p>If we want to know how smart models are, we give them a test (a "benchmark"). The trouble: every test we create gets memorised by the next training run. Then the model "passes" the test by recall, not skill — like a student who somehow saw the answer key.</p>
+        <p>So researchers are inventing tests that are <strong>private</strong> (held back from training data, like FrontierMath), <strong>novel</strong> (unlike anything seen, like ARC-AGI), or <strong>realistic</strong> (whole agent runs that take hours, like METR's task-horizon study).</p>
+      </div>
+    </details>
+
+    <div class="toc">
+      <h4>In this chapter</h4>
+      <ul>
+        <li><a href="#graveyard">18.1 The Graveyard of Saturated Benchmarks</a></li>
+        <li><a href="#arc">18.2 ARC-AGI-2 — Generalisation as the Test</a></li>
+        <li><a href="#frontier">18.3 FrontierMath &amp; HLE — Held-Out Hardness</a></li>
+        <li><a href="#metr">18.4 METR Task-Horizon — Real Agent Autonomy</a></li>
+        <li><a href="#contamination">18.5 Contamination &amp; Goodhart</a></li>
+        <li><a href="#resources">18.6 Further Reading</a></li>
+      </ul>
+    </div>
+
+    <h2 id="graveyard">18.1 The Graveyard</h2>
+    <table>
+      <thead><tr><th>Benchmark</th><th>Year</th><th>Saturation</th></tr></thead>
+      <tbody>
+        <tr><td>SQuAD</td><td>2016</td><td>2018</td></tr>
+        <tr><td>GLUE</td><td>2018</td><td>2019</td></tr>
+        <tr><td>SuperGLUE</td><td>2019</td><td>2020</td></tr>
+        <tr><td>MMLU</td><td>2020</td><td>2024 (90%+)</td></tr>
+        <tr><td>HumanEval</td><td>2021</td><td>2024 (95%+)</td></tr>
+        <tr><td>GSM8K</td><td>2021</td><td>2024 (saturated, contamination-suspect)</td></tr>
+        <tr><td>SWE-bench Verified</td><td>2024</td><td>2026 (contamination-suspect)</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="arc">18.2 ARC-AGI-2 — Generalisation as the Test</h2>
+    <p>François Chollet's <strong>ARC</strong> benchmark (2019) was small, hand-designed, and deliberately impossible to memorise: each task is a few input-output grid examples, and the test demands you infer the rule. Frontier 2024 LLMs scored ~10%; humans average ~85%.</p>
+    <p>2025's <strong>ARC-AGI-2</strong> upped the ante and offered a $1M+ prize for substantial progress. The bet: real generalisation looks like ARC, not like MMLU.</p>
+
+    <h2 id="frontier">18.3 FrontierMath &amp; HLE</h2>
+    <p><strong>FrontierMath</strong> (Epoch AI 2024): PhD-level math problems, vetted by Fields-medal-class mathematicians, never published online. Frontier models in late 2024 scored ~2%; in 2026 the leaders are at ~25-30%. The benchmark works precisely because nobody can train on it.</p>
+    <p><strong>Humanity's Last Exam</strong> (2024): cross-disciplinary expert questions, 3000+ items, also held out. Designed to have a long "ceiling" — saturating it would itself be a milestone.</p>
+
+    <h2 id="metr">18.4 METR Task-Horizon — Real Agent Autonomy</h2>
+    <p>METR's 2025 paper (Kwa et al.) measures something different: <em>how long a task can a model complete autonomously, vs. a human?</em> They fit an empirical curve.</p>
+
+    <div class="diagram">
+      <svg viewBox="0 0 900 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="METR task-horizon curve">
+        <defs>
+          <linearGradient id="metr-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7c5cff" stop-opacity="0.3"/><stop offset="1" stop-color="#7c5cff" stop-opacity="0.04"/></linearGradient>
+        </defs>
+        <g font-family="-apple-system, Inter, sans-serif">
+          <line x1="80" y1="270" x2="850" y2="270" stroke="#6b7687"/>
+          <line x1="80" y1="40" x2="80" y2="270" stroke="#6b7687"/>
+          <text x="465" y="298" text-anchor="middle" fill="#9aa6b2" font-size="12" font-weight="600">model release year</text>
+          <text x="35" y="155" text-anchor="middle" fill="#9aa6b2" font-size="12" font-weight="600" transform="rotate(-90 35 155)">task-horizon (min · log)</text>
+
+          <g font-size="10.5" fill="#6b7687" text-anchor="middle">
+            <text x="150" y="288">2019</text>
+            <text x="280" y="288">2021</text>
+            <text x="410" y="288">2023</text>
+            <text x="540" y="288">2025</text>
+            <text x="670" y="288">2027</text>
+            <text x="800" y="288">2029</text>
+          </g>
+          <g font-size="10.5" fill="#6b7687" text-anchor="end">
+            <text x="72" y="265">1 min</text>
+            <text x="72" y="200">10 min</text>
+            <text x="72" y="135">2 hr</text>
+            <text x="72" y="70">2 days</text>
+          </g>
+
+          <path d="M 150 260 L 280 240 L 410 200 L 540 130 L 670 65 L 800 40 L 800 270 L 150 270 z" fill="url(#metr-fill)"/>
+          <path d="M 150 260 L 280 240 L 410 200 L 540 130 L 670 65 L 800 40" fill="none" stroke="#7c5cff" stroke-width="3"/>
+
+          <g font-size="10" fill="#e6edf3">
+            <circle cx="150" cy="260" r="4" fill="#22d3ee"/><text x="160" y="263">GPT-2</text>
+            <circle cx="280" cy="240" r="4" fill="#22d3ee"/><text x="290" y="243">GPT-3</text>
+            <circle cx="410" cy="200" r="4" fill="#7c5cff"/><text x="420" y="203">GPT-4</text>
+            <circle cx="540" cy="130" r="4" fill="#fbbf24"/><text x="550" y="133">o1 / R1</text>
+            <circle cx="670" cy="65" r="4" fill="#ff5ca8"/><text x="680" y="68">extrapolation</text>
+          </g>
+          <text x="450" y="40" text-anchor="middle" fill="#fbbf24" font-size="12" font-weight="700">METR fit: doubles every ~7 months</text>
+        </g>
+      </svg>
+      <span class="diagram-caption">METR's headline: task-horizon (the duration of tasks a model can autonomously complete at human-comparable success rate) doubles roughly every 7 months. If the curve holds, "agent-day" tasks arrive late 2027.</span>
+    </div>
+
+    <h2 id="contamination">18.5 Contamination &amp; Goodhart</h2>
+    <p>Two failure modes for any popular benchmark:</p>
+    <ul>
+      <li><strong>Contamination</strong> — the test set ends up in the model's training data, directly or via re-published derivatives.</li>
+      <li><strong>Goodhart</strong> — once everyone optimises for the metric, the metric stops measuring what it used to measure.</li>
+    </ul>
+    <p>The 2026 best-practice: hold-out test sets (FrontierMath), per-instance perturbations (GSM-Symbolic), and continually-refreshed live evaluations (LMArena, METR's running studies).</p>
+
+    <div class="debate-grid">
+      <div class="debate-side pro">
+        <h5>Benchmarks still inform</h5>
+        <p>Carefully-curated, held-out benchmarks (FrontierMath, ARC-AGI-2) provide real signal. The METR task-horizon curve is genuinely informative about agent autonomy. We're not benchmark-blind.</p>
+      </div>
+      <div class="debate-side con">
+        <h5>Benchmarks are obsolete the day they ship</h5>
+        <p>Every new benchmark gets ingested into next year's training corpus. Optimised-against benchmarks tell you about optimisation pressure, not capability. Real evaluation has to be live, secret, and adversarial.</p>
+      </div>
+    </div>
+
+    <div class="open-questions">
+      <h4>❓ Open questions</h4>
+      <ul>
+        <li>What's the right "evaluator-of-record" (UK AISI, US AISI, METR)?</li>
+        <li>Can we build benchmarks whose <em>generators</em> grow with capability?</li>
+        <li>Is METR's "doubles every 7 months" robust outside coding agents?</li>
+      </ul>
+    </div>
+
+    <h2 id="resources">18.6 Further Reading</h2>
+    <details class="further">
+      <summary><span class="eli5-icon" style="background:rgba(251,191,36,0.14)">📚</span> Further learning</summary>
+      <div class="further-body">
+        <ul>
+          <li><span class="kind blog">blog</span><a href="https://arcprize.org/">ARC-AGI Prize</a></li>
+          <li><span class="kind blog">blog</span><a href="https://epoch.ai/frontiermath">FrontierMath (Epoch AI)</a></li>
+          <li><span class="kind blog">blog</span><a href="https://lastexam.ai/">Humanity's Last Exam</a></li>
+          <li><span class="kind blog">blog</span><a href="https://metr.org/blog/2025-03-19-measuring-ai-ability-to-complete-long-tasks/">METR — Task Horizon (2025)</a></li>
+          <li><span class="kind blog">blog</span><a href="https://www.morphllm.com/swe-bench-pro">SWE-bench Pro</a></li>
+          <li><span class="kind paper">paper</span><a href="https://arxiv.org/abs/2410.05229">GSM-Symbolic (Apple 2024)</a></li>
+          <li><span class="kind talk">talk</span><a href="https://www.youtube.com/@MachineLearningStreetTalk">MLST — François Chollet on ARC</a></li>
+          <li><span class="kind blog">blog</span><a href="https://lmarena.ai/">LMSYS Chatbot Arena</a> (live human pref)</li>
+        </ul>
+      </div>
+    </details>
+
+    <nav class="pager">
+      <a class="pager-link" href="17-alignment-beyond-rlhf.html"><span class="pager-label">← Previous</span><span class="pager-title">Alignment Beyond RLHF</span></a>
+      <a class="pager-link pager-next" href="19-ai-for-science.html"><span class="pager-label">Next →</span><span class="pager-title">AI for Science</span></a>
+    </nav>
+
+  </div></main>
+</div>
+
+<button id="theme-toggle" class="theme-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="../assets/js/main.js"></script>
+<footer class="site-footer">
+  <p>Created by <strong>Duy Dao</strong><span class="sep">·</span><a href="https://github.com/xD4O" target="_blank" rel="noopener">GitHub @xD4O</a><span class="sep">·</span><a href="https://x.com/_cyr4x" target="_blank" rel="noopener">X @_cyr4x</a><span class="sep">·</span>AI Wiki · 2026</p>
+  <p class="star-cta">Found this useful? <a href="https://github.com/xD4O/AI-Wiki" target="_blank" rel="noopener">⭐ Star it on GitHub</a></p>
+</footer>
+</body></html>

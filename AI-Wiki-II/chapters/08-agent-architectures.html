@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 08 · Agent Architectures — AI Wiki Vol II</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+
+<button id="sidebar-toggle" class="sidebar-toggle" aria-label="Toggle navigation">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+</button>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <svg class="brand-logo" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="brand-g2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#22d3ee"/><stop offset="1" stop-color="#7c5cff"/></linearGradient></defs>
+        <rect x="4" y="4" width="56" height="56" rx="14" fill="url(#brand-g2)"/>
+        <text x="32" y="42" text-anchor="middle" fill="white" font-size="28" font-family="sans-serif" font-weight="700">II</text>
+      </svg>
+      <div><p class="brand-title">AI Wiki · Vol II</p><p class="brand-sub">The Agentic Frontier</p></div>
+    </div>
+    <nav class="nav-section"><p class="nav-title">Getting Started</p><ul class="nav-list">
+      <li class="nav-item"><a href="../../index.html"><span class="nav-num">I</span> Vol I · Foundations</a></li>
+      <li class="nav-item"><a href="../index.html"><span class="nav-num">◆</span> Vol II · Agentic Frontier</a></li>
+      <li class="nav-item"><a href="../../AI-Wiki-III/index.html"><span class="nav-num">III</span> Vol III · Research Frontier</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part I · Using Models</p><ul class="nav-list">
+      <li class="nav-item"><a href="01-chatbot-to-agent.html"><span class="nav-num">01</span> Chatbot → Agent</a></li>
+      <li class="nav-item"><a href="02-ollama-lmstudio.html"><span class="nav-num">02</span> Local Models</a></li>
+      <li class="nav-item"><a href="03-prompting.html"><span class="nav-num">03</span> The Art of Prompting</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part II · Context &amp; Memory</p><ul class="nav-list">
+      <li class="nav-item"><a href="04-context-engineering.html"><span class="nav-num">04</span> Context Engineering</a></li>
+      <li class="nav-item"><a href="05-rag.html"><span class="nav-num">05</span> RAG</a></li>
+      <li class="nav-item"><a href="06-skills.html"><span class="nav-num">06</span> Skills</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part III · Agents</p><ul class="nav-list">
+      <li class="nav-item"><a href="07-mcp.html"><span class="nav-num">07</span> MCP Protocol</a></li>
+      <li class="nav-item"><a href="08-agent-architectures.html"><span class="nav-num">08</span> Agent Architectures</a></li>
+      <li class="nav-item"><a href="09-multi-agent.html"><span class="nav-num">09</span> Multi-Agent</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part IV · Production</p><ul class="nav-list">
+      <li class="nav-item"><a href="10-interpretability.html"><span class="nav-num">10</span> Interpretability</a></li>
+      <li class="nav-item"><a href="11-evals-safety-ops.html"><span class="nav-num">11</span> Evals &amp; Ops</a></li>
+      <li class="nav-item"><a href="12-frontier-capstone.html"><span class="nav-num">12</span> Frontier &amp; Capstone</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Appendix</p><ul class="nav-list">
+      <li class="nav-item"><a href="../resources.html"><span class="nav-num">§</span> Resources</a></li>
+      <li class="nav-item"><a href="../vocabulary.html"><span class="nav-num">A</span> Vocabulary</a></li>
+      <li class="nav-item"><a href="../use-cases.html"><span class="nav-num">★</span> Use Cases 2026</a></li>
+    </ul></nav>
+  </aside>
+
+  <main class="main"><div class="content">
+
+    <header class="chapter-header">
+      <div class="chapter-meta">
+        <span class="chapter-num">CHAPTER 08</span>
+        <span class="pill pill-warm">Part III · Agents</span>
+      </div>
+      <h1>Agent Architectures</h1>
+      <p class="chapter-lede">ReAct, plan-and-execute, Reflexion, tree-of-thought, router, long-horizon. A catalog with "when to use what."</p>
+    </header>
+
+    <div class="toc">
+      <h4>In this chapter</h4>
+      <ul>
+        <li><a href="#react">8.1 ReAct — the Default</a></li>
+        <li><a href="#plan">8.2 Plan-and-Execute</a></li>
+        <li><a href="#tot">8.3 Tree of Thoughts &amp; Search-Based</a></li>
+        <li><a href="#reflex">8.4 Reflexion &amp; Self-Critique</a></li>
+        <li><a href="#router">8.5 Router Agents</a></li>
+        <li><a href="#long">8.6 Long-Horizon Agents</a></li>
+        <li><a href="#cost">8.7 Cost &amp; Latency Profiles</a></li>
+        <li><a href="#pick">8.8 Decision Tree</a></li>
+        <li><a href="#resources">8.9 Further Reading</a></li>
+      </ul>
+    </div>
+
+    <h2 id="react">8.1 ReAct — the Default</h2>
+    <p>ReAct (Yao et al., 2022) is the <em>think → act → observe</em> loop from Chapter 01. It's the default for a reason: it's simple, it composes with every tool-calling model, and it handles 80% of agentic tasks.</p>
+
+<pre><code class="language-python">def react(goal, tools, max_steps=15):
+    history = [{"role": "user", "content": goal}]
+    for _ in range(max_steps):
+        r = llm(history, tools=tools)
+        history.append(r)
+        if not r.tool_calls:
+            return r.text
+        for call in r.tool_calls:
+            history.append({"role": "tool", "content": run(call)})</code></pre>
+
+    <h2 id="plan">8.2 Plan-and-Execute</h2>
+    <p>When the plan is <em>stable</em> — the sequence of steps is mostly determined by the task, not by what you find along the way — ReAct wastes tokens re-deciding at every step. Separate the <strong>planner</strong> (one big upfront call that produces a JSON plan) from the <strong>executor</strong> (cheap per-step calls that follow the plan).</p>
+
+<pre><code class="language-python">plan = planner.plan(goal)          # ["fetch X", "normalize Y", "plot Z"]
+for step in plan:
+    executor.run(step)</code></pre>
+
+    <p>Plan-and-execute is faster and cheaper when the plan really is stable. When it's not — new information changes what should happen next — ReAct wins.</p>
+
+    <h2 id="tot">8.3 Tree of Thoughts &amp; Search-Based</h2>
+    <p>Tree of Thoughts (ToT, Yao 2023) and LATS (2023) generalize ReAct to <em>search</em>: at each decision, sample K candidate next-steps, evaluate each (via a value model or the LLM itself), and expand the best branches. BFS or DFS with pruning.</p>
+
+    <p>When to use: puzzles, code-golf, math — problems where a wrong branch is cheap to abandon and the space is small enough to explore.</p>
+    <p>When <em>not</em> to use: open-world tasks where "evaluating" a branch requires actually executing it.</p>
+
+    <h2 id="reflex">8.4 Reflexion &amp; Self-Critique</h2>
+    <p>Reflexion (Shinn 2023): after a failed attempt, the agent writes a <em>reflection</em> — a natural-language note about what went wrong — and stores it in a separate "episodic memory." On retry, the reflection is injected into the prompt.</p>
+
+<pre><code class="language-python">for attempt in range(max_retries):
+    result = try_task(goal, episodic_memory=reflections)
+    if evaluate(result):
+        return result
+    reflections.append(llm(f"Why did this fail? {result.trace}"))</code></pre>
+
+    <p>Reflexion shines on tasks with <em>cheap</em> verifiers (unit tests, compile checks) — use the verifier's signal to drive the loop.</p>
+
+    <h2 id="router">8.5 Router Agents</h2>
+    <p>A <strong>router</strong> is an L0 orchestrator: a small, cheap model classifies the user's intent and dispatches to a specialized downstream pipeline (RAG over wiki, SQL generation, code review, …). Each downstream is optimised independently — one has RAG, one has a fine-tuned model, one calls an external API. The router is usually a 7B classifier or a rule.</p>
+
+    <div class="diagram">
+      <svg viewBox="0 0 900 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Pattern gallery">
+        <g font-family="sans-serif">
+          <!-- ReAct -->
+          <g transform="translate(40 40)">
+            <text x="70" y="-5" text-anchor="middle" fill="#e6edf3" font-size="12" font-weight="700">ReAct</text>
+            <circle cx="70" cy="60" r="30" fill="rgba(124,92,255,0.2)" stroke="#7c5cff" stroke-width="2"/>
+            <text x="70" y="64" text-anchor="middle" fill="#e6edf3" font-size="11">LLM</text>
+            <path d="M 70 90 Q 100 130 70 160 Q 40 130 70 90" fill="none" stroke="#7c5cff" stroke-width="1.5"/>
+            <text x="70" y="180" text-anchor="middle" fill="#9aa6b2" font-size="10">loops on itself</text>
+          </g>
+          <!-- Plan-execute -->
+          <g transform="translate(210 40)">
+            <text x="70" y="-5" text-anchor="middle" fill="#e6edf3" font-size="12" font-weight="700">Plan → Execute</text>
+            <rect x="20" y="35" width="40" height="30" rx="6" fill="rgba(34,211,238,0.2)" stroke="#22d3ee"/><text x="40" y="55" text-anchor="middle" fill="#e6edf3" font-size="10">plan</text>
+            <rect x="80" y="35" width="40" height="30" rx="6" fill="rgba(34,211,238,0.2)" stroke="#22d3ee"/><text x="100" y="55" text-anchor="middle" fill="#e6edf3" font-size="10">exec</text>
+            <line x1="60" y1="50" x2="80" y2="50" stroke="#22d3ee"/>
+            <rect x="20" y="90" width="100" height="25" rx="6" fill="rgba(34,211,238,0.08)" stroke="#22d3ee" stroke-dasharray="3 3"/>
+            <text x="70" y="107" text-anchor="middle" fill="#9aa6b2" font-size="10">static plan</text>
+          </g>
+          <!-- ToT -->
+          <g transform="translate(380 40)">
+            <text x="70" y="-5" text-anchor="middle" fill="#e6edf3" font-size="12" font-weight="700">Tree of Thoughts</text>
+            <circle cx="70" cy="30" r="8" fill="#fbbf24"/>
+            <circle cx="40" cy="70" r="8" fill="#fbbf24"/><circle cx="70" cy="70" r="8" fill="#fbbf24"/><circle cx="100" cy="70" r="8" fill="#fbbf24"/>
+            <circle cx="30" cy="110" r="6" fill="#fbbf24"/><circle cx="50" cy="110" r="6" fill="#fbbf24"/><circle cx="90" cy="110" r="6" fill="#fbbf24"/>
+            <g stroke="#fbbf24" stroke-width="1" fill="none">
+              <line x1="70" y1="38" x2="40" y2="62"/><line x1="70" y1="38" x2="70" y2="62"/><line x1="70" y1="38" x2="100" y2="62"/>
+              <line x1="40" y1="78" x2="30" y2="104"/><line x1="40" y1="78" x2="50" y2="104"/><line x1="100" y1="78" x2="90" y2="104"/>
+            </g>
+            <text x="70" y="140" text-anchor="middle" fill="#9aa6b2" font-size="10">branch &amp; prune</text>
+          </g>
+          <!-- Reflexion -->
+          <g transform="translate(550 40)">
+            <text x="70" y="-5" text-anchor="middle" fill="#e6edf3" font-size="12" font-weight="700">Reflexion</text>
+            <rect x="20" y="30" width="100" height="25" rx="6" fill="rgba(255,92,168,0.2)" stroke="#ff5ca8"/><text x="70" y="48" text-anchor="middle" fill="#e6edf3" font-size="10">attempt</text>
+            <rect x="20" y="70" width="100" height="25" rx="6" fill="rgba(255,92,168,0.2)" stroke="#ff5ca8"/><text x="70" y="88" text-anchor="middle" fill="#e6edf3" font-size="10">reflect</text>
+            <rect x="20" y="110" width="100" height="25" rx="6" fill="rgba(255,92,168,0.2)" stroke="#ff5ca8"/><text x="70" y="128" text-anchor="middle" fill="#e6edf3" font-size="10">retry</text>
+            <line x1="70" y1="135" x2="70" y2="55" stroke="#ff5ca8" stroke-dasharray="3 3"/>
+          </g>
+          <!-- Router -->
+          <g transform="translate(720 40)">
+            <text x="70" y="-5" text-anchor="middle" fill="#e6edf3" font-size="12" font-weight="700">Router</text>
+            <circle cx="70" cy="40" r="14" fill="rgba(52,211,153,0.25)" stroke="#34d399"/><text x="70" y="44" text-anchor="middle" fill="#e6edf3" font-size="10">?</text>
+            <rect x="15" y="80" width="30" height="22" rx="4" fill="rgba(52,211,153,0.18)" stroke="#34d399"/>
+            <rect x="55" y="80" width="30" height="22" rx="4" fill="rgba(52,211,153,0.18)" stroke="#34d399"/>
+            <rect x="95" y="80" width="30" height="22" rx="4" fill="rgba(52,211,153,0.18)" stroke="#34d399"/>
+            <g stroke="#34d399" stroke-width="1"><line x1="70" y1="55" x2="30" y2="80"/><line x1="70" y1="55" x2="70" y2="80"/><line x1="70" y1="55" x2="110" y2="80"/></g>
+            <text x="70" y="140" text-anchor="middle" fill="#9aa6b2" font-size="10">classify → dispatch</text>
+          </g>
+        </g>
+      </svg>
+      <span class="diagram-caption">Five of the most common agent patterns. All are variations of the basic loop.</span>
+    </div>
+
+    <h2 id="long">8.6 Long-Horizon Agents</h2>
+    <p>For tasks that run over hours (or come back tomorrow), the context window is not enough. You need:</p>
+    <ul>
+      <li><strong>Episodic memory.</strong> A store of past task traces the agent can retrieve (chapter 05).</li>
+      <li><strong>Semantic memory.</strong> Facts and preferences learned over time (mem0, Letta).</li>
+      <li><strong>Journaling.</strong> The agent periodically writes a structured summary of progress to disk.</li>
+      <li><strong>Checkpointing.</strong> Save state so you can resume without replaying everything.</li>
+    </ul>
+
+    <h2 id="cost">8.7 Cost &amp; Latency Profiles</h2>
+    <table>
+      <thead><tr><th>Pattern</th><th>Calls</th><th>Latency</th><th>When it breaks</th></tr></thead>
+      <tbody>
+        <tr><td>ReAct</td><td>~1 per step</td><td>Sequential</td><td>Very long tasks; repeated context</td></tr>
+        <tr><td>Plan-execute</td><td>1 + N</td><td>Mostly parallel after planner</td><td>Plan turns out wrong; no adaptation</td></tr>
+        <tr><td>Tree-of-Thoughts</td><td>K·depth</td><td>Parallel branches</td><td>Evaluation is expensive</td></tr>
+        <tr><td>Reflexion</td><td>N × (attempt + reflect)</td><td>Sequential</td><td>No cheap verifier</td></tr>
+        <tr><td>Router</td><td>1 router + 1 specialist</td><td>Fast</td><td>Intent classification wrong</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="pick">8.8 Decision Tree</h2>
+    <ol>
+      <li>Does the task have a <em>cheap verifier</em> (unit test, compile check, grader)? → <strong>Reflexion</strong>.</li>
+      <li>Is the plan <em>stable</em> regardless of intermediate outputs? → <strong>Plan-and-execute</strong>.</li>
+      <li>Is the search space small and enumerable? → <strong>ToT/LATS</strong>.</li>
+      <li>Is the intent space fixed but intermediate behavior wildly different? → <strong>Router</strong>.</li>
+      <li>Otherwise → <strong>ReAct</strong>, with long-horizon patterns if it exceeds one context window.</li>
+    </ol>
+
+    <h2 id="resources">8.9 Further Reading</h2>
+    <ul>
+      <li><strong>ReAct</strong>: <a href="https://arxiv.org/abs/2210.03629">arXiv:2210.03629</a></li>
+      <li><strong>Reflexion</strong>: <a href="https://arxiv.org/abs/2303.11366">arXiv:2303.11366</a></li>
+      <li><strong>Tree of Thoughts</strong>: <a href="https://arxiv.org/abs/2305.10601">arXiv:2305.10601</a></li>
+      <li><strong>LATS</strong>: <a href="https://arxiv.org/abs/2310.04406">arXiv:2310.04406</a></li>
+      <li><strong>Plan-and-Solve Prompting</strong>: <a href="https://arxiv.org/abs/2305.04091">arXiv:2305.04091</a></li>
+      <li><strong>Lilian Weng — LLM Powered Autonomous Agents</strong>: <a href="https://lilianweng.github.io/posts/2023-06-23-agent/">lilianweng.github.io</a></li>
+      <li><strong>Anthropic — Building Effective AI Agents</strong>: <a href="https://www.anthropic.com/research/building-effective-agents">anthropic.com/research/building-effective-agents</a></li>
+    </ul>
+
+    <h3>Frameworks &amp; models</h3>
+    <ul>
+      <li><a href="https://huggingface.co/docs/smolagents/index">smolagents</a> — tiny agent lib, great for reading the source</li>
+      <li><a href="https://huggingface.co/deepseek-ai/DeepSeek-R1">DeepSeek-R1</a> — reference reasoning model on HF</li>
+    </ul>
+
+    <h3>Benchmarks</h3>
+    <ul>
+      <li><a href="https://hal.cs.princeton.edu/gaia">GAIA</a> · <a href="https://github.com/sierra-research/tau2-bench">τ2-bench</a> · <a href="https://webarena.dev/">WebArena</a> · <a href="https://os-world.github.io/">OSWorld</a></li>
+    </ul>
+
+    <nav class="pager">
+      <a class="pager-link" href="07-mcp.html"><span class="pager-label">← Previous</span><span class="pager-title">MCP — Model Context Protocol</span></a>
+      <a class="pager-link pager-next" href="09-multi-agent.html"><span class="pager-label">Next →</span><span class="pager-title">Multi-Agent Systems</span></a>
+    </nav>
+
+  </div></main>
+</div>
+
+<button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="../assets/js/main.js"></script>
+<footer class="site-footer">
+  <p>Created by <strong>Duy Dao</strong><span class="sep">·</span><a href="https://github.com/xD4O" target="_blank" rel="noopener">GitHub @xD4O</a><span class="sep">·</span><a href="https://x.com/_cyr4x" target="_blank" rel="noopener">X @_cyr4x</a><span class="sep">·</span>AI Wiki · 2026</p>
+  <p class="star-cta">Found this useful? <a href="https://github.com/xD4O/AI-Wiki" target="_blank" rel="noopener">⭐ Star it on GitHub</a></p>
+</footer>
+</body>
+</html>

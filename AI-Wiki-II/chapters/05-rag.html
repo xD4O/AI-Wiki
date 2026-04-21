@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 05 · Retrieval-Augmented Generation — AI Wiki Vol II</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+
+<button id="sidebar-toggle" class="sidebar-toggle" aria-label="Toggle navigation">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+</button>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <svg class="brand-logo" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="brand-g2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#22d3ee"/><stop offset="1" stop-color="#7c5cff"/></linearGradient></defs>
+        <rect x="4" y="4" width="56" height="56" rx="14" fill="url(#brand-g2)"/>
+        <text x="32" y="42" text-anchor="middle" fill="white" font-size="28" font-family="sans-serif" font-weight="700">II</text>
+      </svg>
+      <div><p class="brand-title">AI Wiki · Vol II</p><p class="brand-sub">The Agentic Frontier</p></div>
+    </div>
+    <nav class="nav-section"><p class="nav-title">Getting Started</p><ul class="nav-list">
+      <li class="nav-item"><a href="../../index.html"><span class="nav-num">I</span> Vol I · Foundations</a></li>
+      <li class="nav-item"><a href="../index.html"><span class="nav-num">◆</span> Vol II · Agentic Frontier</a></li>
+      <li class="nav-item"><a href="../../AI-Wiki-III/index.html"><span class="nav-num">III</span> Vol III · Research Frontier</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part I · Using Models</p><ul class="nav-list">
+      <li class="nav-item"><a href="01-chatbot-to-agent.html"><span class="nav-num">01</span> Chatbot → Agent</a></li>
+      <li class="nav-item"><a href="02-ollama-lmstudio.html"><span class="nav-num">02</span> Local Models</a></li>
+      <li class="nav-item"><a href="03-prompting.html"><span class="nav-num">03</span> The Art of Prompting</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part II · Context &amp; Memory</p><ul class="nav-list">
+      <li class="nav-item"><a href="04-context-engineering.html"><span class="nav-num">04</span> Context Engineering</a></li>
+      <li class="nav-item"><a href="05-rag.html"><span class="nav-num">05</span> RAG</a></li>
+      <li class="nav-item"><a href="06-skills.html"><span class="nav-num">06</span> Skills</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part III · Agents</p><ul class="nav-list">
+      <li class="nav-item"><a href="07-mcp.html"><span class="nav-num">07</span> MCP Protocol</a></li>
+      <li class="nav-item"><a href="08-agent-architectures.html"><span class="nav-num">08</span> Agent Architectures</a></li>
+      <li class="nav-item"><a href="09-multi-agent.html"><span class="nav-num">09</span> Multi-Agent</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part IV · Production</p><ul class="nav-list">
+      <li class="nav-item"><a href="10-interpretability.html"><span class="nav-num">10</span> Interpretability</a></li>
+      <li class="nav-item"><a href="11-evals-safety-ops.html"><span class="nav-num">11</span> Evals &amp; Ops</a></li>
+      <li class="nav-item"><a href="12-frontier-capstone.html"><span class="nav-num">12</span> Frontier &amp; Capstone</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Appendix</p><ul class="nav-list">
+      <li class="nav-item"><a href="../resources.html"><span class="nav-num">§</span> Resources</a></li>
+      <li class="nav-item"><a href="../vocabulary.html"><span class="nav-num">A</span> Vocabulary</a></li>
+      <li class="nav-item"><a href="../use-cases.html"><span class="nav-num">★</span> Use Cases 2026</a></li>
+    </ul></nav>
+  </aside>
+
+  <main class="main"><div class="content">
+
+    <header class="chapter-header">
+      <div class="chapter-meta">
+        <span class="chapter-num">CHAPTER 05</span>
+        <span class="pill pill-cyan">Part II · Context &amp; Memory</span>
+      </div>
+      <h1>Retrieval-Augmented Generation</h1>
+      <p class="chapter-lede">Give a model access to millions of documents without retraining. Embeddings, vector DBs, hybrid search, rerankers, and the 2026 twist: GraphRAG and agentic retrieval.</p>
+    </header>
+
+    <div class="toc">
+      <h4>In this chapter</h4>
+      <ul>
+        <li><a href="#why">5.1 Why RAG</a></li>
+        <li><a href="#embed">5.2 Embedding Models</a></li>
+        <li><a href="#store">5.3 Vector Stores</a></li>
+        <li><a href="#chunk">5.4 Chunking Strategies</a></li>
+        <li><a href="#hybrid">5.5 Hybrid Search &amp; Reranking</a></li>
+        <li><a href="#advanced">5.6 HyDE, Multi-Query, GraphRAG, Agentic</a></li>
+        <li><a href="#eval">5.7 Evaluating RAG</a></li>
+        <li><a href="#code">5.8 A 60-Line Local RAG</a></li>
+        <li><a href="#resources">5.9 Further Reading</a></li>
+      </ul>
+    </div>
+
+    <h2 id="why">5.1 Why RAG</h2>
+    <p>A model knows only what was in its training data, and it knows that fuzzily. RAG — retrieval-augmented generation — solves four problems at once:</p>
+    <ul>
+      <li><strong>Freshness.</strong> Documents from yesterday.</li>
+      <li><strong>Private data.</strong> Your internal wiki, medical records, source code.</li>
+      <li><strong>Citations.</strong> The model can point at sources the user can verify.</li>
+      <li><strong>Cost.</strong> Cheaper than fine-tuning; instantly updatable.</li>
+    </ul>
+
+    <div class="diagram">
+      <svg viewBox="0 0 900 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="RAG pipeline">
+        <defs><marker id="rag-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7c5cff"/></marker></defs>
+        <g font-family="sans-serif">
+          <!-- Query -->
+          <rect x="30" y="140" width="120" height="60" rx="10" fill="#161b24" stroke="#22d3ee" stroke-width="1.5"/>
+          <text x="90" y="165" text-anchor="middle" fill="#22d3ee" font-size="13" font-weight="700">Query</text>
+          <text x="90" y="183" text-anchor="middle" fill="#9aa6b2" font-size="11">"how do I auth?"</text>
+          <!-- Embed -->
+          <rect x="180" y="140" width="120" height="60" rx="10" fill="#161b24" stroke="#7c5cff" stroke-width="1.5"/>
+          <text x="240" y="165" text-anchor="middle" fill="#7c5cff" font-size="13" font-weight="700">Embed</text>
+          <text x="240" y="183" text-anchor="middle" fill="#9aa6b2" font-size="11">→ vector ℝⁿ</text>
+          <!-- Search -->
+          <rect x="330" y="140" width="120" height="60" rx="10" fill="#161b24" stroke="#34d399" stroke-width="1.5"/>
+          <text x="390" y="165" text-anchor="middle" fill="#34d399" font-size="13" font-weight="700">Search</text>
+          <text x="390" y="183" text-anchor="middle" fill="#9aa6b2" font-size="11">ANN + BM25</text>
+          <!-- Rerank -->
+          <rect x="480" y="140" width="120" height="60" rx="10" fill="#161b24" stroke="#fbbf24" stroke-width="1.5"/>
+          <text x="540" y="165" text-anchor="middle" fill="#fbbf24" font-size="13" font-weight="700">Rerank</text>
+          <text x="540" y="183" text-anchor="middle" fill="#9aa6b2" font-size="11">cross-encoder</text>
+          <!-- Compose -->
+          <rect x="630" y="140" width="120" height="60" rx="10" fill="#161b24" stroke="#ff5ca8" stroke-width="1.5"/>
+          <text x="690" y="165" text-anchor="middle" fill="#ff5ca8" font-size="13" font-weight="700">Compose</text>
+          <text x="690" y="183" text-anchor="middle" fill="#9aa6b2" font-size="11">top-k + query</text>
+          <!-- Generate -->
+          <rect x="780" y="140" width="90" height="60" rx="10" fill="rgba(124,92,255,0.18)" stroke="#7c5cff" stroke-width="2"/>
+          <text x="825" y="165" text-anchor="middle" fill="#e6edf3" font-size="13" font-weight="700">LLM</text>
+          <text x="825" y="183" text-anchor="middle" fill="#9aa6b2" font-size="11">answer</text>
+
+          <g stroke="#7c5cff" stroke-width="1.5" fill="none">
+            <path d="M 150 170 L 178 170" marker-end="url(#rag-a)"/>
+            <path d="M 300 170 L 328 170" marker-end="url(#rag-a)"/>
+            <path d="M 450 170 L 478 170" marker-end="url(#rag-a)"/>
+            <path d="M 600 170 L 628 170" marker-end="url(#rag-a)"/>
+            <path d="M 750 170 L 778 170" marker-end="url(#rag-a)"/>
+          </g>
+
+          <!-- Doc store -->
+          <rect x="330" y="30" width="300" height="60" rx="10" fill="rgba(34,211,238,0.12)" stroke="#22d3ee" stroke-width="1.5"/>
+          <text x="480" y="52" text-anchor="middle" fill="#22d3ee" font-size="13" font-weight="700">Vector store + inverted index</text>
+          <text x="480" y="72" text-anchor="middle" fill="#9aa6b2" font-size="11">ingested nightly: chunk → embed → upsert</text>
+          <path d="M 390 90 L 390 138" stroke="#22d3ee" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#rag-a)"/>
+
+          <text x="450" y="270" text-anchor="middle" fill="#9aa6b2" font-size="12">The diagram is the whole pattern. Everything else is engineering detail.</text>
+        </g>
+      </svg>
+      <span class="diagram-caption">The canonical RAG pipeline. Every RAG variant is a modification of one of these boxes.</span>
+    </div>
+
+    <h2 id="embed">5.2 Embedding Models</h2>
+    <table>
+      <thead><tr><th>Model</th><th>Hosted / Local</th><th>Dim</th><th>Strength</th></tr></thead>
+      <tbody>
+        <tr><td>OpenAI <code>text-embedding-3-large</code></td><td>Hosted</td><td>3072 (truncatable)</td><td>Strong English general</td></tr>
+        <tr><td>Voyage <code>voyage-3-large</code></td><td>Hosted</td><td>1024</td><td>Tops MTEB at reasonable cost</td></tr>
+        <tr><td>Cohere <code>embed-v3</code></td><td>Hosted</td><td>1024</td><td>Multilingual, reranker pairs well</td></tr>
+        <tr><td><a href="https://huggingface.co/BAAI/bge-m3">BAAI/bge-m3</a></td><td>Local</td><td>1024</td><td>Multilingual + multi-granularity</td></tr>
+        <tr><td><a href="https://huggingface.co/nomic-ai/nomic-embed-text-v1.5">nomic-embed-text-v1.5</a></td><td>Local</td><td>768</td><td>Matryoshka — truncate to 64d for speed</td></tr>
+        <tr><td><a href="https://huggingface.co/mixedbread-ai/mxbai-embed-large-v1">mxbai-embed-large-v1</a></td><td>Local</td><td>1024</td><td>Apache-2.0, Ollama-compatible</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="store">5.3 Vector Stores</h2>
+    <table>
+      <thead><tr><th>Store</th><th>Shape</th><th>Best for</th></tr></thead>
+      <tbody>
+        <tr><td><strong>pgvector</strong></td><td>Postgres extension</td><td>You already have Postgres; &lt; 5M vectors</td></tr>
+        <tr><td><strong>Qdrant</strong></td><td>Standalone Rust server</td><td>Filters, payload-heavy, production scale</td></tr>
+        <tr><td><strong>Weaviate</strong></td><td>GraphQL-native</td><td>Complex filters + hybrid out of the box</td></tr>
+        <tr><td><strong>LanceDB</strong></td><td>Embedded (no server)</td><td>Notebooks, local apps, Arrow-native</td></tr>
+        <tr><td><strong>ChromaDB</strong></td><td>Embedded or server</td><td>Prototyping, "just works"</td></tr>
+        <tr><td><strong>FAISS</strong></td><td>Library</td><td>Research, massive scale (IVF/PQ)</td></tr>
+        <tr><td><strong>Turbopuffer / Vespa</strong></td><td>Managed</td><td>Scale + rich ranking; cost-efficient</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="chunk">5.4 Chunking Strategies</h2>
+    <ul>
+      <li><strong>Fixed-size</strong> (500–1000 tokens, 100-token overlap). Baseline. Works surprisingly well.</li>
+      <li><strong>Sentence / paragraph.</strong> Respects natural boundaries; uneven sizes.</li>
+      <li><strong>Semantic chunking</strong> (LlamaIndex, LangChain). Embed rolling windows; cut where cosine-sim drops.</li>
+      <li><strong>Sliding hierarchical.</strong> Small chunks for retrieval, parent paragraph for context.</li>
+      <li><strong>Contextual retrieval</strong> (Anthropic). Prepend a model-generated one-sentence summary to each chunk before embedding — recall jumps meaningfully.</li>
+    </ul>
+
+    <h2 id="hybrid">5.5 Hybrid Search &amp; Reranking</h2>
+    <p>Pure vector search is great at semantic matching but bad at exact terms (product codes, names, numbers). BM25 is the opposite. <strong>Hybrid search</strong> combines them — typically via reciprocal rank fusion (RRF):</p>
+    <p style="text-align:center">$$\text{score}(d) = \sum_{r \in \text{rankers}} \dfrac{1}{k + \text{rank}_r(d)}$$</p>
+
+    <p>A <strong>reranker</strong> (cross-encoder) then reorders the top 50 candidates with a higher-quality but slower model. Typical pipeline: 1000 candidates from ANN → 50 after BM25 fusion → 10 after reranker → 5 into context.</p>
+
+<pre><code class="language-python">from sentence_transformers import CrossEncoder
+
+reranker = CrossEncoder("BAAI/bge-reranker-v2-m3")
+pairs = [(query, doc) for doc in candidates]
+scores = reranker.predict(pairs)
+top = sorted(zip(candidates, scores), key=lambda x: -x[1])[:10]</code></pre>
+
+    <h2 id="advanced">5.6 Advanced — HyDE, Multi-Query, GraphRAG, Agentic Retrieval</h2>
+    <ul>
+      <li><strong>HyDE</strong> (Hypothetical Document Embeddings): ask the LLM to <em>hallucinate</em> an answer; embed that; search. The hallucinated answer is closer in embedding space to real answers than the question itself.</li>
+      <li><strong>Multi-query rewriting.</strong> Have the LLM expand one query into 3–5 phrasings, search each, fuse.</li>
+      <li><strong>GraphRAG</strong> (Microsoft, 2024). Build a knowledge graph from the corpus; retrieve subgraph summaries for global questions ("what are the main themes of this book?").</li>
+      <li><strong>LazyGraphRAG</strong> (2025). Defers graph building to query-time — 0.1% of indexing cost with ~95% of quality.</li>
+      <li><strong>Agentic retrieval.</strong> Don't do retrieval as a single pre-step. Let the agent call a <code>search()</code> tool mid-loop, read, refine the query, and search again. This is how Claude Code finds things.</li>
+    </ul>
+
+    <h2 id="eval">5.7 Evaluating RAG</h2>
+    <p>RAGAS and friends measure three things:</p>
+    <ul>
+      <li><strong>Faithfulness</strong> — is the answer supported by the retrieved passages?</li>
+      <li><strong>Answer relevance</strong> — does the answer address the question?</li>
+      <li><strong>Context precision / recall</strong> — did retrieval find what mattered, without noise?</li>
+    </ul>
+
+<pre><code class="language-python">from ragas import evaluate
+from ragas.metrics import faithfulness, answer_relevancy, context_precision
+
+scores = evaluate(dataset, metrics=[faithfulness, answer_relevancy, context_precision])</code></pre>
+
+    <h2 id="code">5.8 A 60-Line Local RAG</h2>
+<pre><code class="language-python">import ollama, lancedb, pyarrow as pa
+from lancedb.embeddings import get_registry
+
+db = lancedb.connect("./.rag")
+embed = get_registry().get("ollama").create(name="mxbai-embed-large")
+
+# --- ingest ---
+docs = [open(p).read() for p in ["docs/a.md", "docs/b.md", "docs/c.md"]]
+def chunk(text, size=700, overlap=100):
+    for i in range(0, len(text), size - overlap):
+        yield text[i:i+size]
+
+rows = [{"text": c, "vector": embed.compute_source_embeddings([c])[0]}
+        for d in docs for c in chunk(d)]
+tbl = db.create_table("kb", rows, mode="overwrite")
+tbl.create_fts_index("text")
+
+# --- query ---
+def rag(query, k=4):
+    hits = tbl.search(query).limit(k).to_list()  # hybrid: BM25 + vector
+    ctx = "\n---\n".join(h["text"] for h in hits)
+    prompt = f"Answer using ONLY the context.\n\n{ctx}\n\nQ: {query}\nA:"
+    r = ollama.chat(model="qwen2.5:32b", messages=[{"role": "user", "content": prompt}])
+    return r["message"]["content"], hits
+
+ans, sources = rag("How do I rotate the master key?")
+print(ans)
+for s in sources: print("-", s["text"][:80])</code></pre>
+
+    <h2 id="resources">5.9 Further Reading</h2>
+    <ul>
+      <li><strong>Original RAG paper</strong> (Lewis et al., 2020): <a href="https://arxiv.org/abs/2005.11401">arXiv:2005.11401</a></li>
+      <li><strong>Microsoft GraphRAG</strong>: <a href="https://microsoft.github.io/graphrag/">microsoft.github.io/graphrag</a></li>
+      <li><strong>LazyGraphRAG</strong>: <a href="https://www.microsoft.com/en-us/research/blog/lazygraphrag-setting-a-new-standard-for-quality-and-cost/">Microsoft Research blog</a></li>
+      <li><strong>Anthropic Contextual Retrieval</strong>: <a href="https://www.anthropic.com/news/contextual-retrieval">anthropic.com/news/contextual-retrieval</a></li>
+      <li><strong>LlamaIndex docs</strong>: <a href="https://docs.llamaindex.ai/">docs.llamaindex.ai</a></li>
+      <li><strong>LangChain RAG tutorial</strong>: <a href="https://python.langchain.com/docs/tutorials/rag/">python.langchain.com</a></li>
+    </ul>
+
+    <h3>Embedding / reranker models on Hugging Face</h3>
+    <ul>
+      <li><a href="https://huggingface.co/BAAI/bge-m3">BAAI/bge-m3</a> — multilingual embeddings</li>
+      <li><a href="https://huggingface.co/nomic-ai/modernbert-embed-base">nomic-ai/modernbert-embed-base</a></li>
+      <li><a href="https://huggingface.co/BAAI/bge-reranker-v2-m3">BAAI/bge-reranker-v2-m3</a> — open reranker</li>
+      <li><a href="https://huggingface.co/mixedbread-ai/mxbai-embed-large-v1">mixedbread-ai/mxbai-embed-large-v1</a></li>
+    </ul>
+
+    <h3>Benchmarks &amp; people</h3>
+    <ul>
+      <li><strong>MTEB Leaderboard</strong>: <a href="https://huggingface.co/spaces/mteb/leaderboard">huggingface.co/spaces/mteb/leaderboard</a></li>
+      <li><strong>BEIR</strong>: <a href="https://github.com/beir-cellar/beir">github.com/beir-cellar/beir</a></li>
+      <li><strong>RAGAS</strong>: <a href="https://github.com/explodinggradients/ragas">github.com/explodinggradients/ragas</a></li>
+      <li><strong>Jerry Liu</strong> (LlamaIndex) — <a href="https://twitter.com/jerryjliu0">@jerryjliu0</a></li>
+      <li><strong>Eugene Yan</strong> — <a href="https://eugeneyan.com/">eugeneyan.com</a></li>
+      <li><strong>Jo Kristian Bergum / Vespa</strong> — <a href="https://blog.vespa.ai/">blog.vespa.ai</a></li>
+    </ul>
+
+    <nav class="pager">
+      <a class="pager-link" href="04-context-engineering.html"><span class="pager-label">← Previous</span><span class="pager-title">Context Engineering</span></a>
+      <a class="pager-link pager-next" href="06-skills.html"><span class="pager-label">Next →</span><span class="pager-title">Skills &amp; Reusable Prompts</span></a>
+    </nav>
+
+  </div></main>
+</div>
+
+<button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="../assets/js/main.js"></script>
+<footer class="site-footer">
+  <p>Created by <strong>Duy Dao</strong><span class="sep">·</span><a href="https://github.com/xD4O" target="_blank" rel="noopener">GitHub @xD4O</a><span class="sep">·</span><a href="https://x.com/_cyr4x" target="_blank" rel="noopener">X @_cyr4x</a><span class="sep">·</span>AI Wiki · 2026</p>
+  <p class="star-cta">Found this useful? <a href="https://github.com/xD4O/AI-Wiki" target="_blank" rel="noopener">⭐ Star it on GitHub</a></p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resources &amp; Links — AI Wiki Vol II</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+
+<button id="sidebar-toggle" class="sidebar-toggle" aria-label="Toggle navigation">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+</button>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <svg class="brand-logo" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="brand-g2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#22d3ee"/><stop offset="1" stop-color="#7c5cff"/></linearGradient></defs>
+        <rect x="4" y="4" width="56" height="56" rx="14" fill="url(#brand-g2)"/>
+        <text x="32" y="42" text-anchor="middle" fill="white" font-size="28" font-family="sans-serif" font-weight="700">II</text>
+      </svg>
+      <div><p class="brand-title">AI Wiki · Vol II</p><p class="brand-sub">The Agentic Frontier</p></div>
+    </div>
+    <nav class="nav-section"><p class="nav-title">Getting Started</p><ul class="nav-list">
+      <li class="nav-item"><a href="../index.html"><span class="nav-num">I</span> Vol I · Foundations</a></li>
+      <li class="nav-item"><a href="index.html"><span class="nav-num">◆</span> Vol II · Agentic Frontier</a></li>
+      <li class="nav-item"><a href="../AI-Wiki-III/index.html"><span class="nav-num">III</span> Vol III · Research Frontier</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part I · Using Models</p><ul class="nav-list">
+      <li class="nav-item"><a href="chapters/01-chatbot-to-agent.html"><span class="nav-num">01</span> Chatbot → Agent</a></li>
+      <li class="nav-item"><a href="chapters/02-ollama-lmstudio.html"><span class="nav-num">02</span> Local Models</a></li>
+      <li class="nav-item"><a href="chapters/03-prompting.html"><span class="nav-num">03</span> The Art of Prompting</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part II · Context &amp; Memory</p><ul class="nav-list">
+      <li class="nav-item"><a href="chapters/04-context-engineering.html"><span class="nav-num">04</span> Context Engineering</a></li>
+      <li class="nav-item"><a href="chapters/05-rag.html"><span class="nav-num">05</span> RAG</a></li>
+      <li class="nav-item"><a href="chapters/06-skills.html"><span class="nav-num">06</span> Skills</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part III · Agents</p><ul class="nav-list">
+      <li class="nav-item"><a href="chapters/07-mcp.html"><span class="nav-num">07</span> MCP Protocol</a></li>
+      <li class="nav-item"><a href="chapters/08-agent-architectures.html"><span class="nav-num">08</span> Agent Architectures</a></li>
+      <li class="nav-item"><a href="chapters/09-multi-agent.html"><span class="nav-num">09</span> Multi-Agent</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part IV · Production</p><ul class="nav-list">
+      <li class="nav-item"><a href="chapters/10-interpretability.html"><span class="nav-num">10</span> Interpretability</a></li>
+      <li class="nav-item"><a href="chapters/11-evals-safety-ops.html"><span class="nav-num">11</span> Evals &amp; Ops</a></li>
+      <li class="nav-item"><a href="chapters/12-frontier-capstone.html"><span class="nav-num">12</span> Frontier &amp; Capstone</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Appendix</p><ul class="nav-list">
+      <li class="nav-item"><a href="resources.html"><span class="nav-num">§</span> Resources</a></li>
+      <li class="nav-item"><a href="vocabulary.html"><span class="nav-num">A</span> Vocabulary</a></li>
+      <li class="nav-item"><a href="use-cases.html"><span class="nav-num">★</span> Use Cases 2026</a></li>
+    </ul></nav>
+  </aside>
+
+  <main class="main"><div class="content">
+
+    <header class="chapter-header">
+      <div class="chapter-meta">
+        <span class="chapter-num">APPENDIX</span>
+        <span class="pill pill-cyan">§ Resources</span>
+      </div>
+      <h1>Resources &amp; Links</h1>
+      <p class="chapter-lede">The master list — papers, docs, Hugging Face models, leaderboards, blogs, podcasts, and awesome-lists referenced throughout Volume II. Verified April 2026.</p>
+    </header>
+
+    <div class="callout note">
+      <svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+      <div class="callout-body">
+        <div class="callout-title">State of the art, April 2026</div>
+        <ul>
+          <li><strong>Frontier closed:</strong> Anthropic Claude Opus 4.7 (1M context), OpenAI GPT-5 series, Google Gemini 3.1 Pro.</li>
+          <li><strong>Top open-weight:</strong> Alibaba Qwen 2.5 / QwQ / Qwen 3.x; DeepSeek V3/R1 family; Moonshot Kimi K2; Meta Llama 3.3/4; Google Gemma 3; Mistral Large; Microsoft Phi-4.</li>
+          <li><strong>Local runtimes:</strong> Ollama (now MLX on Apple Silicon), LM Studio, vLLM, llama.cpp, SGLang.</li>
+          <li><strong>Benchmarks migrated:</strong> SWE-bench Pro, τ2-bench, GAIA, OSWorld-Verified have largely replaced SWE-bench Verified at the frontier.</li>
+          <li><strong>Frameworks:</strong> LangGraph overtook CrewAI in early 2026; smolagents leads the lightweight tier.</li>
+          <li><strong>MCP:</strong> Spec 2025-11-25; governance now in the Agentic AI Foundation; 2026 focus is enterprise auth + transport scale.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="toc">
+      <h4>Jump to</h4>
+      <ul>
+        <li><a href="#by-chapter">Per-chapter resources</a></li>
+        <li><a href="#newsletters">Newsletters</a></li>
+        <li><a href="#podcasts">Podcasts</a></li>
+        <li><a href="#confs">Conferences</a></li>
+        <li><a href="#arxiv">arXiv categories</a></li>
+        <li><a href="#boards">Model leaderboards</a></li>
+        <li><a href="#awesome">GitHub awesome-lists</a></li>
+      </ul>
+    </div>
+
+    <h2 id="by-chapter">Per-chapter resources</h2>
+
+    <h3>Chapter 01 · From Chatbot to Agent</h3>
+    <ul>
+      <li><a href="https://www.anthropic.com/research/building-effective-agents">Anthropic — Building Effective AI Agents</a></li>
+      <li><a href="https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents">Anthropic — Harnesses for long-running agents</a></li>
+      <li><a href="https://arxiv.org/abs/2210.03629">ReAct paper (arXiv 2210.03629)</a></li>
+      <li><a href="https://code.claude.com/docs/en/overview">Claude Code documentation</a> · <a href="https://cursor.com/docs">Cursor documentation</a> · Cognition AI — Devin</li>
+      <li><a href="https://huggingface.co/agents-course">HF Agents Course</a> · <a href="https://huggingface.co/collections/Qwen/qwen25-coder">Qwen 2.5 Coder collection</a> · <a href="https://huggingface.co/moonshotai/Kimi-K2-Thinking">Kimi-K2-Thinking</a></li>
+      <li>Benchmarks: <a href="https://www.swebench.com/verified.html">SWE-bench Verified</a> · <a href="https://www.morphllm.com/swe-bench-pro">SWE-bench Pro</a> · <a href="https://github.com/sierra-research/tau2-bench">τ2-bench</a> · <a href="https://hal.cs.princeton.edu/gaia">GAIA</a></li>
+      <li>People: <a href="https://simonwillison.net/">Simon Willison</a> · <a href="https://twitter.com/karpathy">@karpathy</a> · <a href="https://www.latent.space/">swyx / Latent Space</a> · <a href="https://hamel.dev/">Hamel Husain</a></li>
+    </ul>
+
+    <h3>Chapter 02 · Local Models: Ollama &amp; LM Studio</h3>
+    <ul>
+      <li><a href="https://ollama.com">Ollama</a> · <a href="https://github.com/ollama/ollama">GitHub</a> · <a href="https://ollama.com/library">library</a></li>
+      <li><a href="https://lmstudio.ai">LM Studio</a> · <a href="https://lmstudio.ai/docs">docs</a></li>
+      <li><a href="https://github.com/ggml-org/llama.cpp">llama.cpp</a> · <a href="https://docs.vllm.ai/en/latest/">vLLM</a> · <a href="https://github.com/ml-explore/mlx">MLX</a> · <a href="https://github.com/sgl-project/sglang">SGLang</a></li>
+      <li><a href="https://www.nvidia.com/en-us/products/workstations/dgx-spark/">NVIDIA DGX Spark</a></li>
+      <li>HF: <a href="https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct">Llama-3.3-70B-Instruct</a> · <a href="https://huggingface.co/Qwen/Qwen2.5-72B-Instruct">Qwen2.5-72B</a> · <a href="https://huggingface.co/Qwen/QwQ-32B">QwQ-32B</a> · <a href="https://huggingface.co/deepseek-ai/DeepSeek-V3">DeepSeek-V3</a> · <a href="https://huggingface.co/deepseek-ai/DeepSeek-R1">DeepSeek-R1</a> · <a href="https://huggingface.co/mistralai/Mistral-Large-Instruct-2411">Mistral Large</a> · <a href="https://huggingface.co/google/gemma-3-27b-it">Gemma 3 27B</a> · <a href="https://huggingface.co/microsoft/phi-4">Phi-4</a> · <a href="https://huggingface.co/bartowski">bartowski GGUFs</a></li>
+      <li>Leaderboards: <a href="https://lmarena.ai">LMSYS Arena</a> · <a href="https://huggingface.co/spaces/open-llm-leaderboard/open_llm_leaderboard">Open LLM Leaderboard v2</a> · <a href="https://artificialanalysis.ai">Artificial Analysis</a></li>
+      <li>People: <a href="https://twitter.com/ggerganov">Georgi Gerganov</a> · <a href="https://twitter.com/awnihannun">Awni Hannun</a> · <a href="https://magazine.sebastianraschka.com">Sebastian Raschka</a> · <a href="https://timdettmers.com">Tim Dettmers</a></li>
+    </ul>
+
+    <h3>Chapter 03 · The Art of Prompting</h3>
+    <ul>
+      <li><a href="https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/overview">Anthropic prompt engineering</a> · <a href="https://platform.openai.com/docs/guides/prompt-engineering">OpenAI Prompting Guide</a></li>
+      <li><a href="https://lilianweng.github.io/posts/2023-03-15-prompt-engineering/">Lilian Weng — Prompt Engineering</a> · <a href="https://www.promptingguide.ai/">promptingguide.ai</a></li>
+      <li><a href="https://arxiv.org/abs/2201.11903">Chain-of-Thought</a> · <a href="https://arxiv.org/abs/2203.11171">Self-Consistency</a></li>
+      <li>HF: <a href="https://huggingface.co/deepseek-ai/DeepSeek-R1">DeepSeek-R1</a> · <a href="https://huggingface.co/Qwen/QwQ-32B-Preview">QwQ-32B-Preview</a> · <a href="https://huggingface.co/smol-course">smol-course</a></li>
+      <li>Benchmarks: <a href="https://artificialanalysis.ai/evaluations/mmlu-pro">MMLU-Pro</a> · <a href="https://github.com/suzgunmirac/BIG-Bench-Hard">BBH</a> · <a href="https://lastexam.ai/">Humanity's Last Exam</a></li>
+      <li>People: <a href="https://twitter.com/goodside">Riley Goodside</a> · <a href="https://www.oneusefulthing.org/">Ethan Mollick</a> · <a href="https://lilianweng.github.io/">Lilian Weng</a></li>
+    </ul>
+
+    <h3>Chapter 04 · Context Engineering</h3>
+    <ul>
+      <li><a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents">Anthropic — Context engineering</a> · <a href="https://platform.claude.com/docs/en/build-with-claude/prompt-caching">Prompt caching docs</a></li>
+      <li><a href="https://arxiv.org/abs/2307.03172">Lost in the Middle</a> · <a href="https://www.anthropic.com/news/contextual-retrieval">Anthropic Contextual Retrieval</a> · <a href="https://platform.openai.com/docs/guides/prompt-caching">OpenAI prompt caching</a></li>
+      <li>Benchmarks: <a href="https://github.com/NVIDIA/RULER">RULER</a> · <a href="https://github.com/THUDM/LongBench">LongBench</a> · <a href="https://github.com/gkamradt/LLMTest_NeedleInAHaystack">Needle-in-a-Haystack</a></li>
+      <li>People: <a href="https://twitter.com/GregKamradt">Greg Kamradt</a> · <a href="https://nelsonliu.me">Nelson Liu</a> · <a href="https://www.anthropic.com/engineering">Anthropic Engineering</a></li>
+    </ul>
+
+    <h3>Chapter 05 · Retrieval-Augmented Generation</h3>
+    <ul>
+      <li><a href="https://arxiv.org/abs/2005.11401">RAG paper (Lewis et al., 2020)</a> · <a href="https://microsoft.github.io/graphrag/">Microsoft GraphRAG</a> · <a href="https://www.microsoft.com/en-us/research/blog/lazygraphrag-setting-a-new-standard-for-quality-and-cost/">LazyGraphRAG</a></li>
+      <li><a href="https://www.anthropic.com/news/contextual-retrieval">Anthropic Contextual Retrieval</a> · <a href="https://docs.llamaindex.ai/">LlamaIndex</a> · <a href="https://python.langchain.com/docs/tutorials/rag/">LangChain RAG tutorial</a></li>
+      <li>HF: <a href="https://huggingface.co/BAAI/bge-m3">bge-m3</a> · <a href="https://huggingface.co/nomic-ai/modernbert-embed-base">modernbert-embed-base</a> · <a href="https://huggingface.co/BAAI/bge-reranker-v2-m3">bge-reranker-v2-m3</a> · <a href="https://huggingface.co/mixedbread-ai/mxbai-embed-large-v1">mxbai-embed-large-v1</a></li>
+      <li>Benchmarks: <a href="https://huggingface.co/spaces/mteb/leaderboard">MTEB</a> · <a href="https://github.com/beir-cellar/beir">BEIR</a> · <a href="https://github.com/explodinggradients/ragas">RAGAS</a></li>
+      <li>People: <a href="https://twitter.com/jerryjliu0">Jerry Liu</a> · <a href="https://eugeneyan.com/">Eugene Yan</a> · <a href="https://blog.vespa.ai/">Jo Bergum / Vespa</a></li>
+    </ul>
+
+    <h3>Chapter 06 · Skills &amp; Reusable Prompts</h3>
+    <ul>
+      <li><a href="https://code.claude.com/docs/en/skills">Claude Code — Skills</a> · <a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview">Claude API — Agent Skills</a></li>
+      <li><a href="https://github.com/anthropics/skills">anthropics/skills (official)</a> · <a href="https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills">Anthropic Engineering — Agent Skills</a></li>
+      <li>HF: <a href="https://huggingface.co/learn/agents-course/unit2/smolagents/introduction">Agents Course · smolagents</a> · <a href="https://huggingface.co/smol-course">smol-course</a></li>
+      <li>People: <a href="https://simonwillison.net/tags/claude/">Simon Willison — skills tag</a></li>
+    </ul>
+
+    <h3>Chapter 07 · MCP — the Model Context Protocol</h3>
+    <ul>
+      <li><a href="https://modelcontextprotocol.io/">modelcontextprotocol.io</a> · <a href="https://modelcontextprotocol.io/specification/2025-11-25">Spec 2025-11-25</a> · <a href="https://blog.modelcontextprotocol.io/posts/2026-mcp-roadmap/">2026 roadmap</a></li>
+      <li><a href="https://github.com/modelcontextprotocol/modelcontextprotocol">Spec repo</a> · <a href="https://github.com/modelcontextprotocol/servers">Reference servers</a> · <a href="https://modelcontextprotocol.io/legacy/tools/inspector">MCP Inspector</a></li>
+      <li><a href="https://www.anthropic.com/engineering/code-execution-with-mcp">Anthropic — Code execution with MCP</a> · <a href="https://huggingface.co/learn/mcp-course">HF MCP course</a></li>
+      <li>Awesome: <a href="https://github.com/punkpeye/awesome-mcp-servers">punkpeye/awesome-mcp-servers</a> · <a href="https://github.com/wong2/awesome-mcp-servers">wong2/awesome-mcp-servers</a></li>
+      <li>People: <a href="https://twitter.com/localden">Den Delimarsky (MCP Lead)</a></li>
+    </ul>
+
+    <h3>Chapter 08 · Agent Architectures</h3>
+    <ul>
+      <li>Papers: <a href="https://arxiv.org/abs/2210.03629">ReAct</a> · <a href="https://arxiv.org/abs/2303.11366">Reflexion</a> · <a href="https://arxiv.org/abs/2305.10601">Tree of Thoughts</a> · <a href="https://arxiv.org/abs/2310.04406">LATS</a> · <a href="https://arxiv.org/abs/2305.04091">Plan-and-Solve</a></li>
+      <li><a href="https://lilianweng.github.io/posts/2023-06-23-agent/">Lilian Weng — Autonomous Agents</a> · <a href="https://www.anthropic.com/research/building-effective-agents">Anthropic — Effective Agents</a></li>
+      <li>HF: <a href="https://huggingface.co/docs/smolagents/index">smolagents</a> · <a href="https://huggingface.co/deepseek-ai/DeepSeek-R1">DeepSeek-R1</a></li>
+      <li>Benchmarks: <a href="https://hal.cs.princeton.edu/gaia">GAIA</a> · <a href="https://github.com/sierra-research/tau2-bench">τ2-bench</a> · <a href="https://webarena.dev/">WebArena</a> · <a href="https://os-world.github.io/">OSWorld</a></li>
+    </ul>
+
+    <h3>Chapter 09 · Multi-Agent Systems</h3>
+    <ul>
+      <li><a href="https://langchain-ai.github.io/langgraph/">LangGraph</a> · <a href="https://docs.crewai.com/">CrewAI</a> · <a href="https://microsoft.github.io/autogen/">AutoGen</a></li>
+      <li><a href="https://www.anthropic.com/engineering/built-multi-agent-research-system">Anthropic multi-agent research system</a> · <a href="https://code.claude.com/docs/en/sub-agents">Claude Code sub-agents</a> · <a href="https://github.com/openai/openai-agents-python">OpenAI Agents SDK</a></li>
+      <li>HF: <a href="https://huggingface.co/docs/smolagents/index">smolagents</a> · <a href="https://github.com/huggingface/agents-course">agents-course</a></li>
+      <li>People: <a href="https://twitter.com/hwchase17">Harrison Chase</a> · <a href="https://twitter.com/joaomdmoura">João Moura</a> · <a href="https://twitter.com/ChiWang12">Chi Wang</a></li>
+    </ul>
+
+    <h3>Chapter 10 · Interpretability</h3>
+    <ul>
+      <li><a href="https://transformer-circuits.pub/2024/scaling-monosemanticity/">Anthropic — Scaling Monosemanticity</a> · <a href="https://transformer-circuits.pub/">Transformer Circuits thread</a></li>
+      <li><a href="https://arxiv.org/abs/2501.16496">Open Problems in Mech Interp (2025)</a> · <a href="https://arxiv.org/abs/2309.08600">SAE features paper</a></li>
+      <li><a href="https://transformerlensorg.github.io/TransformerLens/">TransformerLens</a> · <a href="https://nnsight.net/">nnsight</a> · <a href="https://github.com/jbloomAus/SAELens">SAELens</a></li>
+      <li>HF: <a href="https://huggingface.co/google/gemma-scope">Gemma Scope</a> · <a href="https://huggingface.co/EleutherAI">EleutherAI pythia</a></li>
+      <li>People: <a href="https://www.neelnanda.io/">Neel Nanda</a> · <a href="https://twitter.com/ch402">Chris Olah</a> · <a href="https://x.com/trentonbricken">Trenton Bricken</a> · <a href="https://x.com/_sholtodouglas">Sholto Douglas</a></li>
+    </ul>
+
+    <h3>Chapter 11 · Evals, Safety &amp; Ops</h3>
+    <ul>
+      <li><a href="https://www.swebench.com/verified.html">SWE-bench Verified</a> · <a href="https://www.morphllm.com/swe-bench-pro">SWE-bench Pro</a> · <a href="https://github.com/sierra-research/tau2-bench">τ2-bench</a> · <a href="https://arxiv.org/abs/2311.12983">GAIA paper</a></li>
+      <li><a href="https://langfuse.com/">Langfuse</a> · <a href="https://www.helicone.ai/">Helicone</a> · <a href="https://github.com/NVIDIA-NeMo/Guardrails">NeMo Guardrails</a> · <a href="https://guardrailsai.com/">Guardrails AI</a></li>
+      <li><a href="https://hamel.dev/blog/posts/evals/">Hamel — Your AI Product Needs Evals</a> · <a href="https://www.anthropic.com/rsp-updates">Anthropic RSP updates</a></li>
+      <li>HF: <a href="https://huggingface.co/meta-llama/Llama-Guard-3-8B">Llama-Guard-4</a> · <a href="https://huggingface.co/spaces/allenai/reward-bench">reward-bench</a> · <a href="https://github.com/huggingface/lighteval">lighteval</a></li>
+      <li>Benchmarks: <a href="https://crfm.stanford.edu/helm/">HELM</a> · <a href="https://github.com/EleutherAI/lm-evaluation-harness">LM Eval Harness</a> · <a href="https://gorilla.cs.berkeley.edu/leaderboard.html">BFCL</a></li>
+    </ul>
+
+    <h3>Chapter 12 · Frontier 2026 &amp; Capstone</h3>
+    <ul>
+      <li><a href="https://www.anthropic.com/news/3-5-models-and-computer-use">Anthropic — Computer Use</a> · <a href="https://www.nature.com/articles/s41586-025-09422-z">DeepSeek-R1 Nature paper</a></li>
+      <li><a href="https://simonwillison.net/2026/Jan/8/llm-predictions-for-2026/">Simon Willison — 2026 predictions</a></li>
+      <li><a href="https://arxiv.org/abs/2512.13564">Memory in the Age of AI Agents</a> · <a href="https://arxiv.org/abs/2511.01093">Continual Learning, Not Training</a></li>
+      <li>Benchmarks: <a href="https://lastexam.ai/">Humanity's Last Exam</a> · <a href="https://os-world.github.io/">OSWorld-Verified</a> · <a href="https://arcprize.org/">ARC-AGI</a> · <a href="https://epoch.ai/frontiermath">FrontierMath</a></li>
+    </ul>
+
+    <h2 id="newsletters">Newsletters</h2>
+    <div class="grid grid-2">
+      <div class="card"><h3><a href="https://www.interconnects.ai/">Interconnects</a></h3><p>Nathan Lambert — best open-model + RL coverage.</p></div>
+      <div class="card"><h3><a href="https://importai.substack.com/">Import AI</a></h3><p>Jack Clark — weekly research digest.</p></div>
+      <div class="card"><h3><a href="https://www.deeplearning.ai/the-batch/">The Batch</a></h3><p>DeepLearning.AI — broad news for practitioners.</p></div>
+      <div class="card"><h3><a href="https://www.latent.space/">Latent Space</a></h3><p>swyx + Alessio — AI engineering stack.</p></div>
+      <div class="card"><h3><a href="https://magazine.sebastianraschka.com/">Ahead of AI</a></h3><p>Sebastian Raschka — technical deep dives.</p></div>
+      <div class="card"><h3><a href="https://www.oneusefulthing.org/">One Useful Thing</a></h3><p>Ethan Mollick — applied &amp; empirical.</p></div>
+      <div class="card"><h3><a href="https://lastweekin.ai/">Last Week in AI</a></h3><p>Skimmable weekly digest.</p></div>
+      <div class="card"><h3><a href="https://simonwillison.net/">Simon Willison's Weblog</a></h3><p>Best daily LLM coverage; unparalleled link-mining.</p></div>
+    </div>
+
+    <h2 id="podcasts">Podcasts</h2>
+    <ul>
+      <li><a href="https://www.dwarkesh.com/podcast">Dwarkesh Podcast</a> — long-form technical interviews</li>
+      <li><a href="https://www.latent.space/podcast">Latent Space</a> — the AI engineer podcast</li>
+      <li><a href="https://www.nopriors.com/">No Priors</a> — Sarah Guo &amp; Elad Gil</li>
+      <li><a href="https://www.cognitiverevolution.ai/">Cognitive Revolution</a> — Nathan Labenz</li>
+      <li><a href="https://www.youtube.com/@MachineLearningStreetTalk">Machine Learning Street Talk</a></li>
+      <li><a href="https://lexfridman.com/podcast/">Lex Fridman</a></li>
+      <li><a href="https://twimlai.com/podcast/">TWIML AI Podcast</a></li>
+    </ul>
+
+    <h2 id="confs">Conferences</h2>
+    <ul>
+      <li><a href="https://neurips.cc/">NeurIPS</a> · <a href="https://icml.cc/">ICML</a> · <a href="https://iclr.cc/">ICLR</a> · <a href="https://www.aclweb.org/portal/">ACL</a> · <a href="https://2025.emnlp.org/">EMNLP</a> · <a href="https://colmweb.org/">COLM</a></li>
+      <li><a href="https://www.ai.engineer/">AI Engineer Summit (swyx)</a></li>
+    </ul>
+
+    <h2 id="arxiv">arXiv</h2>
+    <ul>
+      <li><a href="https://arxiv.org/list/cs.CL/recent">cs.CL — Computation and Language</a></li>
+      <li><a href="https://arxiv.org/list/cs.LG/recent">cs.LG — Machine Learning</a></li>
+      <li><a href="https://arxiv.org/list/cs.AI/recent">cs.AI — Artificial Intelligence</a></li>
+      <li><a href="https://www.alphaxiv.org/">alphaXiv</a> — community-annotated arXiv</li>
+    </ul>
+
+    <h2 id="boards">Model leaderboards</h2>
+    <ul>
+      <li><a href="https://lmarena.ai/">LMSYS Chatbot Arena</a></li>
+      <li><a href="https://huggingface.co/spaces/open-llm-leaderboard/open_llm_leaderboard">Open LLM Leaderboard (HF)</a></li>
+      <li><a href="https://artificialanalysis.ai/">Artificial Analysis</a></li>
+      <li><a href="https://scale.com/leaderboard">SEAL Leaderboards (Scale)</a></li>
+      <li><a href="https://livebench.ai/">LiveBench</a></li>
+      <li><a href="https://www.vellum.ai/llm-leaderboard">Vellum leaderboard</a></li>
+    </ul>
+
+    <h2 id="awesome">GitHub "awesome" lists</h2>
+    <ul>
+      <li><a href="https://github.com/punkpeye/awesome-mcp-servers">punkpeye/awesome-mcp-servers</a></li>
+      <li><a href="https://github.com/wong2/awesome-mcp-servers">wong2/awesome-mcp-servers</a></li>
+      <li><a href="https://github.com/modelcontextprotocol/servers">modelcontextprotocol/servers</a></li>
+      <li><a href="https://github.com/e2b-dev/awesome-ai-agents">e2b-dev/awesome-ai-agents</a></li>
+      <li><a href="https://github.com/kyrolabs/awesome-langchain">kyrolabs/awesome-langchain</a></li>
+      <li><a href="https://github.com/steven2358/awesome-generative-ai">steven2358/awesome-generative-ai</a></li>
+      <li><a href="https://github.com/Hannibal046/Awesome-LLM">Hannibal046/Awesome-LLM</a></li>
+      <li><a href="https://github.com/underlines/awesome-ml">underlines/awesome-ml</a></li>
+      <li><a href="https://github.com/aishwaryanr/awesome-generative-ai-guide">aishwaryanr/awesome-generative-ai-guide</a></li>
+      <li><a href="https://github.com/jbloomAus/SAELens">jbloomAus/SAELens</a> (interp)</li>
+      <li><a href="https://github.com/huggingface/agents-course">huggingface/agents-course</a></li>
+      <li><a href="https://github.com/anthropics/skills">anthropics/skills</a></li>
+    </ul>
+
+    <nav class="pager">
+      <a class="pager-link" href="chapters/12-frontier-capstone.html"><span class="pager-label">← Chapter 12</span><span class="pager-title">Frontier &amp; Capstone</span></a>
+      <a class="pager-link pager-next" href="index.html"><span class="pager-label">Home →</span><span class="pager-title">Volume II Overview</span></a>
+    </nav>
+
+  </div></main>
+</div>
+
+<button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="assets/js/main.js"></script>
+<footer class="site-footer">
+  <p>Created by <strong>Duy Dao</strong><span class="sep">·</span><a href="https://github.com/xD4O" target="_blank" rel="noopener">GitHub @xD4O</a><span class="sep">·</span><a href="https://x.com/_cyr4x" target="_blank" rel="noopener">X @_cyr4x</a><span class="sep">·</span>AI Wiki · 2026</p>
+  <p class="star-cta">Found this useful? <a href="https://github.com/xD4O/AI-Wiki" target="_blank" rel="noopener">⭐ Star it on GitHub</a></p>
+</footer>
+</body>
+</html>

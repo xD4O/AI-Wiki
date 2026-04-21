@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 01 · From Chatbot to Agent — AI Wiki Vol II</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+
+<button id="sidebar-toggle" class="sidebar-toggle" aria-label="Toggle navigation">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+</button>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <svg class="brand-logo" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="brand-g2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#22d3ee"/><stop offset="1" stop-color="#7c5cff"/></linearGradient></defs>
+        <rect x="4" y="4" width="56" height="56" rx="14" fill="url(#brand-g2)"/>
+        <text x="32" y="42" text-anchor="middle" fill="white" font-size="28" font-family="sans-serif" font-weight="700">II</text>
+      </svg>
+      <div><p class="brand-title">AI Wiki · Vol II</p><p class="brand-sub">The Agentic Frontier</p></div>
+    </div>
+    <nav class="nav-section"><p class="nav-title">Getting Started</p><ul class="nav-list">
+      <li class="nav-item"><a href="../../index.html"><span class="nav-num">I</span> Vol I · Foundations</a></li>
+      <li class="nav-item"><a href="../index.html"><span class="nav-num">◆</span> Vol II · Agentic Frontier</a></li>
+      <li class="nav-item"><a href="../../AI-Wiki-III/index.html"><span class="nav-num">III</span> Vol III · Research Frontier</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part I · Using Models</p><ul class="nav-list">
+      <li class="nav-item"><a href="01-chatbot-to-agent.html"><span class="nav-num">01</span> Chatbot → Agent</a></li>
+      <li class="nav-item"><a href="02-ollama-lmstudio.html"><span class="nav-num">02</span> Local Models</a></li>
+      <li class="nav-item"><a href="03-prompting.html"><span class="nav-num">03</span> The Art of Prompting</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part II · Context &amp; Memory</p><ul class="nav-list">
+      <li class="nav-item"><a href="04-context-engineering.html"><span class="nav-num">04</span> Context Engineering</a></li>
+      <li class="nav-item"><a href="05-rag.html"><span class="nav-num">05</span> RAG</a></li>
+      <li class="nav-item"><a href="06-skills.html"><span class="nav-num">06</span> Skills</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part III · Agents</p><ul class="nav-list">
+      <li class="nav-item"><a href="07-mcp.html"><span class="nav-num">07</span> MCP Protocol</a></li>
+      <li class="nav-item"><a href="08-agent-architectures.html"><span class="nav-num">08</span> Agent Architectures</a></li>
+      <li class="nav-item"><a href="09-multi-agent.html"><span class="nav-num">09</span> Multi-Agent</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part IV · Production</p><ul class="nav-list">
+      <li class="nav-item"><a href="10-interpretability.html"><span class="nav-num">10</span> Interpretability</a></li>
+      <li class="nav-item"><a href="11-evals-safety-ops.html"><span class="nav-num">11</span> Evals &amp; Ops</a></li>
+      <li class="nav-item"><a href="12-frontier-capstone.html"><span class="nav-num">12</span> Frontier &amp; Capstone</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Appendix</p><ul class="nav-list">
+      <li class="nav-item"><a href="../resources.html"><span class="nav-num">§</span> Resources</a></li>
+      <li class="nav-item"><a href="../vocabulary.html"><span class="nav-num">A</span> Vocabulary</a></li>
+      <li class="nav-item"><a href="../use-cases.html"><span class="nav-num">★</span> Use Cases 2026</a></li>
+    </ul></nav>
+  </aside>
+
+  <main class="main"><div class="content">
+
+    <header class="chapter-header">
+      <div class="chapter-meta">
+        <span class="chapter-num">CHAPTER 01</span>
+        <span class="pill pill-accent">Part I · Using Models</span>
+      </div>
+      <h1>From Chatbot to Agent</h1>
+      <p class="chapter-lede">What do we actually mean by "agent"? We'll draw a spectrum from single-turn chat to autonomous worker, define the agent loop in one paragraph, and survey the apps already shipping on it.</p>
+    </header>
+
+    <div class="toc">
+      <h4>In this chapter</h4>
+      <ul>
+        <li><a href="#spectrum">1.1 The Agency Spectrum</a></li>
+        <li><a href="#levels">1.2 Levels of Agency</a></li>
+        <li><a href="#loop">1.3 The Agent Loop in One Paragraph</a></li>
+        <li><a href="#cases">1.4 Case Studies: Claude Code, Cursor, Devin, Replit</a></li>
+        <li><a href="#hard">1.5 What's Hard</a></li>
+        <li><a href="#code">1.6 A 20-Line ReAct Agent</a></li>
+        <li><a href="#resources">1.7 Further Reading</a></li>
+      </ul>
+    </div>
+
+    <h2 id="spectrum">1.1 The Agency Spectrum</h2>
+    <p>Call something an "agent" long enough and the word loses meaning. Useful definitions exist on a <em>spectrum</em>, not a binary. On one end: a chatbot that returns text and nothing else. On the other: a process that plans, executes, revises, and reports back hours later without supervision. Everything in between is a dial.</p>
+
+    <p>The dial has two knobs:</p>
+    <ul>
+      <li><strong>Authority</strong> — how many irreversible actions the system can take before checking with a human.</li>
+      <li><strong>Horizon</strong> — how long it runs between human inputs.</li>
+    </ul>
+
+    <p>A "yes/no" QA bot has zero authority and a horizon of one turn. A fully autonomous coding agent that opens PRs and merges them has high authority and a horizon of hours. The interesting design work is picking the right point on the dial for your task — <em>not</em> maximizing either axis.</p>
+
+    <div class="diagram">
+      <svg viewBox="0 0 900 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Agency spectrum">
+        <defs>
+          <linearGradient id="sp-g" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#22d3ee"/>
+            <stop offset="0.5" stop-color="#7c5cff"/>
+            <stop offset="1" stop-color="#ff5ca8"/>
+          </linearGradient>
+        </defs>
+        <rect x="60" y="90" width="780" height="14" rx="7" fill="url(#sp-g)"/>
+        <g font-family="sans-serif">
+          <g font-size="12" fill="#e6edf3" text-anchor="middle">
+            <text x="120" y="80">Chatbot</text>
+            <text x="300" y="80">Workflow</text>
+            <text x="480" y="80">Tool-using LLM</text>
+            <text x="660" y="80">Agent loop</text>
+            <text x="830" y="80">Autonomous worker</text>
+          </g>
+          <g font-size="11" fill="#9aa6b2" text-anchor="middle">
+            <text x="120" y="135">single-turn</text>
+            <text x="300" y="135">scripted steps</text>
+            <text x="480" y="135">model picks tool</text>
+            <text x="660" y="135">model picks next step</text>
+            <text x="830" y="135">runs for hours</text>
+          </g>
+          <g font-size="11" fill="#9aa6b2">
+            <text x="60" y="180">authority / horizon</text>
+            <text x="60" y="200" fill="#22d3ee">← low</text>
+            <text x="780" y="200" fill="#ff5ca8">high →</text>
+          </g>
+          <g font-size="10" fill="#6b7687" text-anchor="middle">
+            <text x="120" y="220">ChatGPT web, customer-support bots</text>
+            <text x="480" y="220">function calling, code interpreter</text>
+            <text x="830" y="220">Claude Code, Devin, Replit Agent</text>
+          </g>
+        </g>
+        <!-- ticks -->
+        <g stroke="#232a36" stroke-width="1">
+          <line x1="120" y1="85" x2="120" y2="110"/>
+          <line x1="300" y1="85" x2="300" y2="110"/>
+          <line x1="480" y1="85" x2="480" y2="110"/>
+          <line x1="660" y1="85" x2="660" y2="110"/>
+          <line x1="830" y1="85" x2="830" y2="110"/>
+        </g>
+      </svg>
+      <span class="diagram-caption">The agency spectrum. Most products in 2026 live between "tool-using LLM" and "agent loop."</span>
+    </div>
+
+    <h2 id="levels">1.2 Levels of Agency</h2>
+    <p>Anthropic's engineering team (and others) use a rough five-level taxonomy. Treat it as SAE-levels-for-self-driving, not physics.</p>
+
+    <table>
+      <thead><tr><th>Level</th><th>Name</th><th>Who decides?</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td>L0</td><td>Pure chat</td><td>Human does everything</td><td>ChatGPT conversation</td></tr>
+        <tr><td>L1</td><td>Tool-assisted</td><td>Human picks tool, model fills in</td><td>Code interpreter, Wolfram plugin</td></tr>
+        <tr><td>L2</td><td>Tool-using</td><td>Model picks tool; human reviews each step</td><td>ChatGPT with function calling</td></tr>
+        <tr><td>L3</td><td>Agent loop</td><td>Model plans &amp; executes many steps; human reviews at checkpoints</td><td>Claude Code, Cursor Agent</td></tr>
+        <tr><td>L4</td><td>Supervised autonomy</td><td>Model runs end-to-end; human reviews only the result</td><td>Devin, Replit Agent</td></tr>
+        <tr><td>L5</td><td>Open-ended autonomy</td><td>Model operates indefinitely with goals, not tasks</td><td>Not yet shipping reliably</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout warn">
+      <svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.7L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.7a2 2 0 00-3.4 0z"/></svg>
+      <div class="callout-body">
+        <div class="callout-title">L4+ is not where most of the value is</div>
+        <p>In 2026, most production value is captured at <strong>L3</strong>: a tight human-in-the-loop agent that saves the human 10× on well-scoped tasks. L5 systems that "just go off and do stuff" still burn money on tangents. Agency is a tool, not a goal.</p>
+      </div>
+    </div>
+
+    <h2 id="loop">1.3 The Agent Loop in One Paragraph</h2>
+    <p>An agent is a loop. At each step the model sees the history (goal, past actions, past observations), emits either a <em>tool call</em> or a <em>final answer</em>, and the runtime executes the tool and appends the result to the history. The loop terminates when the model says it's done, when a budget is exhausted, or when a human interrupts. That's it. Everything else — planning, reflection, multi-agent orchestration — is a pattern on top of that loop.</p>
+
+    <div class="diagram">
+      <svg viewBox="0 0 900 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The agent loop">
+        <defs><marker id="al-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7c5cff"/></marker></defs>
+        <g font-family="sans-serif">
+          <!-- Think -->
+          <rect x="80" y="120" width="150" height="80" rx="12" fill="rgba(124,92,255,0.15)" stroke="#7c5cff" stroke-width="2"/>
+          <text x="155" y="155" text-anchor="middle" fill="#e6edf3" font-size="16" font-weight="700">1. Think</text>
+          <text x="155" y="178" text-anchor="middle" fill="#9aa6b2" font-size="11">model reads history,</text>
+          <text x="155" y="192" text-anchor="middle" fill="#9aa6b2" font-size="11">picks next action</text>
+
+          <!-- Act -->
+          <rect x="300" y="120" width="150" height="80" rx="12" fill="rgba(34,211,238,0.15)" stroke="#22d3ee" stroke-width="2"/>
+          <text x="375" y="155" text-anchor="middle" fill="#e6edf3" font-size="16" font-weight="700">2. Act</text>
+          <text x="375" y="178" text-anchor="middle" fill="#9aa6b2" font-size="11">runtime executes</text>
+          <text x="375" y="192" text-anchor="middle" fill="#9aa6b2" font-size="11">the tool call</text>
+
+          <!-- Observe -->
+          <rect x="520" y="120" width="150" height="80" rx="12" fill="rgba(52,211,153,0.15)" stroke="#34d399" stroke-width="2"/>
+          <text x="595" y="155" text-anchor="middle" fill="#e6edf3" font-size="16" font-weight="700">3. Observe</text>
+          <text x="595" y="178" text-anchor="middle" fill="#9aa6b2" font-size="11">append result to</text>
+          <text x="595" y="192" text-anchor="middle" fill="#9aa6b2" font-size="11">history</text>
+
+          <!-- Done? -->
+          <polygon points="740,160 810,120 880,160 810,200" fill="rgba(251,191,36,0.15)" stroke="#fbbf24" stroke-width="2"/>
+          <text x="810" y="157" text-anchor="middle" fill="#e6edf3" font-size="13" font-weight="700">done?</text>
+          <text x="810" y="172" text-anchor="middle" fill="#9aa6b2" font-size="11">model says so</text>
+
+          <!-- arrows -->
+          <g stroke="#7c5cff" stroke-width="2" fill="none">
+            <path d="M 230 160 L 298 160" marker-end="url(#al-a)"/>
+            <path d="M 450 160 L 518 160" marker-end="url(#al-a)"/>
+            <path d="M 670 160 L 738 160" marker-end="url(#al-a)"/>
+          </g>
+          <!-- loop back -->
+          <path d="M 810 200 L 810 260 L 155 260 L 155 200" stroke="#7c5cff" stroke-width="1.5" fill="none" stroke-dasharray="5 4" marker-end="url(#al-a)"/>
+          <text x="482" y="278" text-anchor="middle" fill="#9aa6b2" font-size="11" font-style="italic">loop until done or budget exhausted</text>
+
+          <!-- final -->
+          <rect x="720" y="40" width="160" height="44" rx="10" fill="#161b24" stroke="#34d399" stroke-width="1.5"/>
+          <text x="800" y="66" text-anchor="middle" fill="#34d399" font-size="12" font-weight="700">return answer</text>
+          <path d="M 810 120 L 810 88" stroke="#34d399" stroke-width="1.5" fill="none" marker-end="url(#al-a)"/>
+        </g>
+      </svg>
+      <span class="diagram-caption">The canonical agent loop. ReAct, plan-execute, Reflexion — all variations on this skeleton.</span>
+    </div>
+
+    <h2 id="cases">1.4 Case Studies</h2>
+
+    <h3>Claude Code</h3>
+    <p>A terminal-native coding agent. Tools are file I/O, bash, web fetch, plus MCP servers the user configures. Typical run: 20–200 tool calls over 2–10 minutes. Human approves write-type actions by default. Ships as a CLI, VS Code / JetBrains extensions, and a web/iOS app as of 2026.</p>
+
+    <h3>Cursor &amp; Cursor Agent</h3>
+    <p>An editor-first experience. The inline "tab" completion is L1; the Composer / Agent modes are L3. Strong model routing (cheap model for completions, frontier model for the agent loop).</p>
+
+    <h3>Devin</h3>
+    <p>Cognition's agent. Aimed at L4 — give it a Linear ticket, come back to a PR. Uses a sandboxed VM so it can run servers, browsers, and arbitrary code. Works best on narrow, well-specified tasks.</p>
+
+    <h3>Replit Agent</h3>
+    <p>Full-stack app generator inside Replit's cloud IDE. The value prop is less "better code" and more "zero-to-deployed in five minutes" — the agent controls the build, deploy, and DB provisioning too.</p>
+
+    <h3>Custom agents</h3>
+    <p>Most production agents are <em>domain-specific</em>: a support-ticket triager that can read CRM data and escalate, a data-analyst agent that lives in a Jupyter kernel, a code-review bot that watches one repo. These win because their tool surface is small and their evals are concrete.</p>
+
+    <h2 id="hard">1.5 What's Hard</h2>
+    <table>
+      <thead><tr><th>Problem</th><th>What breaks</th><th>Current best practice</th></tr></thead>
+      <tbody>
+        <tr><td>Long-horizon planning</td><td>Model forgets early steps; drifts off goal</td><td>Rolling summaries (Ch 04), explicit planner models (Ch 08)</td></tr>
+        <tr><td>Error recovery</td><td>One bad tool call cascades; model doubles down</td><td>Reflexion loops, checkpoints, human-in-the-loop</td></tr>
+        <tr><td>Memory</td><td>Context window overflows or loses focus</td><td>Compaction, retrieval, external memory stores</td></tr>
+        <tr><td>Cost</td><td>$50 agent runs for $5 worth of output</td><td>Prompt caching, model routing, hard budgets</td></tr>
+        <tr><td>Security</td><td>Prompt injection, confused deputy, exfil</td><td>Scoped tool permissions, MCP auth (Ch 07), allow-lists</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="code">1.6 A 20-Line ReAct Agent</h2>
+    <p>Here is the entire agent loop — nothing fancy, no framework, just the Anthropic SDK. Read this and you understand 80% of what every "agent framework" is doing.</p>
+
+<pre><code class="language-python">from anthropic import Anthropic
+
+client = Anthropic()
+TOOLS = [{
+    "name": "bash",
+    "description": "Run a shell command and return stdout/stderr.",
+    "input_schema": {"type": "object", "properties": {"cmd": {"type": "string"}}, "required": ["cmd"]},
+}]
+
+def run_tool(name, inp):
+    import subprocess
+    return subprocess.run(inp["cmd"], shell=True, capture_output=True, text=True).stdout
+
+def agent(goal, max_turns=12):
+    messages = [{"role": "user", "content": goal}]
+    for _ in range(max_turns):
+        r = client.messages.create(model="claude-opus-4-7", max_tokens=1024, tools=TOOLS, messages=messages)
+        messages.append({"role": "assistant", "content": r.content})
+        if r.stop_reason == "end_turn":
+            return next(b.text for b in r.content if b.type == "text")
+        tool_uses = [b for b in r.content if b.type == "tool_use"]
+        messages.append({"role": "user", "content": [
+            {"type": "tool_result", "tool_use_id": t.id, "content": run_tool(t.name, t.input)}
+            for t in tool_uses
+        ]})
+    return "budget exhausted"
+
+print(agent("How many Python files are in this directory? Use bash to find out."))
+</code></pre>
+
+    <div class="callout note">
+      <svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+      <div class="callout-body">
+        <div class="callout-title">Same thing with a local model</div>
+        <p>Swap <code>Anthropic()</code> for an OpenAI-compatible client pointed at Ollama's <code>localhost:11434/v1</code> — with a tool-calling model like <code>qwen2.5:32b</code>, <code>llama3.3:70b</code>, or <code>deepseek-r1:32b</code>, the same loop runs locally. See <a href="02-ollama-lmstudio.html">Chapter 02</a>.</p>
+      </div>
+    </div>
+
+    <h2 id="resources">1.7 Further Reading</h2>
+    <ul class="ref-list">
+      <li><strong>Anthropic · Building effective agents</strong> — <a href="https://www.anthropic.com/engineering/building-effective-agents">anthropic.com/engineering/building-effective-agents</a> — the canonical 2024 write-up on agent design patterns.</li>
+      <li><strong>Simon Willison · "Agents"</strong> — <a href="https://simonwillison.net/tags/agents/">simonwillison.net/tags/agents</a> — running commentary on what's actually working.</li>
+      <li><strong>Lilian Weng · "LLM Powered Autonomous Agents"</strong> — <a href="https://lilianweng.github.io/posts/2023-06-23-agent/">lilianweng.github.io</a> — the foundational survey.</li>
+      <li><strong>ReAct paper</strong> — Yao et al., <a href="https://arxiv.org/abs/2210.03629">arXiv:2210.03629</a>.</li>
+      <li><strong>SWE-bench leaderboard</strong> — <a href="https://www.swebench.com/">swebench.com</a> — the de-facto benchmark for coding agents.</li>
+      <li><strong>τ-bench</strong> — Sierra's tool-use / agent-policy benchmark, <a href="https://arxiv.org/abs/2406.12045">arXiv:2406.12045</a>.</li>
+      <li><strong>Hugging Face · smolagents</strong> — <a href="https://huggingface.co/docs/smolagents">huggingface.co/docs/smolagents</a> — minimal open-source agent framework, great for reading the source.</li>
+    </ul>
+
+    <h3>People to follow</h3>
+    <ul>
+      <li><strong>Simon Willison</strong> — <a href="https://simonwillison.net/">simonwillison.net</a>, <a href="https://twitter.com/simonw">@simonw</a></li>
+      <li><strong>Andrej Karpathy</strong> — <a href="https://twitter.com/karpathy">@karpathy</a> — big-picture framing.</li>
+      <li><strong>Swyx / Latent Space</strong> — <a href="https://www.latent.space/">latent.space</a> — podcast + newsletter on the AI eng stack.</li>
+      <li><strong>Nathan Lambert · Interconnects</strong> — <a href="https://www.interconnects.ai/">interconnects.ai</a>.</li>
+      <li><strong>Hamel Husain</strong> — <a href="https://hamel.dev/">hamel.dev</a> — pragmatic LLM-eng notes.</li>
+    </ul>
+
+    <nav class="pager">
+      <a class="pager-link" href="../index.html"><span class="pager-label">← Volume II Home</span><span class="pager-title">Overview</span></a>
+      <a class="pager-link pager-next" href="02-ollama-lmstudio.html"><span class="pager-label">Next →</span><span class="pager-title">Local Models: Ollama &amp; LM Studio</span></a>
+    </nav>
+
+  </div></main>
+</div>
+
+<button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="../assets/js/main.js"></script>
+<footer class="site-footer">
+  <p>Created by <strong>Duy Dao</strong><span class="sep">·</span><a href="https://github.com/xD4O" target="_blank" rel="noopener">GitHub @xD4O</a><span class="sep">·</span><a href="https://x.com/_cyr4x" target="_blank" rel="noopener">X @_cyr4x</a><span class="sep">·</span>AI Wiki · 2026</p>
+  <p class="star-cta">Found this useful? <a href="https://github.com/xD4O/AI-Wiki" target="_blank" rel="noopener">⭐ Star it on GitHub</a></p>
+</footer>
+</body>
+</html>

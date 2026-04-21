@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 02 · Local Models: Ollama &amp; LM Studio — AI Wiki Vol II</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+
+<button id="sidebar-toggle" class="sidebar-toggle" aria-label="Toggle navigation">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+</button>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <svg class="brand-logo" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="brand-g2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#22d3ee"/><stop offset="1" stop-color="#7c5cff"/></linearGradient></defs>
+        <rect x="4" y="4" width="56" height="56" rx="14" fill="url(#brand-g2)"/>
+        <text x="32" y="42" text-anchor="middle" fill="white" font-size="28" font-family="sans-serif" font-weight="700">II</text>
+      </svg>
+      <div><p class="brand-title">AI Wiki · Vol II</p><p class="brand-sub">The Agentic Frontier</p></div>
+    </div>
+    <nav class="nav-section"><p class="nav-title">Getting Started</p><ul class="nav-list">
+      <li class="nav-item"><a href="../../index.html"><span class="nav-num">I</span> Vol I · Foundations</a></li>
+      <li class="nav-item"><a href="../index.html"><span class="nav-num">◆</span> Vol II · Agentic Frontier</a></li>
+      <li class="nav-item"><a href="../../AI-Wiki-III/index.html"><span class="nav-num">III</span> Vol III · Research Frontier</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part I · Using Models</p><ul class="nav-list">
+      <li class="nav-item"><a href="01-chatbot-to-agent.html"><span class="nav-num">01</span> Chatbot → Agent</a></li>
+      <li class="nav-item"><a href="02-ollama-lmstudio.html"><span class="nav-num">02</span> Local Models</a></li>
+      <li class="nav-item"><a href="03-prompting.html"><span class="nav-num">03</span> The Art of Prompting</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part II · Context &amp; Memory</p><ul class="nav-list">
+      <li class="nav-item"><a href="04-context-engineering.html"><span class="nav-num">04</span> Context Engineering</a></li>
+      <li class="nav-item"><a href="05-rag.html"><span class="nav-num">05</span> RAG</a></li>
+      <li class="nav-item"><a href="06-skills.html"><span class="nav-num">06</span> Skills</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part III · Agents</p><ul class="nav-list">
+      <li class="nav-item"><a href="07-mcp.html"><span class="nav-num">07</span> MCP Protocol</a></li>
+      <li class="nav-item"><a href="08-agent-architectures.html"><span class="nav-num">08</span> Agent Architectures</a></li>
+      <li class="nav-item"><a href="09-multi-agent.html"><span class="nav-num">09</span> Multi-Agent</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part IV · Production</p><ul class="nav-list">
+      <li class="nav-item"><a href="10-interpretability.html"><span class="nav-num">10</span> Interpretability</a></li>
+      <li class="nav-item"><a href="11-evals-safety-ops.html"><span class="nav-num">11</span> Evals &amp; Ops</a></li>
+      <li class="nav-item"><a href="12-frontier-capstone.html"><span class="nav-num">12</span> Frontier &amp; Capstone</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Appendix</p><ul class="nav-list">
+      <li class="nav-item"><a href="../resources.html"><span class="nav-num">§</span> Resources</a></li>
+      <li class="nav-item"><a href="../vocabulary.html"><span class="nav-num">A</span> Vocabulary</a></li>
+      <li class="nav-item"><a href="../use-cases.html"><span class="nav-num">★</span> Use Cases 2026</a></li>
+    </ul></nav>
+  </aside>
+
+  <main class="main"><div class="content">
+
+    <header class="chapter-header">
+      <div class="chapter-meta">
+        <span class="chapter-num">CHAPTER 02</span>
+        <span class="pill pill-accent">Part I · Using Models</span>
+      </div>
+      <h1>Local Models: Ollama &amp; LM Studio</h1>
+      <p class="chapter-lede">Run capable open-weight models on your own hardware. We'll cover VRAM math, quantization, Ollama, LM Studio, and when to graduate to vLLM.</p>
+    </header>
+
+    <div class="toc">
+      <h4>In this chapter</h4>
+      <ul>
+        <li><a href="#why">2.1 Why Local</a></li>
+        <li><a href="#hw">2.2 Hardware Reality Check — VRAM Math</a></li>
+        <li><a href="#formats">2.3 Model Formats — GGUF, AWQ, MLX</a></li>
+        <li><a href="#ollama">2.4 Ollama Deep Dive</a></li>
+        <li><a href="#lmstudio">2.5 LM Studio Deep Dive</a></li>
+        <li><a href="#graduate">2.6 When You Outgrow Ollama: vLLM, SGLang, TGI</a></li>
+        <li><a href="#routing">2.7 Routing Between Local and Frontier</a></li>
+        <li><a href="#resources">2.8 Further Reading</a></li>
+      </ul>
+    </div>
+
+    <h2 id="why">2.1 Why Local</h2>
+    <p>There are four reasons to run a model on your own hardware:</p>
+    <ul>
+      <li><strong>Privacy.</strong> Medical notes, legal documents, source code — data that cannot leave the machine.</li>
+      <li><strong>Cost.</strong> A local 70B model running 24/7 costs electricity. A comparable API spend is four figures a month.</li>
+      <li><strong>Latency.</strong> No round-trip to a data centre. First-token latency under 100 ms is achievable.</li>
+      <li><strong>No rate limits, no outages.</strong> When your workflow depends on 10,000 calls at 3 a.m., you own the throughput.</li>
+    </ul>
+    <p>Open-weight models have closed most of the quality gap on non-frontier tasks. By April 2026, a well-quantized 32B–70B model is routinely within a few points of the best closed models on coding, summarization, and structured extraction.</p>
+
+    <h2 id="hw">2.2 Hardware Reality Check — VRAM Math</h2>
+    <p>The first question every would-be local-LLM user asks: <em>"will it fit?"</em> The formula is:</p>
+    <p style="text-align:center">$$\text{VRAM (GB)} \approx \text{params (B)} \times \dfrac{\text{bits}}{8} + \text{overhead}$$</p>
+    <p>"Overhead" is 1–3 GB for KV cache at small contexts, more as context grows. A rough table:</p>
+
+    <table>
+      <thead><tr><th>Model</th><th>Params</th><th>FP16 (no quant)</th><th>Q8</th><th>Q4_K_M</th><th>Q3_K_S</th></tr></thead>
+      <tbody>
+        <tr><td>Llama 3 8B</td><td>8B</td><td>16 GB</td><td>8 GB</td><td>4.8 GB</td><td>3.6 GB</td></tr>
+        <tr><td>Qwen 2.5 32B</td><td>32B</td><td>64 GB</td><td>32 GB</td><td>19 GB</td><td>14 GB</td></tr>
+        <tr><td>Llama 3.3 70B</td><td>70B</td><td>140 GB</td><td>70 GB</td><td>42 GB</td><td>31 GB</td></tr>
+        <tr><td>DeepSeek-V3 671B (MoE, ~37B active)</td><td>671B total</td><td>1.3 TB</td><td>671 GB</td><td>~400 GB</td><td>~300 GB</td></tr>
+      </tbody>
+    </table>
+
+    <div class="diagram">
+      <svg viewBox="0 0 900 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="VRAM fit chart">
+        <g font-family="sans-serif">
+          <text x="450" y="30" text-anchor="middle" fill="#e6edf3" font-size="14" font-weight="700">Quantized weight size vs. consumer &amp; workstation VRAM</text>
+          <!-- VRAM bands -->
+          <g>
+            <rect x="80" y="60" width="740" height="24" fill="rgba(52,211,153,0.12)" stroke="#34d399" stroke-width="1"/>
+            <text x="88" y="77" fill="#34d399" font-size="11" font-weight="600">16 GB (RTX 4060 Ti / 4080 laptop / M3 Pro)</text>
+            <rect x="80" y="90" width="740" height="24" fill="rgba(34,211,238,0.12)" stroke="#22d3ee" stroke-width="1"/>
+            <text x="88" y="107" fill="#22d3ee" font-size="11" font-weight="600">24 GB (RTX 3090 / 4090 / 5090)</text>
+            <rect x="80" y="120" width="740" height="24" fill="rgba(124,92,255,0.12)" stroke="#7c5cff" stroke-width="1"/>
+            <text x="88" y="137" fill="#7c5cff" font-size="11" font-weight="600">48 GB (2× 4090, A6000)</text>
+            <rect x="80" y="150" width="740" height="24" fill="rgba(251,191,36,0.12)" stroke="#fbbf24" stroke-width="1"/>
+            <text x="88" y="167" fill="#fbbf24" font-size="11" font-weight="600">96–128 GB (DGX Spark, M3 Ultra Mac Studio, 2× A6000)</text>
+            <rect x="80" y="180" width="740" height="24" fill="rgba(255,92,168,0.12)" stroke="#ff5ca8" stroke-width="1"/>
+            <text x="88" y="197" fill="#ff5ca8" font-size="11" font-weight="600">≥ 640 GB (8× H200, enterprise)</text>
+          </g>
+          <!-- Model dots -->
+          <g font-size="10" fill="#e6edf3">
+            <circle cx="180" cy="72" r="5" fill="#34d399"/><text x="190" y="76">Llama 3 8B Q4</text>
+            <circle cx="280" cy="72" r="5" fill="#34d399"/><text x="290" y="76">Phi-4 14B Q4</text>
+            <circle cx="430" cy="102" r="5" fill="#22d3ee"/><text x="440" y="106">Qwen 2.5 32B Q4</text>
+            <circle cx="200" cy="132" r="5" fill="#7c5cff"/><text x="210" y="136">Llama 3.3 70B Q4</text>
+            <circle cx="330" cy="162" r="5" fill="#fbbf24"/><text x="340" y="166">Llama 3.3 70B Q8</text>
+            <circle cx="580" cy="192" r="5" fill="#ff5ca8"/><text x="590" y="196">DeepSeek-V3 / Kimi K2 Q4</text>
+          </g>
+          <text x="450" y="240" text-anchor="middle" fill="#9aa6b2" font-size="11">Lower quantization → smaller VRAM, small quality cost. Q4_K_M is the default sweet spot.</text>
+          <text x="450" y="260" text-anchor="middle" fill="#9aa6b2" font-size="11">KV cache grows roughly 0.5 MB per token for a 70B model at FP16 — add 1–4 GB for long contexts.</text>
+        </g>
+      </svg>
+      <span class="diagram-caption">What fits where. Quantization is almost free quality-wise down to Q4; below that, you start to feel it.</span>
+    </div>
+
+    <h2 id="formats">2.3 Model Formats</h2>
+    <table>
+      <thead><tr><th>Format</th><th>Ecosystem</th><th>When to use</th></tr></thead>
+      <tbody>
+        <tr><td><strong>GGUF</strong></td><td>llama.cpp, Ollama, LM Studio</td><td>Default for local CPU+GPU inference. Huge quantization flexibility (Q2 → F16).</td></tr>
+        <tr><td><strong>AWQ</strong></td><td>vLLM, TGI</td><td>Activation-aware quantization. Faster than GGUF on GPUs at the same bit-rate.</td></tr>
+        <tr><td><strong>GPTQ</strong></td><td>vLLM, ExLlamaV2</td><td>Post-training 4-bit quant. Older; AWQ has mostly replaced it.</td></tr>
+        <tr><td><strong>MLX</strong></td><td>Apple Silicon only</td><td>Fast on M-series Macs via unified memory. LM Studio defaults to MLX on Mac.</td></tr>
+        <tr><td><strong>safetensors (FP16/BF16)</strong></td><td>Transformers, vLLM</td><td>Full precision. Use for training, LoRA fine-tuning, serving via vLLM.</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="ollama">2.4 Ollama Deep Dive</h2>
+    <p>Ollama is the easiest way to get a local LLM running. It bundles llama.cpp under an OpenAI-compatible HTTP server with a CLI frontend.</p>
+
+<pre><code class="language-bash"># install (macOS / Linux)
+curl -fsSL https://ollama.com/install.sh | sh
+
+# pull a model (automatically picks Q4_K_M if you don't specify)
+ollama pull llama3.3:70b
+ollama pull qwen2.5:32b
+ollama pull deepseek-r1:32b
+
+# run a one-shot
+ollama run llama3.3:70b "What's the capital of France?"
+
+# list what's installed
+ollama list
+
+# watch VRAM
+ollama ps</code></pre>
+
+    <h3>Modelfile — the little-known power feature</h3>
+    <p>A <code>Modelfile</code> lets you bake a system prompt, sampling parameters, and a template into a named model so every caller gets the same behavior.</p>
+
+<pre><code class="language-bash"># ./Modelfile
+FROM llama3.3:70b
+
+PARAMETER temperature 0.2
+PARAMETER num_ctx 16384
+
+SYSTEM """
+You are a senior Python code reviewer. Respond in bullet points.
+Flag security issues with 🚨 and style issues with 🎨.
+"""</code></pre>
+
+<pre><code class="language-bash">ollama create pyreviewer -f ./Modelfile
+ollama run pyreviewer "review this: import pickle; pickle.loads(user_input)"</code></pre>
+
+    <h3>HTTP API (OpenAI-compatible)</h3>
+
+<pre><code class="language-python">from openai import OpenAI
+
+client = OpenAI(base_url="http://localhost:11434/v1", api_key="ollama")
+
+r = client.chat.completions.create(
+    model="qwen2.5:32b",
+    messages=[{"role": "user", "content": "factorial of 10"}],
+)
+print(r.choices[0].message.content)
+
+# Tool calling works too — same schema as OpenAI
+r = client.chat.completions.create(
+    model="llama3.3:70b",
+    messages=[{"role": "user", "content": "what is 23 * 47?"}],
+    tools=[{
+        "type": "function",
+        "function": {
+            "name": "multiply",
+            "parameters": {"type": "object",
+                           "properties": {"a": {"type": "number"}, "b": {"type": "number"}}},
+        }
+    }],
+)</code></pre>
+
+    <h3>Embeddings from the same daemon</h3>
+<pre><code class="language-python">r = client.embeddings.create(model="nomic-embed-text", input="hello world")
+print(len(r.data[0].embedding))  # 768</code></pre>
+
+    <h2 id="lmstudio">2.5 LM Studio Deep Dive</h2>
+    <p>LM Studio is a desktop GUI that wraps llama.cpp (and MLX on Mac). Aimed at people who want a "ChatGPT-but-local" experience first, and an API server second. Strengths:</p>
+    <ul>
+      <li><strong>Model discovery.</strong> Search HF from inside the app; it filters by what fits your hardware.</li>
+      <li><strong>Playground UI.</strong> Fiddle with system prompts, temperature, and top-p live.</li>
+      <li><strong>OpenAI-compatible server.</strong> Flip the toggle and you have <code>localhost:1234/v1</code>.</li>
+      <li><strong>MLX first-class on Apple Silicon.</strong> Substantially faster than GGUF on M-series for the same model.</li>
+    </ul>
+
+    <div class="callout tip">
+      <svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/></svg>
+      <div class="callout-body">
+        <div class="callout-title">Ollama or LM Studio?</div>
+        <p>Pick <strong>Ollama</strong> if you live in the terminal and want CLI + API. Pick <strong>LM Studio</strong> if you prefer a GUI, are on a Mac (MLX), or want to browse/try models before committing.</p>
+      </div>
+    </div>
+
+    <h2 id="graduate">2.6 When You Outgrow Ollama</h2>
+    <table>
+      <thead><tr><th>Tool</th><th>Use when…</th><th>Key feature</th></tr></thead>
+      <tbody>
+        <tr><td><strong>llama.cpp</strong></td><td>You want maximum control over quantization, speculative decoding, CPU offload</td><td>The library everything else is built on</td></tr>
+        <tr><td><strong>vLLM</strong></td><td>You're serving multiple users — continuous batching gives 10×+ throughput</td><td>PagedAttention, prefix caching, OpenAI-compatible server</td></tr>
+        <tr><td><strong>SGLang</strong></td><td>You're doing structured generation, RAG, or JSON-heavy workloads</td><td>RadixAttention, front-end for complex prompts</td></tr>
+        <tr><td><strong>TGI</strong></td><td>You're deploying on Hugging Face Inference Endpoints</td><td>Production Rust server, streaming, quantization</td></tr>
+        <tr><td><strong>MLX-LM</strong></td><td>You're on Apple Silicon and want raw speed</td><td>Pure-Python, unified memory, LoRA training</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="routing">2.7 Routing Between Local and Frontier</h2>
+    <p>A common pattern in production: use a <em>local</em> model for the 95% of requests that are easy, and escalate to a <em>frontier</em> API for the hard ones. Because Ollama and LM Studio speak OpenAI-compatible JSON, routing is a one-line swap of <code>base_url</code>.</p>
+
+<pre><code class="language-python">def route(task_difficulty: str):
+    if task_difficulty == "easy":
+        return OpenAI(base_url="http://localhost:11434/v1", api_key="ollama"), "qwen2.5:32b"
+    return Anthropic(), "claude-opus-4-7"</code></pre>
+
+    <p>The "difficulty" signal can come from a small classifier, a rule (e.g., "any query involving private data stays local"), or from the local model itself — it returns a confidence score and we escalate on low confidence.</p>
+
+    <h3>Sidebar: DGX Spark notes</h3>
+    <p>For owners of the Nvidia DGX Spark (Grace-Blackwell desktop, 128 GB unified): sweet spot is Llama 3.3 70B at Q6, Qwen 2.5 32B at FP16, or DeepSeek-V3 at Q3. Ollama runs out of the box; vLLM needs the CUDA 12.5+ wheel. Thermally the Spark is quiet at steady state but throttles during long generations — set a fan curve.</p>
+
+    <h3>Sidebar: Apple Silicon path</h3>
+    <p>On an M3/M4 Max or Ultra: prefer <strong>LM Studio with MLX</strong> over Ollama. MLX is 30–60% faster than GGUF at the same quant level thanks to Metal + unified memory. For 70B at Q4 you want 64 GB RAM minimum; 128 GB is comfortable.</p>
+
+    <h2 id="resources">2.8 Further Reading</h2>
+    <ul>
+      <li><strong>Ollama</strong> — <a href="https://ollama.com/">ollama.com</a>, <a href="https://github.com/ollama/ollama">github.com/ollama/ollama</a>, <a href="https://ollama.com/library">library</a></li>
+      <li><strong>LM Studio</strong> — <a href="https://lmstudio.ai/">lmstudio.ai</a>, <a href="https://lmstudio.ai/docs">docs</a></li>
+      <li><strong>llama.cpp</strong> — <a href="https://github.com/ggerganov/llama.cpp">github.com/ggerganov/llama.cpp</a></li>
+      <li><strong>vLLM</strong> — <a href="https://docs.vllm.ai/">docs.vllm.ai</a>, <a href="https://github.com/vllm-project/vllm">github.com/vllm-project/vllm</a></li>
+      <li><strong>MLX &amp; MLX-LM</strong> — <a href="https://github.com/ml-explore/mlx">github.com/ml-explore/mlx</a>, <a href="https://github.com/ml-explore/mlx-examples">mlx-examples</a></li>
+      <li><strong>SGLang</strong> — <a href="https://github.com/sgl-project/sglang">github.com/sgl-project/sglang</a></li>
+    </ul>
+
+    <h3>Hugging Face — flagship open-weight models (April 2026)</h3>
+    <ul>
+      <li><a href="https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct">meta-llama/Llama-3.3-70B-Instruct</a></li>
+      <li><a href="https://huggingface.co/Qwen/Qwen2.5-72B-Instruct">Qwen/Qwen2.5-72B-Instruct</a> · <a href="https://huggingface.co/Qwen/QwQ-32B">Qwen/QwQ-32B</a> (reasoning)</li>
+      <li><a href="https://huggingface.co/deepseek-ai/DeepSeek-V3">deepseek-ai/DeepSeek-V3</a> · <a href="https://huggingface.co/deepseek-ai/DeepSeek-R1">deepseek-ai/DeepSeek-R1</a></li>
+      <li><a href="https://huggingface.co/mistralai/Mistral-Large-Instruct-2411">mistralai/Mistral-Large-Instruct</a></li>
+      <li><a href="https://huggingface.co/google/gemma-3-27b-it">google/gemma-3-27b-it</a></li>
+      <li><a href="https://huggingface.co/microsoft/phi-4">microsoft/phi-4</a></li>
+      <li><strong>Leaderboards:</strong> <a href="https://huggingface.co/spaces/open-llm-leaderboard/open_llm_leaderboard">Open LLM Leaderboard</a> · <a href="https://lmarena.ai/">LMSYS Chatbot Arena</a> · <a href="https://artificialanalysis.ai/">Artificial Analysis</a></li>
+    </ul>
+
+    <h3>People to follow</h3>
+    <ul>
+      <li><strong>Georgi Gerganov</strong> (<a href="https://twitter.com/ggerganov">@ggerganov</a>) — creator of llama.cpp</li>
+      <li><strong>Awni Hannun</strong> (<a href="https://twitter.com/awnihannun">@awnihannun</a>) — MLX lead</li>
+      <li><strong>Hugging Face blog</strong> — <a href="https://huggingface.co/blog">huggingface.co/blog</a></li>
+      <li><strong>Tim Dettmers</strong> — quantization research, <a href="https://timdettmers.com/">timdettmers.com</a></li>
+    </ul>
+
+    <nav class="pager">
+      <a class="pager-link" href="01-chatbot-to-agent.html"><span class="pager-label">← Previous</span><span class="pager-title">From Chatbot to Agent</span></a>
+      <a class="pager-link pager-next" href="03-prompting.html"><span class="pager-label">Next →</span><span class="pager-title">The Art of Prompting</span></a>
+    </nav>
+
+  </div></main>
+</div>
+
+<button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="../assets/js/main.js"></script>
+<footer class="site-footer">
+  <p>Created by <strong>Duy Dao</strong><span class="sep">·</span><a href="https://github.com/xD4O" target="_blank" rel="noopener">GitHub @xD4O</a><span class="sep">·</span><a href="https://x.com/_cyr4x" target="_blank" rel="noopener">X @_cyr4x</a><span class="sep">·</span>AI Wiki · 2026</p>
+  <p class="star-cta">Found this useful? <a href="https://github.com/xD4O/AI-Wiki" target="_blank" rel="noopener">⭐ Star it on GitHub</a></p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 06 · Generative World Models — AI Wiki Vol III</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+
+<button id="sidebar-toggle" class="sidebar-toggle"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg></button>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <svg class="brand-logo" viewBox="0 0 64 64"><defs><linearGradient id="bg3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff5ca8"/><stop offset="1" stop-color="#7c5cff"/></linearGradient></defs><rect x="2" y="2" width="60" height="60" rx="14" fill="url(#bg3)"/><text x="32" y="42" text-anchor="middle" fill="white" font-size="26" font-weight="800">III</text></svg>
+      <div><p class="brand-title">AI Wiki · Vol III</p><p class="brand-sub">The Research Frontier</p></div>
+    </div>
+    <nav class="nav-section"><p class="nav-title">Getting Started</p><ul class="nav-list">
+      <li class="nav-item"><a href="../../index.html"><span class="nav-num">I</span> Vol I · Foundations</a></li>
+      <li class="nav-item"><a href="../../AI-Wiki-II/index.html"><span class="nav-num">II</span> Vol II · Agentic Frontier</a></li>
+      <li class="nav-item"><a href="../index.html"><span class="nav-num">◆</span> Vol III · Research Frontier</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part I · Architecture</p><ul class="nav-list"><li class="nav-item"><a href="01-post-transformer.html"><span class="nav-num">01</span> Past Attention</a></li><li class="nav-item"><a href="02-mamba-ssm.html"><span class="nav-num">02</span> Mamba &amp; SSMs</a></li><li class="nav-item"><a href="03-blt-tokenization.html"><span class="nav-num">03</span> BLT</a></li><li class="nav-item"><a href="04-sparse-revolution.html"><span class="nav-num">04</span> Sparse Revolution</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part II · World Models</p><ul class="nav-list"><li class="nav-item"><a href="05-jepa.html"><span class="nav-num">05</span> JEPA</a></li><li class="nav-item"><a href="06-generative-world-models.html"><span class="nav-num">06</span> Sora · Veo · Genie</a></li><li class="nav-item"><a href="07-embodied-foundation.html"><span class="nav-num">07</span> Embodied</a></li><li class="nav-item"><a href="08-model-based-rl.html"><span class="nav-num">08</span> MB-RL</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part III · Reasoning</p><ul class="nav-list"><li class="nav-item"><a href="09-rlvr.html"><span class="nav-num">09</span> RL Verifiable</a></li><li class="nav-item"><a href="10-inference-compute.html"><span class="nav-num">10</span> Inference Compute</a></li><li class="nav-item"><a href="11-memory-titans.html"><span class="nav-num">11</span> Memory · Titans</a></li><li class="nav-item"><a href="12-faithfulness.html"><span class="nav-num">12</span> Faithfulness</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part IV · Systems &amp; Control</p><ul class="nav-list"><li class="nav-item"><a href="13-meta-prompting.html"><span class="nav-num">13</span> Meta-Prompting</a></li><li class="nav-item"><a href="14-agentic-orchestration.html"><span class="nav-num">14</span> Orchestration</a></li><li class="nav-item"><a href="15-deterministic-gates.html"><span class="nav-num">15</span> Deterministic Gates</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part V · Open Problems</p><ul class="nav-list"><li class="nav-item"><a href="16-interp-frontier.html"><span class="nav-num">16</span> Interp Frontier</a></li><li class="nav-item"><a href="17-alignment-beyond-rlhf.html"><span class="nav-num">17</span> Alignment</a></li><li class="nav-item"><a href="18-benchmark-crisis.html"><span class="nav-num">18</span> Benchmarks</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part VI · Big Picture</p><ul class="nav-list"><li class="nav-item"><a href="19-ai-for-science.html"><span class="nav-num">19</span> AI for Science</a></li><li class="nav-item"><a href="20-scaling-debates.html"><span class="nav-num">20</span> Scaling</a></li><li class="nav-item"><a href="21-compute-geopolitics-agi.html"><span class="nav-num">21</span> Compute · AGI</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Appendix</p><ul class="nav-list">
+      <li class="nav-item"><a href="../resources.html"><span class="nav-num">§</span> Resources</a></li>
+      <li class="nav-item"><a href="../vocabulary.html"><span class="nav-num">A</span> Vocabulary</a></li>
+    </ul></nav>
+  </aside>
+
+  <main class="main"><div class="content">
+
+    <header class="chapter-header">
+      <div class="chapter-meta"><span class="chapter-num">CHAPTER 06</span><span class="pill pill-cyan">Part II · World Models</span></div>
+      <h1>Generative World Models — Sora, Veo, Genie</h1>
+      <p class="chapter-lede">The other world-model camp. If JEPA (Ch 05) predicts compressed representations, the generative camp bets the opposite: generate the full world, extract understanding as a side-effect.</p>
+    </header>
+
+    <div class="timeline-ribbon">
+      <span class="timeline-event"><strong>2023-09</strong> GAIA-1 (Wayve)</span>
+      <span class="timeline-event"><strong>2024-02</strong> Sora (OpenAI)</span>
+      <span class="timeline-event"><strong>2024-05</strong> Veo (Google)</span>
+      <span class="timeline-event"><strong>2024-12</strong> Genie 2 (DeepMind)</span>
+      <span class="timeline-event"><strong>2025</strong> Veo 3 · Genie 3</span>
+      <span class="timeline-event"><strong>2026</strong> playable world models in training loops</span>
+    </div>
+
+    <details class="eli5">
+      <summary><span class="eli5-icon">🧒</span> ELI5 — explain like I'm five</summary>
+      <div class="eli5-body">
+        <p>Imagine a video game engine that can draw <em>any</em> world — not from a fixed game file, but from a sentence: "a cat skateboarding down a Tokyo alley." Models like <strong>Sora</strong> do that: text or image in, video out.</p>
+        <p>The interesting claim: to draw the cat realistically, the model had to learn some things about physics, gravity, lighting, how legs move. Not perfectly, but enough that maybe — just maybe — we can use that learned "mental video game" for <em>planning</em>, like letting a robot imagine its next move before taking it.</p>
+      </div>
+    </details>
+
+    <div class="toc">
+      <h4>In this chapter</h4>
+      <ul>
+        <li><a href="#sora">6.1 Sora — Spacetime Patches &amp; the Diffusion Transformer</a></li>
+        <li><a href="#veo">6.2 Veo, Genie, and the DeepMind Line</a></li>
+        <li><a href="#rl">6.3 World Models for RL (GAIA-1, Dreamer)</a></li>
+        <li><a href="#physics">6.4 Does Generation Imply Understanding?</a></li>
+        <li><a href="#resources">6.5 Further Reading</a></li>
+      </ul>
+    </div>
+
+    <h2 id="sora">6.1 Sora — Spacetime Patches &amp; the Diffusion Transformer</h2>
+    <p>OpenAI's Sora technical report (Feb 2024) introduces two ideas:</p>
+    <ul>
+      <li><strong>Spacetime patches.</strong> A video is divided into (T, H, W) patches — small cubes of pixels. Each patch becomes a token.</li>
+      <li><strong>Diffusion Transformer (DiT).</strong> A transformer denoises these patch-tokens rather than image pixels directly. This scales: Sora is trained on O(10⁴) TPU/GPU-hours and produces a minute of coherent video.</li>
+    </ul>
+    <p>The paper's bold subtitle is "<em>Video generation models as world simulators</em>." OpenAI's claim: Sora implicitly learns physics, persistence of identity, scene composition.</p>
+
+    <div class="diagram">
+      <svg viewBox="0 0 900 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Spacetime patch tokenisation">
+        <defs>
+          <filter id="sora-sh"><feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#000" flood-opacity="0.3"/></filter>
+          <linearGradient id="vid-grad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#22d3ee" stop-opacity="0.3"/><stop offset="1" stop-color="#7c5cff" stop-opacity="0.3"/></linearGradient>
+        </defs>
+        <g font-family="-apple-system, Inter, sans-serif">
+          <!-- video cube -->
+          <g filter="url(#sora-sh)">
+            <rect x="60" y="60" width="220" height="160" fill="url(#vid-grad)" stroke="#22d3ee"/>
+            <rect x="80" y="45" width="220" height="160" fill="url(#vid-grad)" opacity="0.7" stroke="#22d3ee"/>
+            <rect x="100" y="30" width="220" height="160" fill="url(#vid-grad)" opacity="0.5" stroke="#22d3ee"/>
+          </g>
+          <text x="210" y="240" text-anchor="middle" fill="#22d3ee" font-size="13" font-weight="700">Video (T, H, W)</text>
+          <text x="210" y="258" text-anchor="middle" fill="#9aa6b2" font-size="11" font-style="italic">raw input</text>
+
+          <!-- arrow -->
+          <path d="M 340 140 L 400 140" stroke="#7c5cff" stroke-width="2" marker-end="url(#p-arr)"/>
+          <defs><marker id="p-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7c5cff"/></marker></defs>
+          <text x="370" y="128" text-anchor="middle" fill="#9aa6b2" font-size="11">patch</text>
+
+          <!-- patch tokens -->
+          <g>
+            <g font-size="9">
+              <rect x="420" y="60" width="28" height="28" rx="4" fill="rgba(34,211,238,0.25)" stroke="#22d3ee"/>
+              <rect x="452" y="60" width="28" height="28" rx="4" fill="rgba(34,211,238,0.25)" stroke="#22d3ee"/>
+              <rect x="484" y="60" width="28" height="28" rx="4" fill="rgba(34,211,238,0.25)" stroke="#22d3ee"/>
+              <rect x="516" y="60" width="28" height="28" rx="4" fill="rgba(34,211,238,0.25)" stroke="#22d3ee"/>
+              <rect x="548" y="60" width="28" height="28" rx="4" fill="rgba(34,211,238,0.25)" stroke="#22d3ee"/>
+              <rect x="420" y="92" width="28" height="28" rx="4" fill="rgba(34,211,238,0.25)" stroke="#22d3ee"/>
+              <rect x="452" y="92" width="28" height="28" rx="4" fill="rgba(34,211,238,0.25)" stroke="#22d3ee"/>
+              <rect x="484" y="92" width="28" height="28" rx="4" fill="rgba(34,211,238,0.25)" stroke="#22d3ee"/>
+              <rect x="516" y="92" width="28" height="28" rx="4" fill="rgba(34,211,238,0.25)" stroke="#22d3ee"/>
+              <rect x="548" y="92" width="28" height="28" rx="4" fill="rgba(34,211,238,0.25)" stroke="#22d3ee"/>
+              <rect x="420" y="124" width="28" height="28" rx="4" fill="rgba(34,211,238,0.25)" stroke="#22d3ee"/>
+              <rect x="452" y="124" width="28" height="28" rx="4" fill="rgba(34,211,238,0.25)" stroke="#22d3ee"/>
+              <rect x="484" y="124" width="28" height="28" rx="4" fill="rgba(34,211,238,0.25)" stroke="#22d3ee"/>
+              <rect x="516" y="124" width="28" height="28" rx="4" fill="rgba(34,211,238,0.25)" stroke="#22d3ee"/>
+              <rect x="548" y="124" width="28" height="28" rx="4" fill="rgba(34,211,238,0.25)" stroke="#22d3ee"/>
+            </g>
+          </g>
+          <text x="485" y="175" text-anchor="middle" fill="#22d3ee" font-size="12" font-weight="700">Spacetime patch tokens</text>
+          <text x="485" y="191" text-anchor="middle" fill="#9aa6b2" font-size="10">sequence of (t, y, x) tuples</text>
+
+          <path d="M 600 140 L 660 140" stroke="#7c5cff" stroke-width="2" marker-end="url(#p-arr)"/>
+          <text x="630" y="128" text-anchor="middle" fill="#9aa6b2" font-size="11">DiT</text>
+
+          <!-- DiT -->
+          <g filter="url(#sora-sh)">
+            <rect x="680" y="80" width="180" height="130" rx="12" fill="rgba(124,92,255,0.18)" stroke="#7c5cff" stroke-width="2"/>
+          </g>
+          <text x="770" y="115" text-anchor="middle" fill="#e6edf3" font-size="14" font-weight="700">Diffusion</text>
+          <text x="770" y="134" text-anchor="middle" fill="#e6edf3" font-size="14" font-weight="700">Transformer</text>
+          <text x="770" y="160" text-anchor="middle" fill="#9aa6b2" font-size="10.5">denoises patch tokens</text>
+          <text x="770" y="178" text-anchor="middle" fill="#9aa6b2" font-size="10.5">over ~50 steps</text>
+          <text x="770" y="196" text-anchor="middle" fill="#9aa6b2" font-size="10.5">conditioned on text</text>
+
+          <!-- output arrow and out -->
+          <path d="M 770 220 L 770 265" stroke="#ff5ca8" stroke-width="2" marker-end="url(#p-arr2)"/>
+          <defs><marker id="p-arr2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#ff5ca8"/></marker></defs>
+          <text x="770" y="290" text-anchor="middle" fill="#ff5ca8" font-size="12" font-weight="700">Coherent video (60s+)</text>
+        </g>
+      </svg>
+      <span class="diagram-caption">Sora's pipeline: raw video → spacetime patch tokens → diffusion transformer denoises them → decode back to pixels.</span>
+    </div>
+
+    <h2 id="veo">6.2 Veo, Genie, and the DeepMind Line</h2>
+    <p><strong>Veo 2/3</strong> (Google DeepMind 2024-2025) — Google's counterpart to Sora. Similar architecture, larger training set, better physical plausibility in comparative studies.</p>
+    <p><strong>Genie 2</strong> (DeepMind Dec 2024) — a <em>playable</em> world model. Unlike Sora which generates video given a prompt, Genie takes a single image and produces an interactive environment with latent actions. Press "left," the world responds; press "right," the world responds differently. Closer to a learned game engine than a video model.</p>
+    <p><strong>Genie 3</strong> (2025) — scales Genie 2 to hours-long playable generated worlds, moving toward the "learned simulator as training data" loop.</p>
+
+    <h2 id="rl">6.3 World Models for RL — GAIA-1, Dreamer</h2>
+    <p>The older lineage is <strong>Dreamer</strong> (Hafner et al.) — train a world model in a latent space, then do RL inside the model's imagination. 2024's <strong>Dreamer-V3</strong> was the first to master Minecraft diamond-collection from scratch with a general recipe.</p>
+    <p><strong>GAIA-1</strong> (Wayve, 2023) — a generative driving world model, used internally for training self-driving policies without real-world miles.</p>
+    <p>We dig into MB-RL properly in Ch 08.</p>
+
+    <h2 id="physics">6.4 Does Generation Imply Understanding?</h2>
+    <div class="debate-grid">
+      <div class="debate-side pro">
+        <h5>Yes — the Sora thesis</h5>
+        <p>Sora routinely generates plausible reflections, shadows, and physics. It has never seen a literal "gravity equation" but consistently animates falling objects. Something like an implicit physics model is being learned — and that's what you want for simulation-based planning.</p>
+        <p class="who">— Sora TR, Veo papers, simulation-as-learning camp</p>
+      </div>
+      <div class="debate-side con">
+        <h5>No — the JEPA response</h5>
+        <p>Sora also routinely generates six-fingered hands, impossible gait cycles, and object disappearance. Pixel-perfect generation of surface appearance is not understanding. When the JEPA camp stress-tests these models, they fail on causal interventions the model has not seen close-enough analogues of.</p>
+        <p class="who">— LeCun, Meta FAIR, plus some DeepMind researchers</p>
+      </div>
+    </div>
+
+    <div class="open-questions">
+      <h4>❓ Open questions</h4>
+      <ul>
+        <li>Is "world model inside a diffusion transformer" a separate representation, or distributed in the weights such that we can't extract a clean one?</li>
+        <li>Can generative world models provide <em>training signal</em> for agents reliably enough to close the sim-to-real gap?</li>
+        <li>Do Genie-style playable worlds converge toward a general simulator, or stay locked to their training distribution?</li>
+      </ul>
+    </div>
+
+    <h2 id="resources">6.5 Further Reading</h2>
+    <details class="further">
+      <summary><span class="eli5-icon" style="background:rgba(251,191,36,0.14)">📚</span> Further learning</summary>
+      <div class="further-body">
+        <ul>
+          <li><span class="kind blog">blog</span><a href="https://openai.com/research/video-generation-models-as-world-simulators">Sora technical report (OpenAI)</a></li>
+          <li><span class="kind blog">blog</span><a href="https://deepmind.google/discover/blog/genie-2-a-large-scale-foundation-world-model/">Genie 2 (DeepMind)</a></li>
+          <li><span class="kind paper">paper</span><a href="https://arxiv.org/abs/2309.17080">GAIA-1 (Wayve, 2023)</a></li>
+          <li><span class="kind paper">paper</span><a href="https://arxiv.org/abs/2301.04104">Dreamer-V3 (Hafner 2023)</a></li>
+          <li><span class="kind paper">paper</span><a href="https://arxiv.org/abs/2402.17177">Latte / DiT variants for video</a></li>
+          <li><span class="kind video">video</span><a href="https://www.youtube.com/watch?v=IAsq59ZzCt4">Yannic Kilcher — Sora deep dive</a></li>
+          <li><span class="kind video">video</span><a href="https://www.youtube.com/@MachineLearningStreetTalk">MLST — debate LeCun vs. Sora simulator claim</a></li>
+        </ul>
+      </div>
+    </details>
+
+    <nav class="pager">
+      <a class="pager-link" href="05-jepa.html"><span class="pager-label">← Previous</span><span class="pager-title">JEPA</span></a>
+      <a class="pager-link pager-next" href="07-embodied-foundation.html"><span class="pager-label">Next →</span><span class="pager-title">Embodied Foundation Models</span></a>
+    </nav>
+
+  </div></main>
+</div>
+
+<button id="theme-toggle" class="theme-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="../assets/js/main.js"></script>
+<footer class="site-footer">
+  <p>Created by <strong>Duy Dao</strong><span class="sep">·</span><a href="https://github.com/xD4O" target="_blank" rel="noopener">GitHub @xD4O</a><span class="sep">·</span><a href="https://x.com/_cyr4x" target="_blank" rel="noopener">X @_cyr4x</a><span class="sep">·</span>AI Wiki · 2026</p>
+  <p class="star-cta">Found this useful? <a href="https://github.com/xD4O/AI-Wiki" target="_blank" rel="noopener">⭐ Star it on GitHub</a></p>
+</footer>
+</body>
+</html>

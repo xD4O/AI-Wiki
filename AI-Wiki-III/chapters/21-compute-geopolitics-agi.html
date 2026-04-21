@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 21 · Compute, Geopolitics &amp; the Path to AGI — AI Wiki Vol III</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="stylesheet" href="../assets/css/styles.css"></head>
+<body>
+
+<button id="sidebar-toggle" class="sidebar-toggle"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg></button>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <svg class="brand-logo" viewBox="0 0 64 64"><defs><linearGradient id="bg3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff5ca8"/><stop offset="1" stop-color="#7c5cff"/></linearGradient></defs><rect x="2" y="2" width="60" height="60" rx="14" fill="url(#bg3)"/><text x="32" y="42" text-anchor="middle" fill="white" font-size="26" font-weight="800">III</text></svg>
+      <div><p class="brand-title">AI Wiki · Vol III</p><p class="brand-sub">The Research Frontier</p></div>
+    </div>
+    <nav class="nav-section"><p class="nav-title">Getting Started</p><ul class="nav-list">
+      <li class="nav-item"><a href="../../index.html"><span class="nav-num">I</span> Vol I · Foundations</a></li>
+      <li class="nav-item"><a href="../../AI-Wiki-II/index.html"><span class="nav-num">II</span> Vol II · Agentic Frontier</a></li>
+      <li class="nav-item"><a href="../index.html"><span class="nav-num">◆</span> Vol III · Research Frontier</a></li>
+    </ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part I · Architecture</p><ul class="nav-list"><li class="nav-item"><a href="01-post-transformer.html"><span class="nav-num">01</span> Past Attention</a></li><li class="nav-item"><a href="02-mamba-ssm.html"><span class="nav-num">02</span> Mamba &amp; SSMs</a></li><li class="nav-item"><a href="03-blt-tokenization.html"><span class="nav-num">03</span> BLT</a></li><li class="nav-item"><a href="04-sparse-revolution.html"><span class="nav-num">04</span> Sparse Revolution</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part II · World Models</p><ul class="nav-list"><li class="nav-item"><a href="05-jepa.html"><span class="nav-num">05</span> JEPA</a></li><li class="nav-item"><a href="06-generative-world-models.html"><span class="nav-num">06</span> Sora · Veo · Genie</a></li><li class="nav-item"><a href="07-embodied-foundation.html"><span class="nav-num">07</span> Embodied</a></li><li class="nav-item"><a href="08-model-based-rl.html"><span class="nav-num">08</span> MB-RL</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part III · Reasoning</p><ul class="nav-list"><li class="nav-item"><a href="09-rlvr.html"><span class="nav-num">09</span> RL Verifiable</a></li><li class="nav-item"><a href="10-inference-compute.html"><span class="nav-num">10</span> Inference Compute</a></li><li class="nav-item"><a href="11-memory-titans.html"><span class="nav-num">11</span> Memory · Titans</a></li><li class="nav-item"><a href="12-faithfulness.html"><span class="nav-num">12</span> Faithfulness</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part IV · Systems &amp; Control</p><ul class="nav-list"><li class="nav-item"><a href="13-meta-prompting.html"><span class="nav-num">13</span> Meta-Prompting</a></li><li class="nav-item"><a href="14-agentic-orchestration.html"><span class="nav-num">14</span> Orchestration</a></li><li class="nav-item"><a href="15-deterministic-gates.html"><span class="nav-num">15</span> Deterministic Gates</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part V · Open Problems</p><ul class="nav-list"><li class="nav-item"><a href="16-interp-frontier.html"><span class="nav-num">16</span> Interp Frontier</a></li><li class="nav-item"><a href="17-alignment-beyond-rlhf.html"><span class="nav-num">17</span> Alignment</a></li><li class="nav-item"><a href="18-benchmark-crisis.html"><span class="nav-num">18</span> Benchmarks</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Part VI · Big Picture</p><ul class="nav-list"><li class="nav-item"><a href="19-ai-for-science.html"><span class="nav-num">19</span> AI for Science</a></li><li class="nav-item"><a href="20-scaling-debates.html"><span class="nav-num">20</span> Scaling</a></li><li class="nav-item"><a href="21-compute-geopolitics-agi.html"><span class="nav-num">21</span> Compute · AGI</a></li></ul></nav>
+    <nav class="nav-section"><p class="nav-title">Appendix</p><ul class="nav-list">
+      <li class="nav-item"><a href="../resources.html"><span class="nav-num">§</span> Resources</a></li>
+      <li class="nav-item"><a href="../vocabulary.html"><span class="nav-num">A</span> Vocabulary</a></li>
+    </ul></nav>
+  </aside>
+
+  <main class="main"><div class="content">
+
+    <header class="chapter-header">
+      <div class="chapter-meta"><span class="chapter-num">CHAPTER 21</span><span class="pill pill-pink">Part VI · Big Picture</span></div>
+      <h1>Compute, Energy, Geopolitics &amp; the Path to AGI</h1>
+      <p class="chapter-lede">Closing the volume. Chips, kilowatt-hours, sovereign infrastructure, regulation. The economic and political constraints that decide which architectures (Parts I-IV) actually ship — and the honest map of who disagrees about timelines.</p>
+    </header>
+
+    <div class="timeline-ribbon">
+      <span class="timeline-event"><strong>2022</strong> CHIPS Act</span>
+      <span class="timeline-event"><strong>2023</strong> US AI Executive Order</span>
+      <span class="timeline-event"><strong>2024-08</strong> EU AI Act in force</span>
+      <span class="timeline-event"><strong>2024</strong> UK + US AISIs stand up</span>
+      <span class="timeline-event"><strong>2025</strong> sovereign compute everywhere</span>
+      <span class="timeline-event"><strong>2026</strong> nuclear PPA boom for hyperscalers</span>
+    </div>
+
+    <details class="eli5">
+      <summary><span class="eli5-icon">🧒</span> ELI5 — explain like I'm five</summary>
+      <div class="eli5-body">
+        <p>Big AI models need three things: <strong>chips</strong> (mostly TSMC), <strong>electricity</strong> (a small country's worth), and <strong>permission</strong> (regulators).</p>
+        <p>So the question "when will AGI arrive?" isn't only about research. It's also: when can we build chip factories outside Taiwan? Where does the next 100GW of electricity come from? Will governments allow it? Smart people disagree on all of these.</p>
+        <p>This chapter is the honest map: who's saying what, why, and what would change anyone's mind.</p>
+      </div>
+    </details>
+
+    <div class="toc">
+      <h4>In this chapter</h4>
+      <ul>
+        <li><a href="#chips">21.1 Chip Supply Chains</a></li>
+        <li><a href="#power">21.2 Power — Where the Watts Come From</a></li>
+        <li><a href="#sovereign">21.3 Sovereign Compute</a></li>
+        <li><a href="#labor">21.4 Labor — What's Actually Happening</a></li>
+        <li><a href="#reg">21.5 Regulation</a></li>
+        <li><a href="#agi">21.6 Paths to AGI — Honest Map</a></li>
+        <li><a href="#watch">21.7 What to Watch in 2027</a></li>
+        <li><a href="#resources">21.8 Further Reading</a></li>
+      </ul>
+    </div>
+
+    <h2 id="chips">21.1 Chip Supply Chains</h2>
+    <p>Frontier training runs depend on:</p>
+    <ul>
+      <li><strong>TSMC</strong> for fabrication (95%+ of leading-node logic).</li>
+      <li><strong>ASML</strong> for EUV lithography (sole vendor).</li>
+      <li><strong>Nvidia</strong> for design + CUDA software stack (~90% AI accelerator share).</li>
+      <li><strong>HBM (SK Hynix, Samsung, Micron)</strong> for memory — the bottleneck since 2023.</li>
+    </ul>
+    <p>US export controls (2022, 2023, 2024) progressively restricted advanced AI chips to China. China responded with intensified domestic capacity (SMIC), Huawei Ascend chips, and large open-weight model releases (DeepSeek, Qwen, Kimi). The cat-and-mouse continues; the technical capability gap has narrowed in 2025-2026.</p>
+
+    <h2 id="power">21.2 Power — Where the Watts Come From</h2>
+    <p>A 2026 frontier training run consumes ~100 GWh, equivalent to a city of 10K people for a year. Inference at scale is now larger than training in aggregate. The 2024-2026 power story:</p>
+    <ul>
+      <li><strong>Nuclear PPAs</strong> — Microsoft restarted Three Mile Island; Amazon, Meta, Google signed multi-GW SMR deals.</li>
+      <li><strong>Geothermal &amp; hydro</strong> — new datacentres co-located with renewable supply.</li>
+      <li><strong>Behind-the-meter natural gas</strong> — controversial but fast.</li>
+    </ul>
+    <p>The IEA forecasts AI compute at 5-10% of US grid by 2030. Power, not chips, may be the binding constraint.</p>
+
+    <h2 id="sovereign">21.3 Sovereign Compute</h2>
+    <p>Every major economy is building national-scale compute infrastructure:</p>
+    <ul>
+      <li><strong>EU AI Gigafactories</strong> — multi-billion-euro public-private programmes.</li>
+      <li><strong>UAE Stargate, Saudi HUMAIN</strong> — Gulf-state hyperscalers funded by sovereign wealth.</li>
+      <li><strong>India IndiaAI Mission</strong> — 10K-GPU public allocation programme.</li>
+      <li><strong>Japan, South Korea, France</strong> — domestic frontier-model players (Sakana, Upstage, Mistral) with state backing.</li>
+    </ul>
+
+    <h2 id="labor">21.4 Labor — What's Actually Happening</h2>
+    <p>Distinguish public discourse from data:</p>
+    <ul>
+      <li><strong>Coding</strong> — measurable productivity gains (~30-50% on routine tasks); junior-coder hiring has slowed at AI-leading firms; senior-engineer time spent on review and architecture is up.</li>
+      <li><strong>Customer support</strong> — AI handles ~50% of tier-1 tickets; teams reorganised, not eliminated, in most large enterprises.</li>
+      <li><strong>Creative</strong> — design, copywriting, illustration freelancers report mixed effects: more clients but lower per-task pay.</li>
+      <li><strong>Knowledge work generally</strong> — not the mass displacement some feared, not the productivity miracle others promised. Quietly reshaping every desk job.</li>
+    </ul>
+    <p>The honest answer in 2026: real, but slower and more uneven than dramatic forecasts predicted.</p>
+
+    <h2 id="reg">21.5 Regulation</h2>
+    <ul>
+      <li><strong>EU AI Act</strong> (2024-2025 phased) — risk-based; foundation-model obligations include transparency, evals, copyright disclosure.</li>
+      <li><strong>UK AISI &amp; US AISI</strong> — voluntary pre-deployment evals of frontier models. The "evaluator-of-record" question is partly answered.</li>
+      <li><strong>US Executive Orders</strong> — successive administrations have written, revised, and walked back AI executive orders. The federal landscape is uncertain through 2026.</li>
+      <li><strong>State-level (US)</strong> — California's SB 1047 (vetoed 2024, replaced by SB 53 line); New York and Colorado moving on disclosure / liability.</li>
+      <li><strong>Asia</strong> — China's generative-AI rules (2023+) require pre-approval; Japan's "soft" approach; Singapore as model-evaluation hub.</li>
+    </ul>
+
+    <h2 id="agi">21.6 Paths to AGI — the Honest Map</h2>
+
+    <div class="diagram">
+      <svg viewBox="0 0 900 380" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="AGI position 2x2">
+        <defs><filter id="agi-sh"><feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#000" flood-opacity="0.3"/></filter></defs>
+        <g font-family="-apple-system, Inter, sans-serif">
+          <!-- axes -->
+          <line x1="450" y1="40" x2="450" y2="340" stroke="#6b7687" stroke-width="1"/>
+          <line x1="80" y1="190" x2="820" y2="190" stroke="#6b7687" stroke-width="1"/>
+
+          <text x="80" y="30" fill="#9aa6b2" font-size="11">scaling LLMs suffices ←</text>
+          <text x="820" y="30" text-anchor="end" fill="#9aa6b2" font-size="11">→ need new architecture</text>
+          <text x="450" y="20" text-anchor="middle" fill="#fbbf24" font-size="12" font-weight="700">architecture axis</text>
+
+          <text x="60" y="195" text-anchor="end" fill="#9aa6b2" font-size="11" transform="rotate(-90 60 195)">long timeline ↑</text>
+          <text x="60" y="345" text-anchor="end" fill="#9aa6b2" font-size="11" transform="rotate(-90 60 345)">↓ short timeline</text>
+
+          <!-- Quadrant labels -->
+          <text x="265" y="115" text-anchor="middle" fill="#34d399" font-size="11" font-weight="700">scale + slow</text>
+          <text x="635" y="115" text-anchor="middle" fill="#fbbf24" font-size="11" font-weight="700">new + slow</text>
+          <text x="265" y="265" text-anchor="middle" fill="#22d3ee" font-size="11" font-weight="700">scale + soon</text>
+          <text x="635" y="265" text-anchor="middle" fill="#ff5ca8" font-size="11" font-weight="700">new + soon</text>
+
+          <!-- People (positions are a fair caricature; debates ongoing) -->
+          <g font-size="11" fill="#e6edf3">
+            <!-- top-left: scale, long -->
+            <circle cx="200" cy="155" r="6" fill="#34d399"/><text x="212" y="159">Sutton</text>
+            <circle cx="290" cy="120" r="6" fill="#34d399"/><text x="302" y="124">Hassabis (cautious)</text>
+
+            <!-- top-right: new arch, long -->
+            <circle cx="610" cy="100" r="6" fill="#fbbf24"/><text x="622" y="104">LeCun</text>
+            <circle cx="700" cy="160" r="6" fill="#fbbf24"/><text x="712" y="164">Marcus</text>
+
+            <!-- bottom-left: scale + soon -->
+            <circle cx="200" cy="240" r="6" fill="#22d3ee"/><text x="212" y="244">Altman</text>
+            <circle cx="290" cy="280" r="6" fill="#22d3ee"/><text x="302" y="284">Amodei</text>
+            <circle cx="200" cy="320" r="6" fill="#22d3ee"/><text x="212" y="324">Hinton (concerned)</text>
+
+            <!-- bottom-right: new arch + soon -->
+            <circle cx="640" cy="290" r="6" fill="#ff5ca8"/><text x="652" y="294">Sutskever (SSI)</text>
+          </g>
+
+          <text x="450" y="370" text-anchor="middle" fill="#9aa6b2" font-size="11" font-style="italic">A caricature, not a survey. Each circle is a centroid of public statements as of April 2026.</text>
+        </g>
+      </svg>
+      <span class="diagram-caption">A 2×2 of who-thinks-what about AGI. Read it as a map of disagreements, not as authority on positions.</span>
+    </div>
+
+    <h2 id="watch">21.7 What to Watch in 2027</h2>
+    <ul>
+      <li><strong>METR's task-horizon curve.</strong> Does it stay on its 7-month-doubling fit? If yes: agent-day capability ~late 2027.</li>
+      <li><strong>FrontierMath progress.</strong> If frontier models cross 50%, the "real reasoning" debate moves to a new venue.</li>
+      <li><strong>RSP threshold crossings.</strong> Anthropic ASL-4, DeepMind FSF critical-capability, OpenAI Preparedness "high" — first time any are tripped.</li>
+      <li><strong>Open-weight gap.</strong> If a Chinese open-weight model leads LMArena for a quarter, the global landscape changes.</li>
+      <li><strong>BLT / Mamba at frontier scale.</strong> First non-transformer to make a frontier release.</li>
+      <li><strong>Embodied AI.</strong> First humanoid policy that solves a useful real-world task end-to-end (laundry? warehouse pick?).</li>
+      <li><strong>AGI definition.</strong> If a credible operationalisation of "AGI" emerges, the debate becomes empirical rather than theological.</li>
+    </ul>
+
+    <div class="callout tip">
+      <svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/></svg>
+      <div class="callout-body">
+        <div class="callout-title">You've finished Volume III</div>
+        <p>Vol I taught the math and architecture. Vol II taught deployment. Vol III mapped the research frontier. There is no Vol IV, because by 2027 the frontier will be different enough that the only honest book would be one we haven't written yet.</p>
+        <p>Go read the primary sources. Build something with the new architectures. Argue about the debates. The field is not a spectator sport.</p>
+      </div>
+    </div>
+
+    <h2 id="resources">21.8 Further Reading</h2>
+    <details class="further">
+      <summary><span class="eli5-icon" style="background:rgba(251,191,36,0.14)">📚</span> Further learning</summary>
+      <div class="further-body">
+        <ul>
+          <li><span class="kind blog">blog</span><a href="https://www.darioamodei.com/essay/machines-of-loving-grace">Amodei — Machines of Loving Grace</a></li>
+          <li><span class="kind blog">blog</span><a href="https://ai-2027.com/">AI 2027 scenario</a></li>
+          <li><span class="kind blog">blog</span><a href="https://epoch.ai/">Epoch AI — compute, energy, scaling data</a></li>
+          <li><span class="kind blog">blog</span><a href="https://www.semianalysis.com/">SemiAnalysis — chip-stack reporting</a></li>
+          <li><span class="kind docs">docs</span><a href="https://artificialintelligenceact.eu/">EU AI Act resource</a></li>
+          <li><span class="kind docs">docs</span><a href="https://www.aisi.gov.uk/">UK AI Safety Institute</a></li>
+          <li><span class="kind talk">talk</span><a href="https://www.dwarkesh.com/podcast">Dwarkesh — Sutton, Hinton, Hassabis, Sutskever, Amodei interviews</a></li>
+          <li><span class="kind blog">blog</span><a href="https://importai.substack.com/">Import AI — Jack Clark on policy</a></li>
+          <li><span class="kind blog">blog</span><a href="https://www.lesswrong.com/">LessWrong — alignment / forecasting community</a></li>
+        </ul>
+      </div>
+    </details>
+
+    <nav class="pager">
+      <a class="pager-link" href="20-scaling-debates.html"><span class="pager-label">← Previous</span><span class="pager-title">Scaling Debates</span></a>
+      <a class="pager-link pager-next" href="../resources.html"><span class="pager-label">Appendix →</span><span class="pager-title">Resources &amp; Links</span></a>
+    </nav>
+
+  </div></main>
+</div>
+
+<button id="theme-toggle" class="theme-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="../assets/js/main.js"></script>
+<footer class="site-footer">
+  <p>Created by <strong>Duy Dao</strong><span class="sep">·</span><a href="https://github.com/xD4O" target="_blank" rel="noopener">GitHub @xD4O</a><span class="sep">·</span><a href="https://x.com/_cyr4x" target="_blank" rel="noopener">X @_cyr4x</a><span class="sep">·</span>AI Wiki · 2026</p>
+  <p class="star-cta">Found this useful? <a href="https://github.com/xD4O/AI-Wiki" target="_blank" rel="noopener">⭐ Star it on GitHub</a></p>
+</footer>
+</body></html>
